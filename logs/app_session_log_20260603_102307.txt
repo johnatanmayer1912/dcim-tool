@@ -1,0 +1,69 @@
+[10:23:07] [test] Starting Interface Configuration Manager - deploy...
+[10:23:07] [test] Connecting to cisco_ios...
+[10:23:07] [test] Connecting to device...
+[10:23:10] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:23:10] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:23:10] [test] Starting Interface Configuration Manager - discover...
+[10:23:10] [test] Connecting to cisco_ios...
+[10:23:10] [test] Connecting to device...
+[10:23:12] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:23:12] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:23:12] [test] Starting Interface Configuration Manager - validate...
+[10:23:12] [test] Connecting to cisco_ios...
+[10:23:12] [test] Connecting to device...
+[10:23:15] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:23:15] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+

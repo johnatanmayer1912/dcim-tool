@@ -1,0 +1,7 @@
+Chassis id: 0050.5689.12ab
+Local Port id: Eth1/5
+Port id: 5254.00c1.22aa.33bb
+Port Description: Ethernet1/10
+System Name: not advertised
+System Description: Cisco Nexus Operating System (NX-OS) Software
+Management Address: 10.10.10.10

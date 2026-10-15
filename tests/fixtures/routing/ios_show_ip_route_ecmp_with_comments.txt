@@ -1,0 +1,14 @@
+! This is a comment line that must not break ECMP continuation
+Codes: L - local, C - connected, S - static, O - OSPF, B - BGP
+
+Gateway of last resort is 10.0.0.1 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 10.0.0.1
+O     10.1.0.0/24 [110/20] via 10.0.0.1, 00:05:11, GigabitEthernet0/0
+                            via 10.0.0.2, 00:05:11, GigabitEthernet0/1
+                            via 10.0.0.3, 00:05:11, GigabitEthernet0/2
+! comment in middle of table — must NOT break continuation of next route
+O     10.2.0.0/24 [110/30] via 10.0.0.1, 00:03:22, GigabitEthernet0/0
+                            via 10.0.0.2, 00:03:22, GigabitEthernet0/1
+C     192.168.1.0/24 is directly connected, Vlan10
+L     192.168.1.1/32 is directly connected, Vlan10

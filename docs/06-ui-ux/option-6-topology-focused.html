@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 6: Network-Topology Focused - Network Swiss Tool Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: #1e293b;
+            border-bottom: 3px solid #10b981;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #10b981;
+            letter-spacing: -0.5px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-item {
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #10b981;
+            border-bottom-color: #10b981;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Topology Canvas Area */
+        .topology-container {
+            background: #0a0f1c;
+            border: 2px solid #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topology-canvas {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #0a0f1c 0%, #1e293b 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .topology-placeholder {
+            text-align: center;
+            color: #64748b;
+        }
+
+        .topology-placeholder-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        /* Network Status Colors */
+        .status-up {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+        }
+
+        .status-down {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+        }
+
+        .status-warning {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+        }
+
+        .status-unknown {
+            color: #64748b;
+            background: rgba(100, 116, 139, 0.1);
+            border: 1px solid #64748b;
+        }
+
+        /* Device Cards */
+        .device-card {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s;
+        }
+
+        .device-card:hover {
+            border-color: #10b981;
+            transform: translateX(4px);
+        }
+
+        .device-icon {
+            font-size: 32px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #0f172a;
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .device-type {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .device-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: #334155;
+            transform-origin: left center;
+        }
+
+        .connection-line.active {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
+        .connection-line.warning {
+            background: #f59e0b;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+
+        .connection-line.error {
+            background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card.up {
+            border-color: #10b981;
+        }
+
+        .stat-card.down {
+            border-color: #ef4444;
+        }
+
+        .stat-card.warning {
+            border-color: #f59e0b;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .control-panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        /* Zoom Controls */
+        .zoom-controls {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .zoom-btn {
+            width: 36px;
+            height: 36px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .zoom-btn:hover {
+            background: #334155;
+            border-color: #10b981;
+        }
+
+        /* Device List */
+        .device-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+
+        .filter-input {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 14px;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            font-size: 14px;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #e2e8f0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Network Swiss Tool Pro</div>
+        <nav class="nav">
+            <a href="#" class="nav-item active">Topology</a>
+            <a href="#" class="nav-item">Network Search</a>
+            <a href="#" class="nav-item">Interfaces</a>
+            <a href="#" class="nav-item">VLAN</a>
+            <a href="#" class="nav-item">Tools</a>
+        </nav>
+    </div>
+
+    <div class="main">
+        <h1>Network Topology</h1>
+        <p>Visual representation of your network infrastructure</p>
+
+        <div class="stats-grid">
+            <div class="stat-card up">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value">22</div>
+                <div class="stat-label">Devices Online</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-value">2</div>
+                <div class="stat-label">Warnings</div>
+            </div>
+            <div class="stat-card down">
+                <div class="stat-icon">❌</div>
+                <div class="stat-value">0</div>
+                <div class="stat-label">Offline</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔗</div>
+                <div class="stat-value">48</div>
+                <div class="stat-label">Connections</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #10b981;"></div>
+                <span class="legend-label">Online</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f59e0b;"></div>
+                <span class="legend-label">Warning</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ef4444;"></div>
+                <span class="legend-label">Offline</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #64748b;"></div>
+                <span class="legend-label">Unknown</span>
+            </div>
+        </div>
+
+        <div class="topology-container">
+            <div class="zoom-controls">
+                <button class="zoom-btn">+</button>
+                <button class="zoom-btn">−</button>
+                <button class="zoom-btn">⟲</button>
+                <button class="zoom-btn">⛶</button>
+            </div>
+            <div class="topology-canvas">
+                <div class="topology-placeholder">
+                    <div class="topology-placeholder-icon">🌐</div>
+                    <div style="font-size: 18px; font-weight: 600; color: #94a3b8; margin-bottom: 8px;">
+                        Network Topology Visualization
+                    </div>
+                    <div style="font-size: 14px; color: #64748b;">
+                        Interactive topology map will be rendered here
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <div class="control-panel-title">Topology Controls</div>
+            <div class="control-buttons">
+                <button class="btn btn-primary">Refresh Topology</button>
+                <button class="btn btn-secondary">Auto-Layout</button>
+                <button class="btn btn-secondary">Show Labels</button>
+                <button class="btn btn-secondary">Group by VLAN</button>
+                <button class="btn btn-danger">Clear Filters</button>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="filter-input" placeholder="Search devices...">
+            <select class="filter-select">
+                <option>All Devices</option>
+                <option>Core Switches</option>
+                <option>Access Switches</option>
+                <option>Routers</option>
+                <option>Firewalls</option>
+            </select>
+            <select class="filter-select">
+                <option>All Status</option>
+                <option>Online</option>
+                <option>Warning</option>
+                <option>Offline</option>
+            </select>
+        </div>
+
+        <h2 style="margin-top: 32px;">Device List</h2>
+        <div class="device-list">
+            <div class="device-card">
+                <div class="device-icon">🖥️</div>
+                <div class="device-info">
+                    <div class="device-name">sw-core-01</div>
+                    <div class="device-type">Core Switch</div>
+                </div>
+                <div class="device-status status-up">Online</div>
+            </div>
+            <div class="device-card">
+                <div class="device-icon">🖥️</div>
+                <div class="device-info">
+                    <div class="device-name">sw-core-02</div>
+                    <div class="device-type">Core Switch</div>
+                </div>
+                <div class="device-status status-up">Online</div>
+            </div>
+            <div class="device-card">
+                <div class="device-icon">🖥️</div>
+                <div class="device-info">
+                    <div class="device-name">sw-access-15</div>
+                    <div class="device-type">Access Switch</div>
+                </div>
+                <div class="device-status status-warning">Warning</div>
+            </div>
+            <div class="device-card">
+                <div class="device-icon">🖥️</div>
+                <div class="device-info">
+                    <div class="device-name">sw-access-16</div>
+                    <div class="device-type">Access Switch</div>
+                </div>
+                <div class="device-status status-up">Online</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

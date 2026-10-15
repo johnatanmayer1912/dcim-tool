@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>03 Find — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 03</strong>
+    <span>Static HTML — no Flask. Not the live console.</span>
+    <a href="index.html">All demos</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-on" href="06-settings-vault.html"><span class="ico" aria-hidden="true">●</span> Vault UNLOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select aria-label="Named credential set"><option selected>lab-ops (ssh)</option></select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope"><option selected>Group DIST — 12 devices</option></select>
+        </label>
+      </div>
+      <p class="freshness">Last L2: 14m · path reconstruct uses those edges only</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html">Maps <span class="badge">3</span><span class="kbd">2</span></a>
+      <a href="03-find.html" aria-current="page">Find <span class="kbd">3</span></a>
+      <a href="04-change.html">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Find</h1>
+          <p class="lede">Locate a MAC on inventory switches. Path reconstruct walks existing L2 edges only — it is not DNA/Fluke.</p>
+        </div>
+        <div class="title-actions">
+          <button type="button" class="primary" id="btn-trace">Trace MAC</button>
+          <button type="button" id="btn-path" disabled aria-describedby="path-why">Reconstruct path</button>
+          <button type="button">Open HTML report</button>
+        </div>
+      </div>
+      <div class="card">
+        <label class="field">
+          <span>MAC address</span>
+          <input type="text" id="mac" value="aabb.ccdd.ee01" aria-describedby="mac-hint" autocomplete="off">
+        </label>
+        <p id="mac-hint" class="muted">Accepts dotted, colon, or hyphen. Empty MAC is HTTP 400 in the live API.</p>
+        <p id="path-why" class="muted">Reconstruct stays disabled until MAC hits exist <strong>and</strong> last inventory L2 edges exist.</p>
+      </div>
+      <div class="title-actions" style="margin-bottom:0.6rem">
+        <button type="button" data-find="ok">Hits + path gap</button>
+        <button type="button" data-find="none">Not found</button>
+        <button type="button" data-find="amb">Ambiguous prefix</button>
+      </div>
+      <div id="results" class="card">
+        <h2>MAC hits (3)</h2>
+        <table>
+          <thead><tr><th>Host</th><th>VLAN</th><th>Interface</th><th>Linked to last L2?</th></tr></thead>
+          <tbody>
+            <tr><td>DIST-01</td><td>20</td><td>Eth1/12</td><td>yes — edge to ACC-01</td></tr>
+            <tr><td>ACC-01</td><td>20</td><td>Gi0/14</td><td>yes — edge to DIST-01</td></tr>
+            <tr><td>ACC-03</td><td>20</td><td>Eth1/8</td><td class="status warn">unlinked hit — no L2 edge to remaining hops</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="path-card" class="card hidden">
+        <h2>Path reconstruct</h2>
+        <table>
+          <thead><tr><th>Hop</th><th>From</th><th>Port</th><th>To</th><th>Evidence</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>DIST-01</td><td>Eth1/12</td><td>ACC-01</td><td>MAC hit + bidirectional CDP/LLDP</td></tr>
+            <tr><td>2</td><td>ACC-01</td><td>Gi0/14</td><td>(station)</td><td>MAC on access port</td></tr>
+          </tbody>
+        </table>
+        <p class="banner warn" id="path-note"><strong>path_note:</strong> Stopped on gap. ACC-03 also saw this MAC but has no trusted L2 edge connecting it to this walk. Unlinked hit listed; hop not invented.</p>
+      </div>
+      <script type="application/json" id="sample-data">
+{"mac":"aa:bb:cc:dd:ee:01","hits":[{"host":"DIST-01","if":"Eth1/12"},{"host":"ACC-01","if":"Gi0/14"},{"host":"ACC-03","if":"Eth1/8","unlinked":true}],"path_note":"Stopped on gap; unlinked hit ACC-03"}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Hop evidence</h2>
+      <dl>
+        <dt>Command</dt>
+        <dd class="mono">show mac address-table address aabb.ccdd.ee01</dd>
+        <dt>Snippet (bound)</dt>
+        <dd class="mono">VLAN 20    aabb.ccdd.ee01    DYNAMIC    Eth1/12</dd>
+        <dt>Honesty</dt>
+        <dd>Scan is per inventory switch. Reconstruct does not mint hops.</dd>
+      </dl>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span></footer>
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var pathBtn = document.getElementById("btn-path");
+      var why = document.getElementById("path-why");
+      var results = document.getElementById("results");
+      var pathCard = document.getElementById("path-card");
+      document.getElementById("btn-trace").onclick = function () {
+        pathBtn.disabled = false;
+        why.textContent = "Last L2 edges present. Reconstruct will not invent hops past a gap.";
+        pathCard.classList.add("hidden");
+      };
+      pathBtn.onclick = function () {
+        if (pathBtn.disabled) return;
+        pathCard.classList.remove("hidden");
+      };
+      document.querySelectorAll("[data-find]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var k = btn.getAttribute("data-find");
+          pathCard.classList.add("hidden");
+          if (k === "none") {
+            pathBtn.disabled = true;
+            why.textContent = "Reconstruct disabled: no MAC hits.";
+            results.innerHTML = "<h2>MAC hits</h2><p class='banner info'><strong>Not found</strong> on 12 DIST switches. Try another scope or confirm the CAM has aged.</p>";
+          } else if (k === "amb") {
+            pathBtn.disabled = true;
+            why.textContent = "Reconstruct disabled: prefix matched more than one station.";
+            results.innerHTML = "<h2>MAC hits</h2><p class='banner warn'><strong>Ambiguous.</strong> Prefix <code>aabb.cc</code> matched 2 stations. Enter a full address.</p>";
+          } else {
+            location.reload();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

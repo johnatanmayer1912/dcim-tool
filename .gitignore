@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# NST Specific - Security
+.credential_key
+vault/
+*.vault
+secrets/
+*.secret
+
+# NST Specific - Outputs
+outputs/
+diagnostics/
+logs/sessions/
+
+# NST Specific - Build
+*.spec
+*.exe
+*.zip
+
+# Dev
+.devin/
+.cursor/
+.pytest_cache/
+.coverage
+htmlcov/
+node_modules/
+
+# Temporary
+*.tmp
+*.bak
+*.log
+
+# Build artifacts
+dist/
+build/
+

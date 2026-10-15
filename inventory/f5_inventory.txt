@@ -1,0 +1,14 @@
+# F5 Inventory File
+# Format: Host, DeviceType
+# Group headers in brackets []
+
+[Data_Center_A]
+192.168.10.50, f5_tmsh, 22
+192.168.10.51, f5_tmsh, 22
+
+[Data_Center_B]
+10.0.0.100, f5_tmsh
+10.0.0.101, f5_tmsh
+
+[Lab_Environment]
+F5-Lab-01, f5_tmsh

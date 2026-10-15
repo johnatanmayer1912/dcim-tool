@@ -1,0 +1,25 @@
+read all the skills that u need, use the .devin / .cursor folder as needed ( u can use any needed skill / plugin / workflow / role ) - related to the program development.
+use all the roles that u need ( read the docs folder ) - to perfrom at peak and proffesional.
+validate that the only directory that u are working in is > net_mng_tool_cartography.
+
+
+approve once u undestrand and completed the sync, read all the skills, roles, and workflows.
+
+
+
+
+can u integrate - on a separated or to combine with the network discovery / crawling ( if u combine - u have to validate the needed fields or additional software that is required to work rand operate in offline environments + compile in single exe file )
+the following projects from github:
+
+
+https://github.com/scottpeterman/secure_cartography ( without the NIST comparison - this feature is not needed )
+https://github.com/netdisco/netdisco
+the goal is to create additional map or maps - based on the logic of the 2 projects and to create the routing map ( L3 ) - to understand the entire network. u will  have full access to devices and it credentials, to read the configuration, understand the routing, understand the gateways, etc..
+
+
+if you can integrate them, use any relevant feature from both projects, and create additional usefull l2, l3, network flows or any other map - suggest a plan, and the detailed, automated qa - making sure not only for full feature intergration and functionality,
+ but also the needed for the program to be working offline.
+ 
+ 
+make sure to add all these sources links into the documentation for future usage.
+

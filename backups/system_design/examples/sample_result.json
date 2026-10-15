@@ -1,0 +1,13 @@
+{
+  "device": "10.10.20.1",
+  "status": "success",
+  "data": {
+    "true_host": "DIST-SWITCH-01",
+    "vlans": [
+      ["10", "DATA", "active"],
+      ["20", "VOICE", "active"],
+      ["99", "MANAGEMENT", "active"]
+    ]
+  },
+  "error": null
+}

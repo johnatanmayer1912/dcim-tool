@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://networkswisstool.local/schemas/nst.utilization_overlay.v1.json",
+  "title": "NST utilization overlay document",
+  "description": "Paint payload for existing L2 edges only. Never a topology graph. Live collector is SSH CLI, not SNMP.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "mode",
+    "evidence_class",
+    "generated_at",
+    "paints",
+    "unmapped",
+    "summary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "nst.utilization_overlay.v1"
+    },
+    "mode": {
+      "enum": ["replay", "live"]
+    },
+    "evidence_class": {
+      "enum": ["fixture", "replay_snapshot", "live_ssh"]
+    },
+    "topology_job_id": {
+      "type": ["string", "null"]
+    },
+    "topology_relation_keys_ref": {
+      "type": ["string", "null"],
+      "description": "Optional integrity hint (hash or count) of L2 keys at bind time"
+    },
+    "generated_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stale_after_seconds": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "degraded": {
+      "type": "boolean",
+      "default": false
+    },
+    "collector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": ["ssh_cli", "none"]
+        },
+        "vendors": {
+          "type": "array",
+          "items": {
+            "enum": ["cisco_ios", "cisco_xe", "cisco_nxos", "juniper_junos"]
+          }
+        },
+        "delta_seconds_planned": {
+          "type": ["number", "null"]
+        }
+      }
+    },
+    "paints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/paint"
+      }
+    },
+    "unmapped": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/unmapped"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["l2_edge_count", "painted_count", "unmapped_count"],
+      "properties": {
+        "l2_edge_count": { "type": "integer", "minimum": 0 },
+        "painted_count": { "type": "integer", "minimum": 0 },
+        "unmapped_count": { "type": "integer", "minimum": 0 },
+        "partial_count": { "type": "integer", "minimum": 0 },
+        "stale_count": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "mode": { "const": "live" } }
+      },
+      "then": {
+        "properties": {
+          "evidence_class": { "const": "live_ssh" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "mode": { "const": "replay" } }
+      },
+      "then": {
+        "properties": {
+          "evidence_class": { "enum": ["fixture", "replay_snapshot"] }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "paint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cable_key",
+        "paint_state",
+        "join",
+        "provenance"
+      ],
+      "properties": {
+        "cable_key": {
+          "type": "string",
+          "minLength": 1,
+          "description": "topology_relation_key kind=l2; not vis edge id"
+        },
+        "paint_state": {
+          "enum": [
+            "ok",
+            "warn",
+            "hot",
+            "partial",
+            "stale",
+            "no_sample",
+            "no_speed",
+            "invalid"
+          ]
+        },
+        "in_bps": { "type": ["number", "null"], "minimum": 0 },
+        "out_bps": { "type": ["number", "null"], "minimum": 0 },
+        "in_pct": { "type": ["number", "null"] },
+        "out_pct": { "type": ["number", "null"] },
+        "pct": { "type": ["number", "null"] },
+        "if_speed_bps": { "type": ["number", "null"], "minimum": 0 },
+        "pct_gt_100": { "type": "boolean" },
+        "join": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status"],
+          "properties": {
+            "status": {
+              "enum": ["mapped", "partial"]
+            },
+            "sides": {
+              "type": "array",
+              "items": { "enum": ["a", "b"] }
+            }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "evidence_class"],
+          "properties": {
+            "mode": { "enum": ["replay", "live"] },
+            "evidence_class": {
+              "enum": ["fixture", "replay_snapshot", "live_ssh"]
+            },
+            "job_id": { "type": ["string", "null"] },
+            "commands": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sampled_at": { "type": ["string", "null"] },
+            "age_seconds": { "type": ["number", "null"], "minimum": 0 },
+            "stale": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "unmapped": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["device_id", "if_name_raw", "reason"],
+      "properties": {
+        "device_id": { "type": "string" },
+        "if_name_raw": { "type": "string" },
+        "if_name_normalized": { "type": ["string", "null"] },
+        "reason": {
+          "enum": [
+            "no_matching_edge",
+            "ambiguous_edges",
+            "mgmt_or_l3_svi",
+            "bundle_member_not_on_graph",
+            "subinterface_no_parent_edge",
+            "no_speed",
+            "counter_invalid",
+            "identity_mismatch",
+            "not_paint_eligible_layer"
+          ]
+        },
+        "command": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

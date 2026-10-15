@@ -1,0 +1,4 @@
+EVPN instance: default-switch
+  Route Distinguisher: 10.0.0.1:1
+  Neighbor: 10.0.0.8
+  Neighbor: 10.0.0.9

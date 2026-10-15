@@ -1,0 +1,46 @@
+{
+  "pass": "god_mode_enterprise_pass",
+  "timestamp_utc": "2026-08-22T05:58:56.980229+00:00",
+  "version": "7.0.96",
+  "platform": "darwin",
+  "runs": [
+    {
+      "cmd": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "scripts/validate_mandatory_qa_manifest.py"
+      ],
+      "exit": 0,
+      "log": "docs/review_folder/2026.08.22/QA/god_mode_enterprise_pass/pytest/manifest.txt"
+    },
+    {
+      "cmd": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "scripts/phase5_discovery_readiness_check.py"
+      ],
+      "exit": 0,
+      "log": "docs/review_folder/2026.08.22/QA/god_mode_enterprise_pass/readiness/checker.txt"
+    },
+    {
+      "cmd": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "scripts/phase5_discovery_release_consumer.py"
+      ],
+      "exit": 0,
+      "log": "docs/review_folder/2026.08.22/QA/god_mode_enterprise_pass/readiness/consumer.txt"
+    },
+    {
+      "cmd": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "_prebuild.py"
+      ],
+      "exit": 0,
+      "log": "docs/review_folder/2026.08.22/QA/god_mode_enterprise_pass/packaging/prebuild.txt"
+    }
+  ],
+  "sample_map": "ok",
+  "packaging": {
+    "spec_exists": true,
+    "spec_path": "NetworkSwissToolPro_v7.0.96.spec",
+    "windows_exe_note": "Windows .exe requires PyInstaller on Windows (Python 3.12 venv). macOS build produces a macOS binary only."
+  }
+}

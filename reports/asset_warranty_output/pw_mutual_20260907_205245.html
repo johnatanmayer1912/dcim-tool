@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cisco Asset Warranty - Consolidated Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e3a8a;
+            border-bottom: 2px solid #1e3a8a;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #374151;
+            margin-top: 30px;
+        }
+        .summary {
+            background-color: #f0f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .summary-item {
+            background-color: white;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #3b82f6;
+        }
+        .summary-item h3 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .summary-item p {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+        .report-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        .report-section.error {
+            background-color: #fef2f2;
+            border-color: #ef4444;
+        }
+        .device-table {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        tr:hover {
+            background-color: #f9fafb;
+        }
+        .error-section {
+            background-color: #fef2f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ef4444;
+        }
+        .timestamp {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 30px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cisco Asset Warranty - Consolidated Report</h1>
+        
+        <div class="summary">
+            <h2>Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <h3>Source Files</h3>
+                    <p>5</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Successful Reports</h3>
+                    <p>5</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Failed Reports</h3>
+                    <p>0</p>
+                </div>
+                <div class="summary-item">
+                    <h3>Total Devices</h3>
+                    <p>12</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <h2>Device Models</h2>
+            <ul><li>Catalyst 9300: 4 devices</li><li>Catalyst 3850: 2 devices</li><li>ISR 4431: 2 devices</li><li>C9300-48P: 1 devices</li><li>unknown: 1 devices</li><li>C9500: 1 devices</li><li>ISR 4451: 1 devices</li></ul>
+        </div>
+        
+        <div class="summary">
+            <h2>Warranty Status</h2>
+            <ul><li style="color: green">Covered: 8 devices</li><li style="color: gray">Not_a_cisco_device: 1 devices</li><li style="color: red">Expired: 3 devices</li></ul>
+        </div>
+        
+        
+        
+        <h2>Individual Reports</h2>
+        
+                <div class="report-section">
+                    <h3>Report: pw_asset_1.csv</h3>
+                    <p><strong>Format:</strong> csv</p>
+                    <p><strong>Devices:</strong> 1</p>
+                    <div class="device-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hostname</th>
+                                    <th>Serial</th>
+                                    <th>Model</th>
+                                    <th>IP</th>
+                                    <th>Warranty Status</th>
+                                    <th>Warranty End</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                
+                                <tr>
+                                    <td>sw1</td>
+                                    <td>FDOPW1</td>
+                                    <td>C9300-48P</td>
+                                    <td>10.1.1.1</td>
+                                    <td style="color: gray">active</td>
+                                    <td>2030-01-01</td>
+                                </tr>
+                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="report-section">
+                    <h3>Report: pw_asset_2.csv</h3>
+                    <p><strong>Format:</strong> csv</p>
+                    <p><strong>Devices:</strong> 1</p>
+                    <div class="device-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hostname</th>
+                                    <th>Serial</th>
+                                    <th>Model</th>
+                                    <th>IP</th>
+                                    <th>Warranty Status</th>
+                                    <th>Warranty End</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                
+                                <tr>
+                                    <td>junos1</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>10.1.1.2</td>
+                                    <td style="color: gray">not a cisco device</td>
+                                    <td></td>
+                                </tr>
+                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="report-section">
+                    <h3>Report: pw_asset_3.html</h3>
+                    <p><strong>Format:</strong> html</p>
+                    <p><strong>Devices:</strong> 1</p>
+                    <div class="device-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hostname</th>
+                                    <th>Serial</th>
+                                    <th>Model</th>
+                                    <th>IP</th>
+                                    <th>Warranty Status</th>
+                                    <th>Warranty End</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                
+                                <tr>
+                                    <td>sw3</td>
+                                    <td>FDOPW3</td>
+                                    <td>C9500</td>
+                                    <td>10.1.1.3</td>
+                                    <td style="color: gray">active</td>
+                                    <td>2028-01-01</td>
+                                </tr>
+                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="report-section">
+                    <h3>Report: site1_report.csv</h3>
+                    <p><strong>Format:</strong> csv</p>
+                    <p><strong>Devices:</strong> 5</p>
+                    <div class="device-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hostname</th>
+                                    <th>Serial</th>
+                                    <th>Model</th>
+                                    <th>IP</th>
+                                    <th>Warranty Status</th>
+                                    <th>Warranty End</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                
+                                <tr>
+                                    <td>switch1</td>
+                                    <td>FDO12345</td>
+                                    <td>Catalyst 9300</td>
+                                    <td>192.168.1.1</td>
+                                    <td style="color: gray">Active</td>
+                                    <td>2028-12-31</td>
+                                </tr>
+                    
+                                <tr>
+                                    <td>switch2</td>
+                                    <td>FDO12346</td>
+                                    <td>Catalyst 9300</td>
+                                    <td>192.168.1.2</td>
+                                    <td style="color: red">Expired</td>
+                                    <td>2023-06-30</td>
+                                </tr>
+                    
+                                <tr>
+                                    <td>switch3</td>
+                                    <td>FDO12347</td>
+                                    <td>Catalyst 3850</td>
+                                    <td>192.168.1.3</td>
+                                    <td style="color: gray">Active</td>
+                                    <td>2027-03-15</td>
+                                </tr>
+                    
+                                <tr>
+                                    <td>router1</td>
+                                    <td>FDO12348</td>
+                                    <td>ISR 4431</td>
+                                    <td>192.168.1.10</td>
+                                    <td style="color: gray">Active</td>
+                                    <td>2029-01-20</td>
+                                </tr>
+                    
+                                <tr>
+                                    <td>router2</td>
+                                    <td>FDO12349</td>
+                                    <td>ISR 4431</td>
+                                    <td>192.168.1.11</td>
+                                    <td style="color: red">Expired</td>
+                                    <td>2022-11-01</td>
+                                </tr>
+                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="report-section">
+                    <h3>Report: site2_report.csv</h3>
+                    <p><strong>Format:</strong> csv</p>
+                    <p><strong>Devices:</strong> 4</p>
+                    <div class="device-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hostname</th>
+                                    <th>Serial</th>
+                                    <th>Model</th>
+                                    <th>IP</th>
+                                    <th>Warranty Status</th>
+                                    <th>Warranty End</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                
+                                <tr>
+                                    <td>switch4</td>
+                                    <td>FDO12350</td>
+                                    <td>Catalyst 9300</td>
+                                    <td>192.168.2.1</td>
+                                    <td style="color: gray">Active</td>
+                                    <td>2029-06-30</td>
+                                </tr>
+                    
+                                <tr>
+                                    <td>switch5</td>
+                                    <td>FDO12351</td>
+                                    <td>Catalyst 9300</td>
+                                    <td>192.168.2.2</td>
+                                    <td style="color: gray">Active</td>
+                                    <td>2028-09-15</td>
+                                </tr>
+                    
+                                <tr>
+                                    <td>switch6</td>
+                                    <td>FDO12352</td>
+                                    <td>Catalyst 3850</td>
+                                    <td>192.168.2.3</td>
+                                    <td style="color: red">Expired</td>
+                                    <td>2024-01-01</td>
+                                </tr>
+                    
+                                <tr>
+                                    <td>router3</td>
+                                    <td>FDO12353</td>
+                                    <td>ISR 4451</td>
+                                    <td>192.168.2.10</td>
+                                    <td style="color: gray">Active</td>
+                                    <td>2030-05-10</td>
+                                </tr>
+                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+        
+        <div class="timestamp">
+            Generated: 20260907_205245
+        </div>
+    </div>
+</body>
+</html>

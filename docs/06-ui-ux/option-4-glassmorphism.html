@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 4: Glassmorphism Modern - Network Swiss Tool Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Background Shapes */
+        .bg-shape {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        .bg-shape-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(102, 126, 234, 0.4);
+            top: -100px;
+            right: -100px;
+        }
+
+        .bg-shape-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(118, 75, 162, 0.4);
+            bottom: -50px;
+            left: -50px;
+        }
+
+        .bg-shape-3 {
+            width: 250px;
+            height: 250px;
+            background: rgba(236, 72, 153, 0.3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-item {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #ffffff;
+            border-bottom-color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glass Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            transition: all 0.3s;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .form-select option {
+            background: #667eea;
+            color: #ffffff;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Status Indicators */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .grid-item-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .grid-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .grid-item-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 16px;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            overflow-x: auto;
+        }
+
+        /* Tables */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .table td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Floating Elements */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Glow Effects */
+        .glow {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+    <div class="bg-shape bg-shape-3"></div>
+
+    <div class="header">
+        <div class="logo">Network Swiss Tool Pro</div>
+        <nav class="nav">
+            <a href="#" class="nav-item active">Dashboard</a>
+            <a href="#" class="nav-item">Network Search</a>
+            <a href="#" class="nav-item">Interfaces</a>
+            <a href="#" class="nav-item">VLAN</a>
+            <a href="#" class="nav-item">Tools</a>
+        </nav>
+    </div>
+
+    <div class="main">
+        <h1>Dashboard</h1>
+        <p>Overview of your network infrastructure</p>
+
+        <div class="grid" style="margin-bottom: 32px;">
+            <div class="grid-item floating">
+                <div class="grid-item-icon">🌐</div>
+                <div class="grid-item-title">Total Devices</div>
+                <div class="grid-item-value">24</div>
+            </div>
+            <div class="grid-item floating" style="animation-delay: 0.5s;">
+                <div class="grid-item-icon">✅</div>
+                <div class="grid-item-title">Online</div>
+                <div class="grid-item-value">22</div>
+            </div>
+            <div class="grid-item floating" style="animation-delay: 1s;">
+                <div class="grid-item-icon">⚠️</div>
+                <div class="grid-item-title">Warnings</div>
+                <div class="grid-item-value">2</div>
+            </div>
+            <div class="grid-item floating" style="animation-delay: 1.5s;">
+                <div class="grid-item-icon">❌</div>
+                <div class="grid-item-title">Offline</div>
+                <div class="grid-item-value">0</div>
+            </div>
+        </div>
+
+        <div class="card glow">
+            <h2 class="card-title">Quick Actions</h2>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-primary">Run Discovery</button>
+                <button class="btn btn-secondary">Generate Report</button>
+                <button class="btn btn-secondary">Export Data</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Recent Activity</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>Action</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>sw-core-01</td>
+                        <td>Configuration Backup</td>
+                        <td><span class="status status-success">Success</span></td>
+                        <td>2 min ago</td>
+                    </tr>
+                    <tr>
+                        <td>sw-core-02</td>
+                        <td>Interface Discovery</td>
+                        <td><span class="status status-success">Success</span></td>
+                        <td>5 min ago</td>
+                    </tr>
+                    <tr>
+                        <td>sw-access-15</td>
+                        <td>VLAN Audit</td>
+                        <td><span class="status status-warning">Warning</span></td>
+                        <td>10 min ago</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

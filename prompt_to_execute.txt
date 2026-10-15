@@ -1,0 +1,103 @@
+# ============================================================================
+# NETWORK SWISS TOOL PRO — ENTERPRISE CARTOGRAPHY & L3 NETWORK INTELLIGENCE
+# AUTONOMOUS EXECUTION DIRECTIVE & SPECIFICATION (v7.4.20+)
+# ============================================================================
+
+## 1. OPERATING MODEL & ROLE MATRIX ACTIVATION
+Before touching code or executing tasks, activate and maintain the following roles per repository governance:
+- NST Orchestrator (`nst-orchestrator`): Central route, classify, and verify coordinator.
+- Network Architect (`topology-map-excellence`): Graph topology, node/edge schema, L2/L3/STP/Overlay canvas layers.
+- Device Compatibility Engineer (`parser-and-vendor-compatibility`): Multi-vendor parsing (Cisco IOS-XE, NX-OS, Junos, Arista EOS).
+- Security Auditor (`zero-trust-audit-360`): Zero-trust credential handling, anti-tamper log mirrors, no cleartext secrets.
+- QA & Test Specialist (`exhaustive-test-and-validate`): Pytest suites, Playwright headless UI tests, edge-case harnesses.
+- Software Architect (`docs-and-governance-maintainer`): AI navigation breadcrumbs, developer guidelines, invariants.
+- Release Engineer (`release-readiness-review`): Prebuild gate validation (`_prebuild.py`), PyInstaller offline bundle verification.
+
+Source of Truth:
+- Knowledge base: `.cursor/skills/` (source of truth per repository standard).
+- Operational instructions: `.cursor/ROLE_ACTIVATION_MATRIX.md`, `.cursor/docs/OPERATING_MODEL.md`.
+
+## 2. WORKSPACE BOUNDARIES & OFFLINE ARCHITECTURE
+- Pinned Working Directory: `net_mng-tool_1` (or relative workspace root). Never create external projects or work outside this root.
+- Offline EXE Invariant: The application MUST compile into a fully standalone offline executable (`NetworkSwissToolPro.exe` / binary) using PyInstaller.
+- Zero External Dependencies at Runtime:
+  - NO external SNMP walk daemons (e.g. `snmpwalk` binaries or Netdisco PostgreSQL backends required at runtime).
+  - NO external CDN dependencies: All visualization assets (Cytoscape.js, Vis-network, dagre, popper) must be embedded locally under `modules/web/static/js/vendor/` and served via Flask `/static/`.
+  - All icons, fonts, and openpyxl styling assets must be bundled locally with fallback styling.
+
+## 3. CORE ARCHITECTURAL CAPABILITIES
+
+### 3.1 Interactive End-to-End L3 Path Tracer (Hop-by-Hop Flow Simulation)
+- Algorithm: Pure deterministic Longest Prefix Match (LPM) on multi-vendor routing tables (`modules/routing_analyzer/path_tracer.py`).
+- Resolution Sequence:
+  1. Ingress Resolution: Match Source IP against connected/local subnets across all topology devices.
+  2. Hop Progression: Iterate up to 30 hops by querying the routing table for the most specific prefix matching the Destination IP.
+  3. Gateway Forwarding: If no next-hop IP is explicitly present, fall back to gateway analysis (`l3_gateways.json`).
+  4. Cycle & Loop Detection: Detect revisiting devices and tag status as `loop_detected` with detailed diagnosis.
+- Web API: `POST /api/l3/trace-path` returning `{complete, status, ingress_device, egress_device, hops, path_nodes, path_edges}`.
+- Visualization: Interactive Path Tracer toolbar (`#trace-src-ip`, `#trace-dst-ip`, `#btn-trace-flow`, `#btn-clear-trace`) with Vis.js animated flow lines and sidebar `#trace-hops` cards.
+
+### 3.2 Unified Multi-Layer Canvas with Dedicated STP Layer Toggle
+- Single unified canvas (`utils/topo_map_shell.py`) with layer buttons:
+  - `Physical`: Bidirectional CDP/LLDP cables only.
+  - `L2`: All Layer-2 adjacencies including one-sided links.
+  - `L3`: Layer-3 routing adjacencies (OSPF, BGP, EIGRP, Static).
+  - `Overlay`: EVPN/VXLAN NVE peers from CLI telemetry.
+  - `STP`: Dedicated Spanning-Tree Protocol view.
+- STP Layer Visual Contract:
+  - Root Bridges: Highlighted in solid Gold (`#f59e0b`).
+  - Forwarding Links: Bright green (`#10b981` / `#22c55e`).
+  - Blocking / Alternate / Discarding Ports: High-visibility Red with dashed styling (`#ef4444`, dashes `[4, 4]`).
+  - URL Hash Navigation: Deep-linking via `#layer=stp`, `#layer=l3`, `#layer=l2`.
+
+### 3.3 Consolidated Inventory Quad-Format Export with Hardware UUID Deduplication & Audit
+- Consolidated engine (`utils/asset_warranty_consolidator.py`):
+  - Ingest multiple reports simultaneously from `reports/` and `reports/asset_warranty_input/` (CSV, HTML, JSON, TXT).
+  - **Hardware UUID Validation**: Normalizes physical Serial Number as the device's authoritative UUID (`SN:<SERIAL>`).
+  - **Duplicate Device Removal & Attribute Merging**: Detects when 2 or more identical devices exist across ingested files. Rather than discarding metadata, non-destructively merges attributes (combining hostnames, IPs, models, and EOL dates) and logs conflicts.
+  - **Statistical Integrity**: Re-computes summary metrics (`model_counts`, `warranty_status_counts`) strictly on unique deduplicated devices, eliminating count inflation.
+  - **Dedicated Duplicates Audit Across Quad Exports**:
+    1. Master HTML: Amber summary cards and dedicated "⚠️ Duplicate Hardware Audit" table detailing each duplicate UUID, occurrence counts, sources, and conflict warnings.
+    2. Master CSV: Clean RFC-4180 comma-delimited export of unique master devices.
+    3. Master JSON: Structured JSON with `duplicates_summary` and `duplicates_audit` array.
+    4. Master XLSX: Beautifully styled Excel spreadsheet via `openpyxl` with two distinct tabs: `"Master Inventory"` and `"Duplicates Audit"`.
+- Web UI & Serving: Endpoints `POST /api/reports/asset-warranty/consolidate`, `GET /reports/asset-warranty/<filename>`. In-browser status card displays unique device count and yellow duplicates merged badge.
+
+### 3.4 Software Architecture Breadcrumbs (`AI_NAVIGATION_BREADCRUMBS`)
+- Every core module MUST contain structured header comments documenting:
+  - `PURPOSE`: High-level responsibility.
+  - `ARCHITECTURAL ROLE`: Position in overall pipeline.
+  - `KEY FUNCTIONS`: Primary entry points and internal helpers.
+  - `CONNECTIONS`: Callers, callees, data flows, templates.
+  - `INVARIANTS`: Zero-trust, offline safety, error recovery guidelines for future developers.
+
+## 4. SECURITY, ZERO-TRUST & CREDENTIAL FALLBACK
+- 3-Tier Fallback Enforcement:
+  All device connections and discovery crawls must accept Primary, Secondary, and Third credentials.
+  Always attempt in order: Primary -> Secondary -> Third. Never fail early if secondary or tertiary credentials remain untried.
+- Zero-Trust Invariant:
+  - Passwords and enable secrets must NEVER be logged to console, session files, job outputs, or DOM attributes.
+  - Credential IDs only over the wire. Passwords stay locked in `CredentialManager` vault memory until Netmiko dispatch.
+- Extensive Logging:
+  - Mirror every connection attempt, retry, and tier fallback to console and session file (`logs/sessions/`).
+
+## 5. AUTOMATED QA & 100% VALIDATION GATES
+Before building any release candidate or tagging a new version:
+1. Pytest Unit & Integration Suites:
+   - `tests/test_asset_warranty_uuid_dedup.py` (Hardware UUID validation, attribute merging, multi-sheet XLSX audit).
+   - `tests/test_asset_warranty_quad_export.py` (HTML, CSV, JSON, XLSX generation and styling).
+   - `tests/test_asset_warranty_multi_file_consolidator.py` (multi-folder, multi-format ingestion).
+   - `tests/test_l3_path_tracer.py` (LPM, multi-hop, loops, API contracts).
+   - `tests/test_unified_multi_layer_map.py` (STP layer button, blocking/forwarding styles, HTML contract).
+   - `tests/test_zero_trust_credentials_warranty.py` (3-tier fallback, zero secret leak).
+   - `tests/test_extensive_logging_zero_trust.py` (console and session log integrity).
+   - `tests/test_full_credential_fallback_e2e.py` (E2E credential cascading).
+2. Playwright Headless Browser E2E:
+   - `tests/browser/l3_path_tracer_and_quad_export.spec.mjs` (UI verification for Path Tracer, STP canvas, Quad-export badges, duplicates audit).
+   - `tests/browser/zero_trust_credentials_warranty.spec.mjs` (vault buttons, cascading selects, session restore).
+3. Prebuild Validation Gate:
+   - MUST pass `python3 _prebuild.py` with `RESULT: ALL CHECKS PASSED — READY TO BUILD` (exit code 0).
+4. Release Packaging & Versioning:
+   - Increment `VERSION` (e.g. `7.4.20`).
+   - Align `tests/qa/MANDATORY_MANIFEST.yaml` `minimum_app_version`.
+   - Update `CHANGELOG.md` and create `BUILD_v<VERSION>_NOTES.md`.

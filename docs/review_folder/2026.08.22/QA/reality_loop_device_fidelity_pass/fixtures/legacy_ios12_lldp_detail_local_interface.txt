@@ -1,0 +1,15 @@
+------------------------------------------------
+Local Interface: GigabitEthernet1/0/1
+Chassis id: 0011.2233.4455
+Port id: Gi0/1
+Port Description: GigabitEthernet0/1
+System Name: DIST-SW01
+
+System Description:
+Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 12.2(55)SE7
+
+Time remaining: 96 seconds
+System Capabilities: B
+Enabled Capabilities: B
+Management Addresses:
+    IP: 10.0.0.2

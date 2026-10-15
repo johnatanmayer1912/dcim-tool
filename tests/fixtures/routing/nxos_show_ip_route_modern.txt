@@ -1,0 +1,29 @@
+IP Route Table for VRF "default"
+'*' denotes best ucast next-hop
+'**' denotes best mcast next-hop
+'[x/y]' denotes [preference/metric]
+'%<string>' in via output denotes VRF <string>
+
+0.0.0.0/0, ubest/mbest: 1/0
+    *via 10.0.0.1, Eth1/1, [1/0], 2w6d, static
+10.0.0.0/30, ubest/mbest: 1/0, attached
+    *via 10.0.0.2, Eth1/1, [0/0], 3w1d, direct
+10.0.0.2/32, ubest/mbest: 1/0, attached
+    *via 10.0.0.2, Eth1/1, [0/0], 3w1d, local
+10.1.1.0/24, ubest/mbest: 1/0
+    *via 10.0.0.1, Eth1/1, [110/40], 01:23:45, ospf-1, intra
+10.2.2.0/24, ubest/mbest: 2/0
+    *via 10.0.0.1, Eth1/1, [110/40], 00:45:12, ospf-1, intra
+    *via 10.0.0.5, Eth1/2, [110/40], 00:45:12, ospf-1, intra
+10.3.3.0/24, ubest/mbest: 1/0
+    *via 10.0.0.9, Eth1/3, [20/0], 1d02h, bgp-65001, external
+10.4.4.0/24, ubest/mbest: 1/0
+    *via 10.0.0.1, Eth1/1, [90/2560], 3w5d, eigrp-100, internal
+10.5.5.0/24, ubest/mbest: 1/0
+    *via 10.0.0.1, Eth1/1, [170/2560], 3w5d, eigrp-100, external
+192.168.10.0/24, ubest/mbest: 1/0, attached
+    *via 192.168.10.1, Vlan10, [0/0], 2w3d, direct
+192.168.10.1/32, ubest/mbest: 1/0, attached
+    *via 192.168.10.1, Vlan10, [0/0], 2w3d, local
+192.168.20.0/24, ubest/mbest: 1/0, attached
+    *via 192.168.20.1, Vlan20, [0/0], 2w3d, direct

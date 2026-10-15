@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 3: Data-Rich Dashboard - Network Swiss Tool Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            padding: 24px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-item {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #ffffff;
+            border-bottom-color: #ffffff;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 32px 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .stat-card.success {
+            border-left-color: #10b981;
+        }
+
+        .stat-card.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .stat-card.error {
+            border-left-color: #ef4444;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .chart-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Data Table */
+        .data-table-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .table-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Progress Bars */
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+
+        /* Metrics Row */
+        .metrics-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 8px;
+        }
+
+        .metric {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .metric-icon {
+            font-size: 16px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .metric-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Network Swiss Tool Pro</div>
+        <nav class="nav">
+            <a href="#" class="nav-item active">Dashboard</a>
+            <a href="#" class="nav-item">Network Search</a>
+            <a href="#" class="nav-item">Interfaces</a>
+            <a href="#" class="nav-item">VLAN</a>
+            <a href="#" class="nav-item">Tools</a>
+        </nav>
+    </div>
+
+    <div class="main">
+        <h1>Network Dashboard</h1>
+        <p class="subtitle">Real-time monitoring and analytics</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Devices</div>
+                <div class="stat-value">24</div>
+                <div class="stat-change positive">↑ 12% from last week</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-label">Online</div>
+                <div class="stat-value">22</div>
+                <div class="stat-change positive">↑ 5% from last week</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-label">Warnings</div>
+                <div class="stat-value">2</div>
+                <div class="stat-change negative">↓ 3% from last week</div>
+            </div>
+            <div class="stat-card error">
+                <div class="stat-label">Offline</div>
+                <div class="stat-value">0</div>
+                <div class="stat-change positive">↓ 100% from last week</div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-title">Network Traffic (Last 24h)</div>
+                <div class="chart-placeholder">
+                    📊 Traffic Chart Visualization
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Device Health</div>
+                <div class="chart-placeholder">
+                    📈 Health Metrics
+                </div>
+            </div>
+        </div>
+
+        <div class="data-table-card">
+            <div class="table-header">
+                <div class="table-title">Device Status</div>
+                <div class="table-actions">
+                    <button class="btn-sm btn-secondary">Filter</button>
+                    <button class="btn-sm btn-secondary">Export</button>
+                    <button class="btn-sm btn-primary">Refresh</button>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>Status</th>
+                        <th>Uptime</th>
+                        <th>CPU</th>
+                        <th>Memory</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>sw-core-01</td>
+                        <td><span class="badge badge-success">Online</span></td>
+                        <td>45d 12h</td>
+                        <td>
+                            <div class="metric">
+                                <span class="metric-icon">📊</span>
+                                <span class="metric-value">45%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="metric">
+                                <span class="metric-icon">💾</span>
+                                <span class="metric-value">62%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn-sm btn-secondary">Details</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>sw-core-02</td>
+                        <td><span class="badge badge-success">Online</span></td>
+                        <td>30d 8h</td>
+                        <td>
+                            <div class="metric">
+                                <span class="metric-icon">📊</span>
+                                <span class="metric-value">38%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="metric">
+                                <span class="metric-icon">💾</span>
+                                <span class="metric-value">55%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn-sm btn-secondary">Details</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>sw-access-15</td>
+                        <td><span class="badge badge-warning">Warning</span></td>
+                        <td>15d 4h</td>
+                        <td>
+                            <div class="metric">
+                                <span class="metric-icon">📊</span>
+                                <span class="metric-value">78%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="metric">
+                                <span class="metric-icon">💾</span>
+                                <span class="metric-value">85%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn-sm btn-secondary">Details</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

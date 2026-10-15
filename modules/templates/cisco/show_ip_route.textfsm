@@ -1,0 +1,13 @@
+Value PROTOCOL (\S+)
+Value NETWORK (\S+)
+Value NEXT_HOP (\S+)
+Value METRIC (\S+)
+Value INTERFACE (\S+)
+Value UPTIME (\S+)
+
+Start
+  ^${PROTOCOL}\s+${NETWORK}\s+is directly connected,\s+${INTERFACE} -> Record
+  ^${PROTOCOL}\s+${NETWORK}\s+\[${METRIC}\]\s+via\s+${NEXT_HOP},\s+${UPTIME},\s+${INTERFACE} -> Record
+  ^${PROTOCOL}\s+${NETWORK}\s+\[${METRIC}\]\s+via\s+${NEXT_HOP},\s+${INTERFACE} -> Record
+  ^${PROTOCOL}\s+${NETWORK}\s+\[${METRIC}\]\s+via\s+${NEXT_HOP} -> Record
+  ^.* -> Next

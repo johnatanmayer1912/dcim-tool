@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo D — Infographic Export</title>
+  <style>
+    @media print {
+      body { background: #fff; color: #111; }
+      .demo-banner, .no-print { display: none !important; }
+      .page { box-shadow: none; margin: 0; max-width: none; }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Georgia, serif;
+      background: #1a1a2e;
+      color: #1a1a2e;
+      padding: 1.5rem;
+      font-size: 11px;
+    }
+    .demo-banner {
+      background: #16213e;
+      color: #94a3b8;
+      padding: 0.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+    }
+    .demo-banner strong { color: #e94560; }
+    .no-print {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .no-print button {
+      background: #e94560;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      padding: 1.5rem 2rem;
+      aspect-ratio: 297/210;
+      min-height: 700px;
+    }
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 3px solid #0f3460;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .doc-header h1 {
+      font-size: 1.4rem;
+      color: #0f3460;
+      font-weight: 700;
+    }
+    .doc-header .brand {
+      font-size: 0.65rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .doc-meta {
+      text-align: right;
+      font-size: 0.75rem;
+      color: #475569;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .summary-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .summary-box .num { font-size: 1.25rem; font-weight: 700; color: #0f3460; }
+    .summary-box .lbl { font-size: 0.6rem; color: #64748b; text-transform: uppercase; }
+    .summary-box.warn .num { color: #b45309; }
+    .alert-box {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      margin-bottom: 1rem;
+      color: #92400e;
+    }
+    .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem; }
+    .section h2 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #0f3460;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .tier-diagram {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.75rem;
+      min-height: 200px;
+    }
+    .tier-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      gap: 0.5rem;
+    }
+    .tier-label {
+      width: 70px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+    .tier-nodes {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .tier-node {
+      background: #fff;
+      border: 1px solid #94a3b8;
+      border-radius: 3px;
+      padding: 0.2rem 0.45rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+    }
+    .tier-node.core { border-color: #7c3aed; color: #5b21b6; }
+    .tier-node.dist { border-color: #2563eb; color: #1d4ed8; }
+    .tier-node.acc { border-color: #059669; color: #047857; }
+    .link-table { width: 100%; font-size: 0.65rem; border-collapse: collapse; }
+    .link-table th, .link-table td {
+      border: 1px solid #e2e8f0;
+      padding: 0.3rem 0.4rem;
+      text-align: left;
+    }
+    .link-table th { background: #f1f5f9; color: #475569; font-weight: 600; }
+    .legend {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.6rem;
+      color: #64748b;
+    }
+    .legend span { display: flex; align-items: center; gap: 0.25rem; }
+    .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .footer {
+      margin-top: 0.75rem;
+      font-size: 0.6rem;
+      color: #94a3b8;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-banner"><strong>Demo D</strong> — Single Infographic Export · A4 landscape · print / PDF handoff for change records</div>
+  <div class="no-print"><button onclick="window.print()">Print / Save as PDF</button></div>
+
+  <div class="page">
+    <div class="doc-header">
+      <div>
+        <div class="brand">Network Swiss Tool Pro · Standard Map</div>
+        <h1>Layer-2 Topology — CAMPUS-HQ</h1>
+      </div>
+      <div class="doc-meta">
+        Generated: 18 Jun 2026 14:32 UTC<br>
+        Operator: netops-admin<br>
+        Scope: 47 seed devices · CDP + LLDP
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-box"><div class="num">47</div><div class="lbl">Devices</div></div>
+      <div class="summary-box"><div class="num">89</div><div class="lbl">Links</div></div>
+      <div class="summary-box warn"><div class="num">2</div><div class="lbl">Failed</div></div>
+      <div class="summary-box"><div class="num">3</div><div class="lbl">Port-channels</div></div>
+      <div class="summary-box"><div class="num">41</div><div class="lbl">Access layer</div></div>
+    </div>
+
+    <div class="alert-box">
+      <strong>Collection notes:</strong> SW-ACCESS-12 (SSH timeout), AP-FLOOR3-07 (authentication failed). Map may be incomplete downstream of these devices.
+    </div>
+
+    <div class="two-col">
+      <div class="section">
+        <h2>Tier overview</h2>
+        <div class="tier-diagram">
+          <div class="tier-row">
+            <div class="tier-label">Core</div>
+            <div class="tier-nodes">
+              <span class="tier-node core">CORE-01</span>
+              <span style="color:#94a3b8">⟷ Po1</span>
+              <span class="tier-node core">CORE-02</span>
+            </div>
+          </div>
+          <div class="tier-row">
+            <div class="tier-label">Dist</div>
+            <div class="tier-nodes">
+              <span class="tier-node dist">DIST-N1</span>
+              <span class="tier-node dist">DIST-N2</span>
+              <span class="tier-node dist">DIST-S1</span>
+              <span class="tier-node dist">DIST-S2</span>
+            </div>
+          </div>
+          <div class="tier-row">
+            <div class="tier-label">Access</div>
+            <div class="tier-nodes">
+              <span class="tier-node acc">SW-ACC-01</span>
+              <span class="tier-node acc">SW-ACC-02</span>
+              <span class="tier-node acc">SW-ACC-03</span>
+              <span style="font-size:0.65rem;color:#64748b">+ 38 switches, 12 APs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Critical uplinks (top 8)</h2>
+        <table class="link-table">
+          <thead>
+            <tr><th>Local</th><th>Port</th><th>Remote</th><th>Port</th><th>VLAN</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>CORE-01</td><td>Te1/0/1</td><td>DIST-N1</td><td>Te1/1/1</td><td>trunk</td></tr>
+            <tr><td>CORE-01</td><td>Te1/0/2</td><td>DIST-N2</td><td>Te1/1/1</td><td>trunk</td></tr>
+            <tr><td>CORE-01</td><td>Po1</td><td>CORE-02</td><td>Po1</td><td>—</td></tr>
+            <tr><td>DIST-N1</td><td>Gi1/0/48</td><td>SW-ACC-01</td><td>Gi1/0/1</td><td>110</td></tr>
+            <tr><td>DIST-N1</td><td>Gi1/0/47</td><td>SW-ACC-02</td><td>Gi1/0/1</td><td>110</td></tr>
+            <tr><td>SW-ACC-01</td><td>Gi1/0/24</td><td>AP-FLOOR2-03</td><td>eth0</td><td>120</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot" style="background:#7c3aed"></span> Core</span>
+      <span><span class="dot" style="background:#2563eb"></span> Distribution</span>
+      <span><span class="dot" style="background:#059669"></span> Access</span>
+      <span>CDP = solid discovery · LLDP = alternate protocol</span>
+      <span>Po/vPC = aggregated link</span>
+    </div>
+
+    <div class="footer">
+      Network Swiss Tool Pro v7.0.48 · Standard Map export · Confidential — internal use only
+    </div>
+  </div>
+</body>
+</html>

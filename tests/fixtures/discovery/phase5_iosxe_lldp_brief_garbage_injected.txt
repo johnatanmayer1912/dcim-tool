@@ -1,0 +1,8 @@
+Capability codes:
+    (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+    (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+!!!CORRUPT!!! not a table row
+Device ID           Local Intf     Hold-time  Capability      Port ID
+DIST-C9300          Gi1/0/1        120        B,R             Gi1/0/48
+ACCESS-2960         Gi1/0/24       120        B               Gi0/1
+# trailing noise

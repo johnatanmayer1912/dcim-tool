@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo B — Physical + Logical Twin</title>
+  <style>
+    :root {
+      --bg: #0d1117; --surface: #161b22; --elevated: #21262d;
+      --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+      --accent: #58a6ff; --green: #3fb950; --amber: #d29922; --red: #f85149;
+      --phys: #79c0ff; --log: #a371f7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 13px; }
+    .demo-banner {
+      background: linear-gradient(90deg, #388bfd22, #a371f722);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem; font-size: 0.75rem; color: var(--muted); text-align: center;
+    }
+    .demo-banner strong { color: var(--phys); }
+    .toolbar {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .toolbar h1 { font-size: 1.1rem; font-weight: 600; }
+    .device-select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .layer-tabs { display: flex; gap: 0.25rem; margin-left: auto; }
+    .layer-tab {
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .layer-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(88,166,255,0.1); }
+    .twin {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: calc(100vh - 100px);
+    }
+    @media (max-width: 900px) { .twin { grid-template-columns: 1fr; } }
+    .physical {
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-head {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--phys);
+    }
+    .port-list { flex: 1; overflow: auto; padding: 0.5rem; }
+    .port-row {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 0.5rem;
+      padding: 0.5rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      align-items: center;
+      border: 1px solid transparent;
+    }
+    .port-row:hover { background: var(--elevated); }
+    .port-row.selected { border-color: var(--accent); background: rgba(88,166,255,0.1); }
+    .port-row.highlight { border-color: var(--amber); }
+    .port-name { font-weight: 600; font-family: Consolas, monospace; }
+    .port-status { width: 8px; height: 8px; border-radius: 50%; }
+    .port-status.up { background: var(--green); }
+    .port-status.down { background: var(--red); }
+    .port-meta { color: var(--muted); font-size: 0.7rem; }
+    .port-badge {
+      font-size: 0.6rem;
+      padding: 0.15rem 0.35rem;
+      border-radius: 3px;
+      background: var(--elevated);
+    }
+    .logical { display: flex; flex-direction: column; }
+    .logical .panel-head { color: var(--log); }
+    .graph-area {
+      flex: 1;
+      margin: 1rem;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      position: relative;
+      min-height: 400px;
+    }
+    .graph-node {
+      position: absolute;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .graph-node.center { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.25); }
+    .graph-node.neighbor { border-color: var(--log); }
+    .graph-edge {
+      position: absolute;
+      height: 2px;
+      background: var(--accent);
+      transform-origin: left center;
+    }
+    .sync-bar {
+      padding: 0.65rem 1rem;
+      border-top: 1px solid var(--border);
+      background: var(--elevated);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .sync-bar strong { color: var(--text); }
+    .detail-strip {
+      margin: 0 1rem 1rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      font-size: 0.75rem;
+    }
+    .detail-strip div span { display: block; color: var(--muted); font-size: 0.65rem; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="demo-banner"><strong>Demo B</strong> — Physical + Logical Twin · Select a port on the left; graph highlights the adjacency on the right</div>
+
+  <div class="toolbar">
+    <h1>Standard Map — Twin View</h1>
+    <select class="device-select" id="deviceSelect">
+      <option>DIST-N1 (C9300-48P)</option>
+      <option>CORE-01</option>
+      <option>SW-ACC-01</option>
+    </select>
+    <div class="layer-tabs">
+      <button class="layer-tab active">Physical (L1)</button>
+      <button class="layer-tab">Logical (L2)</button>
+      <button class="layer-tab">Both synced</button>
+    </div>
+  </div>
+
+  <div class="twin">
+    <div class="physical">
+      <div class="panel-head">Physical layer — DIST-N1 ports</div>
+      <div class="port-list" id="portList">
+        <div class="port-row" data-port="Te1/1/1">
+          <span class="port-status up"></span>
+          <div><div class="port-name">Te1/1/1</div><div class="port-meta">UPLINK-CORE-01 · trunk · 10G</div></div>
+          <span class="port-badge">CDP→CORE-01</span>
+        </div>
+        <div class="port-row" data-port="Te1/1/2">
+          <span class="port-status up"></span>
+          <div><div class="port-name">Te1/1/2</div><div class="port-meta">UPLINK-CORE-02 · trunk · 10G</div></div>
+          <span class="port-badge">CDP→CORE-02</span>
+        </div>
+        <div class="port-row selected highlight" data-port="Gi1/0/48">
+          <span class="port-status up"></span>
+          <div><div class="port-name">Gi1/0/48</div><div class="port-meta">ACCESS-SW-01 · access VLAN 110 · 1G</div></div>
+          <span class="port-badge">CDP→SW-ACC-01</span>
+        </div>
+        <div class="port-row" data-port="Gi1/0/47">
+          <span class="port-status up"></span>
+          <div><div class="port-name">Gi1/0/47</div><div class="port-meta">ACCESS-SW-02 · VLAN 110</div></div>
+          <span class="port-badge">CDP→SW-ACC-02</span>
+        </div>
+        <div class="port-row" data-port="Po1">
+          <span class="port-status up"></span>
+          <div><div class="port-name">Po1</div><div class="port-meta">vPC peer · Te1/1/3-4 members · 20G</div></div>
+          <span class="port-badge">LLDP→DIST-N2</span>
+        </div>
+        <div class="port-row" data-port="Gi1/0/1">
+          <span class="port-status down"></span>
+          <div><div class="port-name">Gi1/0/1</div><div class="port-meta">notconnect · no desc</div></div>
+          <span class="port-badge">—</span>
+        </div>
+      </div>
+      <div class="sync-bar">Selected: <strong>Gi1/0/48</strong> · 12 MACs learned · STP forwarding</div>
+    </div>
+
+    <div class="logical">
+      <div class="panel-head">Logical layer — adjacency from selected port</div>
+      <div class="graph-area">
+        <div class="graph-node center" style="left:50%;top:45%;transform:translate(-50%,-50%)">
+          <strong>DIST-N1</strong><br><span style="color:var(--muted)">Gi1/0/48</span>
+        </div>
+        <div class="graph-node neighbor" style="left:20%;top:30%">
+          <strong>CORE-01</strong><br><span style="color:var(--muted)">Te1/0/1</span>
+        </div>
+        <div class="graph-node neighbor" style="left:75%;top:55%">
+          <strong>SW-ACC-01</strong><br><span style="color:var(--muted)">Gi1/0/1</span>
+        </div>
+        <div class="graph-node neighbor" style="left:50%;top:75%">
+          <strong>DIST-N2</strong><br><span style="color:var(--muted)">Po1 peer</span>
+        </div>
+      </div>
+      <div class="detail-strip">
+        <div><span>Remote device</span>SW-ACC-01</div>
+        <div><span>Remote port</span>Gi1/0/1</div>
+        <div><span>Protocol</span>CDP · 120s hold</div>
+        <div><span>VLAN</span>110 (access)</div>
+        <div><span>Platform</span>C9200-24P</div>
+        <div><span>Endpoints</span>12 MAC · 3 IP (DHCP snoop)</div>
+      </div>
+      <div class="sync-bar">Twin sync: clicking any neighbor node jumps to that device’s physical panel with the matching port selected.</div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.port-row').forEach(row => {
+      row.addEventListener('click', () => {
+        document.querySelectorAll('.port-row').forEach(r => r.classList.remove('selected', 'highlight'));
+        row.classList.add('selected', 'highlight');
+      });
+    });
+  </script>
+</body>
+</html>

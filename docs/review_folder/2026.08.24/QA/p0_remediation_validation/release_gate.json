@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "register": "tests/qa/PHASE5_DISCOVERY_READINESS.json",
+  "enterprise_operational_ready": false,
+  "live_vendor_truncated_cdp_lldp_validated": false,
+  "verdict": "contract_proven_fixture_replay \u2014 not enterprise operational ready \u2014 not live vendor validated",
+  "operator_summary": "Phase 5 truncated discovery: incomplete-observation contract proven (fixture/replay). Enterprise operational ready: NO. Live truncated CDP/LLDP: NOT VALIDATED. Release gate: BLOCKED (HARD STOP \u2014 not advisory) until live_ssh evidence.",
+  "errors": [],
+  "result_authority": "phase5_discovery_readiness_register",
+  "honesty": "NOT enterprise operational ready \u2014 NOT live vendor validated",
+  "release_gate": "BLOCKED",
+  "release_gate_severity": "hard",
+  "release_gate_reason": "enterprise_operational_ready=false; live_vendor_truncated_cdp_lldp_validated=false \u2014 not a soft warning",
+  "hard_stop": true,
+  "ok_alone_insufficient_for_enterprise_claim": true,
+  "may_claim_enterprise_ready": false,
+  "may_claim_live_vendor_validated": false,
+  "consumer_rule": "Treat release_gate==PASS as the only clearance for enterprise/live claims. ok==true means register honesty only. release_gate==BLOCKED is a hard stop, never advisory."
+}

@@ -1,0 +1,42 @@
+{
+  "started_at": "2026-08-24T05:57:18.978443+00:00",
+  "suites": [
+    {
+      "spec": "cli_credential_id.spec.mjs",
+      "exit": 0,
+      "needs_server": true
+    },
+    {
+      "spec": "operator_program_status.spec.mjs",
+      "exit": 0,
+      "needs_server": true
+    },
+    {
+      "spec": "operator_swiss_tools_overlay.spec.mjs",
+      "exit": 0,
+      "needs_server": true
+    },
+    {
+      "spec": "operator_enterprise_shell.spec.mjs",
+      "exit": 0,
+      "needs_server": true
+    },
+    {
+      "spec": "generate_unified_e2e_demo.py",
+      "exit": 0
+    },
+    {
+      "spec": "offline_map_html.spec.mjs",
+      "exit": 0,
+      "needs_server": false
+    },
+    {
+      "spec": "ux_demo_09_8vendor.spec.mjs",
+      "exit": 0,
+      "needs_server": false
+    }
+  ],
+  "note": "CI-browser against source + fixture maps. Not live-vendor. Not Windows EXE E2E.",
+  "finished_at": "2026-08-24T05:57:29.517919+00:00",
+  "ok": true
+}

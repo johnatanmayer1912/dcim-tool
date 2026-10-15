@@ -1,0 +1,585 @@
+=== Mandatory QA ===
+[09:57:43] CLI 127.0.0.1: Remote host closed the terminal session
+============================================================
+PRE-BUILD VALIDATION
+============================================================
+
+[1] Syntax check...
+  OK  main.py
+  OK  vlan_checker_web.py
+  OK  modules/cli_manager.py
+  OK  modules/network_base.py
+  OK  modules/adapters.py
+  OK  modules/topology_mapper.py
+  OK  modules/description_search.py
+  OK  modules/plugin_registry.py
+  OK  modules/vlan_mgmt_production.py
+  OK  modules/network_audit.py
+  OK  modules/config_backup.py
+  OK  modules/save_config.py
+  OK  modules/vlan_compare.py
+  OK  modules/plugins/standards_validator.py
+  OK  utils/report_formatter.py
+  OK  utils/vpc_board_formatter.py
+  OK  utils/vpc_map_shell.py
+  OK  utils/discovery_map_formatter.py
+  OK  utils/discovery_map_shell.py
+  OK  utils/standard_map_shell.py
+  OK  utils/cisco_iface.py
+  OK  utils/utilization_overlay/__init__.py
+  OK  utils/utilization_overlay/model.py
+  OK  utils/utilization_overlay/join.py
+  OK  utils/utilization_overlay/paint.py
+  OK  utils/utilization_overlay/rates.py
+  OK  utils/utilization_overlay/cli_parse.py
+  OK  utils/utilization_overlay/ssh_collector.py
+  OK  utils/utilization_overlay/discovery_host.py
+  OK  utils/discovery_program_status.py
+  OK  utils/evidence_inspector.py
+  OK  utils/topo_map_shell.py
+  OK  utils/map_acceptance.py
+  OK  utils/discovery_acceptance.py
+  OK  utils/discovery_schema.py
+  OK  utils/lacp_oper.py
+  OK  modules/overlay_collector.py
+  OK  utils/cable_witness.py
+  OK  utils/optics_dom.py
+  OK  utils/link_issues.py
+  OK  utils/golden_config_gate.py
+  OK  modules/path_trace.py
+  OK  modules/inventory_store.py
+  OK  utils/discovery_profiles.py
+  OK  utils/output_chrome.py
+  OK  utils/discovery_graph.py
+  OK  utils/mac_trace_formatter.py
+  OK  utils/mac_utils.py
+  OK  utils/juniper_iface.py
+  OK  utils/output_paths.py
+  OK  utils/search_report_output.py
+  OK  modules/mac_trace.py
+  OK  utils/description_search_formatter.py
+  OK  utils/ping_scan_formatter.py
+  OK  utils/search_it_progress.py
+  OK  utils/task_control_plane.py
+  OK  utils/job_index.py
+  OK  utils/job_source.py
+  OK  utils/parallel_device_pool.py
+  OK  utils/vlan_validate.py
+  OK  utils/api_security.py
+  OK  utils/restore_guide.py
+  OK  utils/vlan_mgmt_formatter.py
+  OK  utils/missing_vlan_formatter.py
+  OK  utils/search_relevance.py
+  OK  utils/match_highlight.py
+  OK  utils/session_cred_cache.py
+  OK  utils/vault_credentials.py
+  OK  utils/task_credentials.py
+  OK  utils/interface_manager_formatter.py
+  OK  utils/stp_map_formatter.py
+  OK  modules/plugins/network_discovery.py
+  OK  modules/stp_swiss_runner.py
+  OK  utils/config_backup_system.py
+  OK  utils/structured_logger.py
+  OK  utils/app_logger.py
+  OK  utils/operator_console_logs.py
+
+[2] Plugin load test...
+[REGISTRY v6.0.10] Reloading plugins from: /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins
+[REGISTRY v6.0.10] Directory exists: True
+[REGISTRY v6.0.10] Files in plugins_dir: ['vlan_audit_plugin.py', 'critical_logs_plugin.py', 'standards_validator.py', 'network_discovery.py', 'device_time_plugin.py', 'stp_topology_visualizer.py', 'environment_status_plugin.py', 'vpc_domain_plugin.py', '__pycache__', 'interface_manager.py', 'interface_errors_plugin.py', 'base_template.py', 'unused_trunk_pruner.py', 'interface_vlan_reporter.py', 'config_templates.py', 'serial_number_plugin.py']
+[REGISTRY v6.0.10] Python files found: ['vlan_audit_plugin.py', 'critical_logs_plugin.py', 'standards_validator.py', 'network_discovery.py', 'device_time_plugin.py', 'stp_topology_visualizer.py', 'environment_status_plugin.py', 'vpc_domain_plugin.py', 'interface_manager.py', 'interface_errors_plugin.py', 'base_template.py', 'unused_trunk_pruner.py', 'interface_vlan_reporter.py', 'config_templates.py', 'serial_number_plugin.py']
+[REGISTRY v6.0.10] Loading plugin: base_template.py
+[REGISTRY v6.0.10] _load_plugin: Starting base_template.py
+[REGISTRY v6.0.10] _load_plugin: Read 17850 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=base_template
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=base_template
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading base_template
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/base_template.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_base_template
+[INFO] telnetlib compatibility shim installed (Python 3.13+ support)
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin base_template registered
+[REGISTRY v6.0.10] SUCCESS: Loaded base_template.py
+[REGISTRY v6.0.10] Loading plugin: config_templates.py
+[REGISTRY v6.0.10] _load_plugin: Starting config_templates.py
+[REGISTRY v6.0.10] _load_plugin: Read 18953 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=config_templates
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=config_templates
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading config_templates
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/config_templates.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_config_templates
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin config_templates registered
+[REGISTRY v6.0.10] SUCCESS: Loaded config_templates.py
+[REGISTRY v6.0.10] Loading plugin: critical_logs_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Starting critical_logs_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Read 9561 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=critical_logs
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=critical_logs
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading critical_logs
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/critical_logs_plugin.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_critical_logs
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin critical_logs registered
+[REGISTRY v6.0.10] SUCCESS: Loaded critical_logs_plugin.py
+[REGISTRY v6.0.10] Loading plugin: device_time_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Starting device_time_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Read 8448 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=device_time
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=device_time
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading device_time
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/device_time_plugin.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_device_time
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin device_time registered
+[REGISTRY v6.0.10] SUCCESS: Loaded device_time_plugin.py
+[REGISTRY v6.0.10] Loading plugin: environment_status_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Starting environment_status_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Read 12556 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=environment_status
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=environment_status
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading environment_status
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/environment_status_plugin.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_environment_status
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin environment_status registered
+[REGISTRY v6.0.10] SUCCESS: Loaded environment_status_plugin.py
+[REGISTRY v6.0.10] Loading plugin: interface_errors_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Starting interface_errors_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Read 12341 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=interface_errors
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=interface_errors
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading interface_errors
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/interface_errors_plugin.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_interface_errors
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin interface_errors registered
+[REGISTRY v6.0.10] SUCCESS: Loaded interface_errors_plugin.py
+[REGISTRY v6.0.10] Loading plugin: interface_manager.py
+[REGISTRY v6.0.10] _load_plugin: Starting interface_manager.py
+[REGISTRY v6.0.10] _load_plugin: Read 111949 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=interface_manager
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=interface_manager
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading interface_manager
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/interface_manager.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_interface_manager
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin interface_manager registered
+[REGISTRY v6.0.10] SUCCESS: Loaded interface_manager.py
+[REGISTRY v6.0.10] Loading plugin: interface_vlan_reporter.py
+[REGISTRY v6.0.10] _load_plugin: Starting interface_vlan_reporter.py
+[REGISTRY v6.0.10] _load_plugin: Read 56296 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=interface_vlan_reporter
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=interface_vlan_reporter
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading interface_vlan_reporter
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/interface_vlan_reporter.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_interface_vlan_reporter
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin interface_vlan_reporter registered
+[REGISTRY v6.0.10] SUCCESS: Loaded interface_vlan_reporter.py
+[REGISTRY v6.0.10] Loading plugin: network_discovery.py
+[REGISTRY v6.0.10] _load_plugin: Starting network_discovery.py
+[REGISTRY v6.0.10] _load_plugin: Read 93809 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=network_discovery
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=network_discovery
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading network_discovery
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/network_discovery.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_network_discovery
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin network_discovery registered
+[REGISTRY v6.0.10] SUCCESS: Loaded network_discovery.py
+[REGISTRY v6.0.10] Loading plugin: serial_number_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Starting serial_number_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Read 10821 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=serial_number
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=serial_number
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading serial_number
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/serial_number_plugin.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_serial_number
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin serial_number registered
+[REGISTRY v6.0.10] SUCCESS: Loaded serial_number_plugin.py
+[REGISTRY v6.0.10] Loading plugin: standards_validator.py
+[REGISTRY v6.0.10] _load_plugin: Starting standards_validator.py
+[REGISTRY v6.0.10] _load_plugin: Read 55592 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=standards_validator
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=standards_validator
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading standards_validator
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/standards_validator.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_standards_validator
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin standards_validator registered
+[REGISTRY v6.0.10] SUCCESS: Loaded standards_validator.py
+[REGISTRY v6.0.10] Loading plugin: stp_topology_visualizer.py
+[REGISTRY v6.0.10] _load_plugin: Starting stp_topology_visualizer.py
+[REGISTRY v6.0.10] _load_plugin: Read 8149 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=stp_topology_visualizer
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=stp_topology_visualizer
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading stp_topology_visualizer
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/stp_topology_visualizer.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_stp_topology_visualizer
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin stp_topology_visualizer registered
+[REGISTRY v6.0.10] SUCCESS: Loaded stp_topology_visualizer.py
+[REGISTRY v6.0.10] Loading plugin: unused_trunk_pruner.py
+[REGISTRY v6.0.10] _load_plugin: Starting unused_trunk_pruner.py
+[REGISTRY v6.0.10] _load_plugin: Read 9872 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=unused_trunk_pruner
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=unused_trunk_pruner
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading unused_trunk_pruner
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/unused_trunk_pruner.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_unused_trunk_pruner
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin unused_trunk_pruner registered
+[REGISTRY v6.0.10] SUCCESS: Loaded unused_trunk_pruner.py
+[REGISTRY v6.0.10] Loading plugin: vlan_audit_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Starting vlan_audit_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Read 5564 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=vlan_audit
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=vlan_audit
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading vlan_audit
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/vlan_audit_plugin.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_vlan_audit
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin vlan_audit registered
+[REGISTRY v6.0.10] SUCCESS: Loaded vlan_audit_plugin.py
+[REGISTRY v6.0.10] Loading plugin: vpc_domain_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Starting vpc_domain_plugin.py
+[REGISTRY v6.0.10] _load_plugin: Read 51725 bytes
+[REGISTRY v6.0.10] _load_plugin: Parsed AST successfully
+[REGISTRY v6.0.10] _load_plugin: Found metadata for plugin_id=vpc_domain
+[REGISTRY v6.0.10] _load_plugin: Validated metadata, plugin_id=vpc_domain
+[REGISTRY v6.0.10] _load_plugin: Loading module...
+[REGISTRY v6.0.10] _load_module_safely: Loading vpc_domain
+[REGISTRY v6.0.10] _load_module_safely: file_path = /Users/a.m./Desktop/net-mng-tool/net-mng-tool/modules/plugins/vpc_domain_plugin.py
+[REGISTRY v6.0.10] Registered in sys.modules: plugin_vpc_domain
+[REGISTRY v6.0.10] Module executed successfully
+[REGISTRY v6.0.10] _load_plugin: Module loaded successfully with 'run' function
+[REGISTRY v6.0.10] _load_plugin: Plugin vpc_domain registered
+[REGISTRY v6.0.10] SUCCESS: Loaded vpc_domain_plugin.py
+[REGISTRY v6.0.10] Reload complete: 15 plugins, 0 errors
+  OK  15 plugins loaded, 0 errors
+
+[3] CLI smoke test (MANDATORY — proves CLI terminal works)...
+
+============================================================
+CLI SMOKE TEST
+============================================================
+  [PASS] paramiko import — v5.0.0
+  [PASS] cli_manager import
+  [PASS] mock SSH server start — Listening on 127.0.0.1:2299
+  [PASS] TCP probe to mock server
+  [PASS] CLIConnection.connect() — connected=True, hostname=MOCK-SWITCH-01, error=none
+  [PASS] log_callback received progress messages — 11 messages
+  [PASS] data_callback received device prompt — received 15 chars: 'MOCK-SWITCH-01#'
+  [PASS] ShellReader thread running
+  [PASS] write() sends keystrokes, echo received — data grew from 15 to 28 chars
+  [PASS] disconnect() cleans up — connected=False, chan=None, client=None
+  [PASS] cli_status 'connected' would be emitted to browser — hostname='MOCK-SWITCH-01'
+
+============================================================
+Results: 11 passed, 0 failed
+RESULT: PASS — CLI terminal will work in the browser
+============================================================
+  OK  CLI smoke test: 11/11 steps passed
+
+[4] VERSION check...
+  OK  VERSION: 7.2.3
+
+[5] Safety checks...
+  OK  utils/config_backup_system.py
+  OK  modules/vlan_mgmt_production.py
+  OK  vlan_checker_web.py
+
+[6] Discovery v6.9.28 contract...
+  OK  NX-OS hostname parse from show version fixture
+  OK  discovery Command Center HTML contract
+
+[6b] Discovery v7.0.1 trust contract...
+  OK  tests/test_discovery_platform_classifier.py
+  OK  tests/test_discovery_graph_dedup.py
+  OK  tests/test_lab_smoke_offline.py
+  OK  tests/test_topology_parallel_edges.py
+  OK  tests/test_standard_map_v7049.py
+  OK  tests/test_topology_trust.py
+  OK  tests/test_nxos_vpc_parse.py
+  OK  BUG-0007 Nexus platform is NX-OS not JunOS
+
+[6c] Health check runner v7.0.2...
+  OK  tests/test_health_check_runner.py
+  OK  quick health returns 3 checks
+
+[6d] Frozen plugin bootstrap (NEW-C1)...
+  OK  scripts/audit_frozen_plugin_sim.py
+
+[6e] VPC map HTML contract + output chrome...
+  OK  tests/test_vpc_map_html_contract.py
+  OK  tests/test_output_chrome.py
+  OK  tests/test_description_search_progress.py
+  OK  tests/test_session_cred_cache.py
+  OK  tests/test_match_highlight.py
+  OK  tests/test_mac_trace_formatter.py
+
+[6f] vpc_map_shell module...
+  OK  utils.vpc_map_shell
+
+[6g] Discovery Command Center contract...
+  OK  tests/test_discovery_map_html_contract.py
+
+[6h] VPC fixed positions contract...
+  OK  _ensure_vpc_nodes_positioned assigns x,y
+
+[7] policies/ directory check...
+  OK  policies/standards.yaml exists
+
+[8] mandatory QA manifest...
+  OK  tests/qa/MANDATORY_MANIFEST.yaml
+
+============================================================
+RESULT: ALL CHECKS PASSED — READY TO BUILD
+============================================================
+OK: mandatory QA manifest valid (43 suites, version 3)
+Mandatory QA manifest v3 — phase=every_code_change
+
+============================================================
+mandatory:syntax_and_prebuild
+============================================================
+PASS: mandatory:syntax_and_prebuild
+
+============================================================
+mandatory:manifest_integrity
+============================================================
+PASS: mandatory:manifest_integrity
+
+============================================================
+MANDATORY RELEASE QA: PASS
+=== Playwright E2E ===
+=== NST unified Playwright E2E (CI-browser, not EXE) ===
++ node cli_credential_id.spec.mjs
+PASS  page loads /cli_terminal
+PASS  no severe console errors on load
+PASS  credential selector visible
+PASS  username/password secret fields absent
+PASS  connUsername is not password type
+PASS  no plaintext compatibility warning/control
+PASS  selector uses metadata (netops option present)
+PASS  credentials list has no password fields
+PASS  missing credential_id shows understandable error
+PASS  error message has no secret
+PASS  invalid credential fails safely
+PASS  invalid-cred error has no secret
+PASS  Socket.IO connect payload has credential_id
+PASS  connect payload has no username/password secret fields
+PASS  connect payload does not contain vault secret
+PASS  UI shows connection/loading/result state
+PASS  UI reaches connected (mocked SSH)
+PASS  after connect: no secret in HTML
+PASS  after connect: no secret in URL
+PASS  after connect: no secret in browser storage
+PASS  after connect: no secret in DOM attributes
+PASS  after refresh: no secret in HTML
+PASS  after refresh: no secret in URL
+PASS  after refresh: no secret in browser storage
+PASS  after refresh: no secret in DOM attributes
+PASS  refresh HTML has no password inputs
+PASS  reconnect emit uses explicit credential_id only
+PASS  reconnect emit has no password
+PASS  after disconnect, connect without credential_id does not inherit prior auth
+PASS  keyboard can focus credential selector
+PASS  Connect control has accessible name
+PASS  credential selector has accessible name
+PASS  primary Connect has visible focus state
+PASS  console output has no vault secret
+
+All browser credential_id scenarios passed.
++ node operator_program_status.spec.mjs
+PASS  operator index loads
+PASS  brand link present
+PASS  main workspace region present
+PASS  no severe console errors on first paint
+PASS  first paint HTML has no vault secret
+PASS  program-status API returns 200
+PASS  program-status release_gate BLOCKED
+PASS  program-status hard_stop true
+PASS  may_claim_enterprise_ready false
+PASS  program-status JSON has no password field values
+PASS  Discovery tab shows HARD STOP gate
+PASS  Discovery gate denies enterprise ready
+PASS  Discovery related-surface jump buttons present
+PASS  Swiss Tools overview shows blocked gate
+PASS  Swiss Tools overview mentions three surfaces
+PASS  jump to Discovery tab works
+PASS  Evidence overview shows blocked gate
+PASS  Evidence job table present
+PASS  visible copy does not claim enterprise operational ready
+PASS  visible copy does not claim live vendor validated
+PASS  hash nst-about opens About workspace
+PASS  hash nst-discovery returns to Discovery
+PASS  jobs API returns 200
+PASS  jobs API has no vault secret
+PASS  version API returns 200
+PASS  version API has version string
+PASS  missing discovery report is 4xx
+PASS  reload still reports BLOCKED gate
+PASS  reload still hard_stop
+
+All operator Program Status browser scenarios passed.
++ node operator_swiss_tools_overlay.spec.mjs
+PASS  Maps workspace lede: replay is not a live poll
+PASS  Maps workspace lede: Live SSH is not SNMP
+PASS  Maps lede: overlay does not certify topology
+PASS  Live SSH utilization control exists in DOM
+PASS  Live SSH control is visible before a map run
+PASS  Live SSH control is disabled until Standard L2 completes
+PASS  live start without Standard L2 map fails closed
+PASS  live start without map did not POST utilization_live
+PASS  live start without credential_id fails closed with honesty copy
+PASS  live start without credential did not POST utilization_live
+PASS  utilization status API 200
+PASS  utilization status idle or non-running
+PASS  utilization status note: Not SNMP
+PASS  utilization status does not clear release_gate in copy
+PASS  utilization status JSON has no vault secret
+PASS  overlay status poll does not clear release_gate
+PASS  overlay status poll leaves hard_stop true
+
+All Swiss Tools overlay honesty browser scenarios passed.
++ node operator_enterprise_shell.spec.mjs
+[INFO] telnetlib compatibility shim installed (Python 3.13+ support)
+{
+  "standard_l2": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.24/QA/p0_remediation_validation/generated_outputs/maps/standard_l2_overlay_replay.html",
+  "discovery": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.24/QA/p0_remediation_validation/generated_outputs/maps/discovery_command_center.html",
+  "overlay": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.24/QA/p0_remediation_validation/generated_outputs/overlays/utilization_overlay_replay.json",
+  "bound_ok": true,
+  "disc_ok": true,
+  "actual": {
+    "device_count": 8,
+    "l2_edge_count": 7,
+    "non_cable_count": 2,
+    "standard_l2_vis_edges": 7,
+    "discovery_vis_edges": 9,
+    "paint_eligible_mixed": 7,
+    "overlay_ok": true,
+    "overlay_painted": 1,
+    "overlay_bindings": [
+      "e0"
+    ],
+    "discovery_host": true,
+    "discovery_bindings": [
+      "e0"
+    ],
+    "discovery_evpn_unpainted": true,
+    "fingerprint_unchanged": true,
+    "trust_tiers": [
+      "high",
+      "high",
+      "high",
+      "high",
+      "medium",
+      "high",
+      "high"
+    ],
+    "link_issue_count": 1,
+    "honesty": "Offline fixture lab. Not live vendor evidence. Not a certified cable plant."
+  }
+}
+PASS  brand present
+PASS  chrome meta present
+PASS  vault pill id preserved
+PASS  inventory workspace active
+PASS  inventory editor in workspace
+PASS  parsed hosts table present
+PASS  task log starts collapsed
+PASS  no Made by AI IDE
+PASS  maps lede: replay honesty
+PASS  maps lede: live ssh not snmp
+PASS  swiss tools shortcuts demoted to btn-mac
+PASS  goToSearchTab still callable
+PASS  goToToolsTab still callable
+operator_enterprise_shell: ALL PASS
++ node offline_map_html.spec.mjs
+PASS  Standard L2 HTML has no vault secret field
+PASS  overlay checkbox present
+PASS  replay overlay available on Standard L2
+PASS  overlay checkbox enabled when document present
+PASS  overlay on: banner visible
+PASS  overlay on: replay not a live poll
+PASS  overlay on: not topology claim
+PASS  gray dashed copy present
+PASS  file:// Live SSH button stays disabled
+PASS  file:// Live SSH title mentions file:// or operator console
+PASS  file:// Live SSH title says not SNMP
+PASS  unmapped table lists leftover interfaces, not new cables
+PASS  Discovery overlay host is discovery
+PASS  Discovery does not offer Live SSH start (no button or disabled viewer)
+PASS  Discovery omits Live SSH button (viewer host)
+PASS  Discovery map has EVPN/non-cable vis edges
+PASS  Discovery overlay-on does not gray EVPN as unsampled cable
+PASS  Discovery overlay-on does not gray STP-blocked as unsampled cable
+
+All offline map HTML overlay scenarios passed.
++ node ux_demo_09_8vendor.spec.mjs
+PASS  8 vendor devices named
+PASS  honesty: replay is not a live poll
+PASS  honesty: Live SSH is not SNMP
+PASS  no password field
+PASS  replay paints core L2 hot
+PASS  replay does not gray EVPN as unsampled cable
+PASS  replay does not gray STP-blocked as unsampled cable
+PASS  EVPN color unchanged by overlay
+PASS  inspector shows core L2 identity
+PASS  Discovery disables Live SSH
+PASS  Standard L2 enables Live SSH button
+PASS  live without credential does not claim live poll
+PASS  live with credential is labeled simulation / not SNMP
+PASS  live simulation still leaves EVPN purple
+PASS  overlay off restores core L2 (not hot red)
+
+All UX demo 09 8-vendor lab scenarios passed.
+PASS: unified Playwright E2E (CI-browser, offline/operator scope)
+=== Release gate ===
+============================================================
+RESULT: ALL CHECKS PASSED — READY TO BUILD
+============================================================

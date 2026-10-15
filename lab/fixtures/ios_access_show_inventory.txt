@@ -1,0 +1,8 @@
+NAME: "c93xx Stack", DESCR: "c93xx Stack"
+PID: C9300-24P         , VID: V02  , SN: FCW2123L0AB
+
+NAME: "Switch 1", DESCR: "C9300-24P"
+PID: C9300-24P         , VID: V02  , SN: FCW2123L0AB
+
+NAME: "Switch 1 - Power Supply A", DESCR: "Switch 1 - Power Supply A"
+PID: PWR-C1-715WAC-P   , VID: V01  , SN: LIT21234567

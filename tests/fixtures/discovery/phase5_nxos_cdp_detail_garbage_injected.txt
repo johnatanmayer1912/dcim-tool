@@ -1,0 +1,11 @@
+GARBAGE @@@ not cdp
+-------------------------
+Device ID: SPINE-NXOS-05
+Entry address(es):
+  IP address: 10.1.1.5
+Platform: N9K-C93180YC-EX,  Capabilities: Router Switch IGMP
+Interface: Ethernet1/2,  Port ID (outgoing port): Ethernet1/1
+Holdtime : 150 sec
+
+Version :
+Cisco Nexus Operating System (NX-OS) Software

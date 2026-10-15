@@ -1,0 +1,99 @@
+{
+  "nodes": [
+    {
+      "id": "CORE-NXOS-01",
+      "label": "CORE-NXOS-01",
+      "ip": "10.0.0.1",
+      "platform": "N9K-C93180YC",
+      "device_type": "cisco_nxos",
+      "depth": 0,
+      "is_scanned": true,
+      "serial": "DEMO-NX001",
+      "discovered_via": "Seed",
+      "scan_state": "seed"
+    },
+    {
+      "id": "DIST-IOS-02",
+      "label": "DIST-IOS-02",
+      "ip": "10.0.0.2",
+      "platform": "C9300-48P",
+      "device_type": "cisco_ios",
+      "depth": 1,
+      "is_scanned": true,
+      "serial": "DEMO-IOS002",
+      "discovered_via": "CDP",
+      "scan_state": "scanned"
+    },
+    {
+      "id": "ACCESS-IOS-03",
+      "label": "ACCESS-IOS-03",
+      "ip": "10.0.0.3",
+      "platform": "C2960X",
+      "device_type": "cisco_ios",
+      "depth": 2,
+      "is_scanned": true,
+      "serial": "DEMO-IOS003",
+      "discovered_via": "CDP",
+      "scan_state": "scanned"
+    },
+    {
+      "id": "EDGE-JUNOS-04",
+      "label": "EDGE-JUNOS-04",
+      "ip": "10.0.0.4",
+      "platform": "EX4300-48T",
+      "device_type": "juniper_junos",
+      "depth": 1,
+      "is_scanned": true,
+      "serial": "DEMO-JN004",
+      "discovered_via": "LLDP",
+      "scan_state": "scanned"
+    },
+    {
+      "id": "SPINE-NXOS-05",
+      "label": "SPINE-NXOS-05",
+      "ip": "10.0.0.5",
+      "platform": "Nexus7000",
+      "device_type": "cisco_nxos",
+      "depth": 1,
+      "is_scanned": false,
+      "serial": "DEMO-NX005",
+      "discovered_via": "LLDP",
+      "scan_state": "neighbor_only"
+    }
+  ],
+  "edges": [
+    {
+      "from": "CORE-NXOS-01",
+      "to": "DIST-IOS-02",
+      "f_port": "Eth1/1",
+      "t_port": "Gi1/0/1",
+      "protocol": "CDP",
+      "label": "CDP"
+    },
+    {
+      "from": "CORE-NXOS-01",
+      "to": "EDGE-JUNOS-04",
+      "f_port": "Eth1/2",
+      "t_port": "ge-0/0/0",
+      "protocol": "LLDP",
+      "label": "LLDP"
+    },
+    {
+      "from": "DIST-IOS-02",
+      "to": "ACCESS-IOS-03",
+      "f_port": "Gi1/0/48",
+      "t_port": "Gi0/1",
+      "protocol": "CDP",
+      "label": "CDP"
+    },
+    {
+      "from": "CORE-NXOS-01",
+      "to": "SPINE-NXOS-05",
+      "f_port": "Eth1/3",
+      "t_port": "Eth2/1",
+      "protocol": "LLDP",
+      "label": "LLDP"
+    }
+  ],
+  "demo": true
+}

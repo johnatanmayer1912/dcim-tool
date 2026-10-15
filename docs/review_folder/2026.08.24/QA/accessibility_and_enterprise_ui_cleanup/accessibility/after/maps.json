@@ -1,0 +1,34 @@
+{
+  "url": "http://127.0.0.1:5051/",
+  "violationCount": 1,
+  "incompleteCount": 2,
+  "violations": [
+    {
+      "id": "heading-order",
+      "impact": "moderate",
+      "description": "Ensure the order of headings is semantically correct",
+      "help": "Heading levels should only increase by one",
+      "nodes": 1,
+      "targets": [
+        [
+          "div:nth-child(10) > h6"
+        ]
+      ]
+    }
+  ],
+  "incomplete": [
+    {
+      "id": "aria-prohibited-attr",
+      "impact": "serious",
+      "description": "Ensure ARIA attributes are not prohibited for an element's role",
+      "nodes": 1
+    },
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "nodes": 8
+    }
+  ],
+  "label": "maps"
+}

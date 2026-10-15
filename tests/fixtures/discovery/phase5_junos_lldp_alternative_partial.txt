@@ -1,0 +1,7 @@
+ge-0/0/9
+  Management address: 10.9.9.9
+  Port ID: ge-0/0/10
+ge-0/0/10
+  System Name: ALT-PEER-01
+  Management address: 10.9.9.10
+  Port ID: ge-0/0/11

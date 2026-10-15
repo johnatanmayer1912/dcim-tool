@@ -1,0 +1,44 @@
+Physical interface: ge-0/0/0, Enabled, Physical link is Up
+  Interface index: 128, SNMP ifIndex: 507
+  Description: to-core
+  Link-level type: Ethernet, MTU: 1514, Speed: 1000mbps, Duplex: Full-Duplex
+  Device flags   : Present Running
+  Interface flags: SNMP-Traps Internal: 0x0
+  Link flags     : None
+  CoS queues     : 8 supported, 8 maximum usable queues
+  Current address: 00:11:22:33:44:55, Hardware address: 00:11:22:33:44:55
+  Last flapped   : 2026-01-01 00:00:00 UTC (1d 00:00 ago)
+  Input rate     : 8000 bps (10 pps)
+  Output rate    : 16000 bps (12 pps)
+  Traffic statistics:
+   Input  bytes  :              3000000
+   Output bytes  :              4000000
+   Input  packets:                 3000
+   Output packets:                 4000
+  IPv6 transit statistics:
+   Input  bytes  :                   0
+   Output bytes  :                   0
+Logical interface ge-0/0/0.0 (Index 70) (SNMP ifIndex 508)
+  Flags: SNMP-Traps 0x0 Encapsulation: ENET2
+  Traffic statistics:
+   Input  bytes  :              3000000
+   Output bytes  :              4000000
+
+Physical interface: ge-0/0/1, Enabled, Physical link is Up
+  Interface index: 129, SNMP ifIndex: 509
+  Speed: 10gbps
+  Traffic statistics:
+   Input  bytes  :             90000000
+   Output bytes  :             80000000
+
+Physical interface: irb.100, Enabled, Physical link is Up
+  Speed: 1000mbps
+  Traffic statistics:
+   Input  bytes  :                 100
+   Output bytes  :                 100
+
+Physical interface: ae0, Enabled, Physical link is Up
+  Speed: 20gbps
+  Traffic statistics:
+   Input  bytes  :            11111111
+   Output bytes  :            22222222

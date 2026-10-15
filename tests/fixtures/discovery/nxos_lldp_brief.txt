@@ -1,0 +1,3 @@
+Local Intf          Neighbor Device ID      Neighbor Port ID     TTL
+Eth1/1              SPINE-NXOS-01           Eth1/2               120
+Eth1/3              DIST-IOS-02             Gi1/0/1              120

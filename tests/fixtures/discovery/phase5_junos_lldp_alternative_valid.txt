@@ -1,0 +1,6 @@
+ge-0/0/1
+  System Name: ALT-PEER-OK
+  Management address: 10.2.2.2
+  Port ID: ge-0/0/2
+@@@ garbage line not a block
+# comment noise

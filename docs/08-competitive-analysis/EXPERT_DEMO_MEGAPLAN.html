@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Swiss Tool Pro - Expert Demo: Comprehensive Network Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: #c4b5fd;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .scenario-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .scenario-switcher button {
+            padding: 12px 24px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            color: #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .scenario-switcher button:hover {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        .scenario-switcher button.active {
+            background: #4f46e5;
+            border-color: #6366f1;
+            color: #fff;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .toolbar button {
+            padding: 8px 16px;
+            background: #334155;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .toolbar button:hover {
+            background: #475569;
+        }
+
+        .toolbar button.active {
+            background: #10b981;
+            border-color: #34d399;
+            color: #fff;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-bar input {
+            padding: 8px 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+            width: 250px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #818cf8;
+        }
+
+        .network-canvas {
+            background: #0a0f1a;
+            border-radius: 12px;
+            padding: 30px;
+            min-height: 700px;
+            position: relative;
+            border: 1px solid #1e293b;
+            overflow: hidden;
+        }
+
+        .scenario-container {
+            display: none;
+        }
+
+        .scenario-container.active {
+            display: block;
+        }
+
+        /* Network Nodes */
+        .network-node {
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .network-node:hover {
+            transform: scale(1.15);
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .network-node.spine {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            border: 3px solid #f87171;
+        }
+
+        .network-node.leaf {
+            background: linear-gradient(135deg, #00bceb 0%, #0085a3 100%);
+            border: 3px solid #33d6ff;
+        }
+
+        .network-node.core {
+            background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+            border: 3px solid #fbbf24;
+        }
+
+        .network-node.dist {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            border: 3px solid #a78bfa;
+        }
+
+        .network-node.acc {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: 3px solid #34d399;
+        }
+
+        .network-node.server {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border: 3px solid #818cf8;
+            width: 60px;
+            height: 60px;
+        }
+
+        .network-node.subnet {
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            border: 3px solid #f472b6;
+            width: 90px;
+            height: 50px;
+            border-radius: 8px;
+        }
+
+        .network-node .status-dot {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2px solid #059669;
+        }
+
+        .network-node .status-dot.warning {
+            background: #f59e0b;
+            border-color: #b45309;
+        }
+
+        .network-node .status-dot.error {
+            background: #ef4444;
+            border-color: #b91c1c;
+        }
+
+        .network-node .label {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: #94a3b8;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        /* Network Edges */
+        .network-edge {
+            position: absolute;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            transform-origin: left center;
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .network-edge.port-channel {
+            height: 5px;
+            background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%);
+            box-shadow: 0 0 8px rgba(79, 70, 229, 0.4);
+        }
+
+        .network-edge.vpc {
+            height: 4px;
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .network-edge-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: #64748b;
+            background: #0a0f1a;
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            border: 1px solid #1e293b;
+        }
+
+        .network-edge-label.port-channel {
+            color: #a78bfa;
+            font-weight: 700;
+        }
+
+        /* Flow Animation */
+        .flow-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: flowMove 2s linear infinite;
+        }
+
+        @keyframes flowMove {
+            0% { left: 0; opacity: 1; }
+            100% { left: calc(100% - 8px); opacity: 0.5; }
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .legend-item .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .legend-item .dot.spine { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
+        .legend-item .dot.leaf { background: linear-gradient(135deg, #00bceb 0%, #0085a3 100%); }
+        .legend-item .dot.core { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
+        .legend-item .dot.dist { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
+        .legend-item .dot.acc { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .legend-item .dot.server { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+        .legend-item .dot.subnet { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .stat-item {
+            background: #0f172a;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-item .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .stat-item .label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 0;
+            max-width: 950px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #312e81 0%, #4338ca 100%);
+            border-bottom: 1px solid #4f46e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: #fff;
+            font-size: 1.4rem;
+            margin: 0;
+        }
+
+        .modal-header .device-type {
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(85vh - 80px);
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: #0f172a;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tab-button:hover {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+        .tab-button.active {
+            background: #4f46e5;
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .info-item {
+            background: #0f172a;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+
+        .info-item.full-width {
+            grid-column: span 2;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .info-value.status-online { color: #10b981; }
+        .info-value.status-warning { color: #f59e0b; }
+        .info-value.status-error { color: #ef4444; }
+
+        .metric-bar {
+            height: 6px;
+            background: #1e293b;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .metric-bar-fill.warning {
+            background: linear-gradient(90deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .metric-bar-fill.error {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .interface-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .interface-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .interface-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        .interface-table tr:hover {
+            background: #0f172a;
+        }
+
+        .interface-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .interface-status.up { background: #10b981; }
+        .interface-status.down { background: #ef4444; }
+        .interface-status.admin-down { background: #64748b; }
+
+        .port-channel-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #4f46e5;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .routing-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .routing-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            font-weight: 600;
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .routing-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        .routing-table tr:hover {
+            background: #0f172a;
+        }
+
+        .protocol-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .protocol-ospf { background: #3b82f6; color: #bfdbfe; }
+        .protocol-bgp { background: #ef4444; color: #fecaca; }
+        .protocol-static { background: #f59e0b; color: #fde68a; }
+        .protocol-connected { background: #10b981; color: #bbf7d0; }
+
+        .vrf-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #8b5cf6;
+            color: #ddd6fe;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 6px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            padding: 12px;
+            background: #0f172a;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .alert-item.critical { border-left-color: #ef4444; }
+        .alert-item.info { border-left-color: #3b82f6; }
+
+        .alert-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .alert-icon.warning { background: #f59e0b; color: #fff; }
+        .alert-icon.critical { background: #ef4444; color: #fff; }
+        .alert-icon.info { background: #3b82f6; color: #fff; }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 2px;
+        }
+
+        .alert-time {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .neighbor-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: #0f172a;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+
+        .neighbor-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00bceb 0%, #0085a3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .neighbor-info {
+            flex: 1;
+        }
+
+        .neighbor-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .neighbor-detail {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* Help Overlay */
+        .help-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+
+        .help-overlay.active {
+            display: flex;
+        }
+
+        .help-content {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .help-content h2 {
+            color: #c4b5fd;
+            margin-bottom: 20px;
+        }
+
+        .help-content .shortcut {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .help-content .shortcut:last-child {
+            border-bottom: none;
+        }
+
+        .help-content .key {
+            background: #334155;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #e2e8f0;
+        }
+
+        .help-content .description {
+            color: #94a3b8;
+        }
+
+        .close-help {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #4f46e5;
+            border: none;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Zoom Controls */
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .zoom-controls button {
+            width: 40px;
+            height: 40px;
+            background: #334155;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-controls button:hover {
+            background: #475569;
+        }
+
+        /* C4 Zoom Level Indicator */
+        .zoom-level-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+
+        .zoom-level-indicator strong {
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Network Swiss Tool Pro</h1>
+            <p>Expert Demo: Comprehensive Network Visualization - Exceeding Competitor Capabilities</p>
+        </header>
+
+        <div class="scenario-switcher">
+            <button class="active" onclick="switchScenario('network-flows')">Network Flows</button>
+            <button onclick="switchScenario('l2-map')">L2 Physical Map</button>
+            <button onclick="switchScenario('l3-map')">L3 Logical Map</button>
+            <button onclick="switchScenario('combined-view')">Combined L2/L3</button>
+        </div>
+
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search devices, IPs, subnets... (Press /)">
+                    <button>Search</button>
+                </div>
+                <button onclick="toggleLiveMode()" id="liveModeBtn">Live Mode: OFF</button>
+            </div>
+            <div class="toolbar-right">
+                <button onclick="showHelp()">Help (?)</button>
+                <button onclick="fitView()">Fit View (F)</button>
+                <button onclick="toggleHeatMap()">Heat Map (H)</button>
+                <button onclick="exportView()">Export</button>
+            </div>
+        </div>
+
+        <div class="network-canvas">
+            <!-- Network Flows Scenario -->
+            <div id="network-flows" class="scenario-container active">
+                <div class="zoom-level-indicator">Zoom Level: <strong>Context</strong></div>
+                <!-- Nodes and edges will be positioned by JavaScript -->
+            </div>
+
+            <!-- L2 Physical Map Scenario -->
+            <div id="l2-map" class="scenario-container">
+                <div class="zoom-level-indicator">Zoom Level: <strong>Container</strong></div>
+            </div>
+
+            <!-- L3 Logical Map Scenario -->
+            <div id="l3-map" class="scenario-container">
+                <div class="zoom-level-indicator">Zoom Level: <strong>Component</strong></div>
+            </div>
+
+            <!-- Combined L2/L3 Scenario -->
+            <div id="combined-view" class="scenario-container">
+                <div class="zoom-level-indicator">Zoom Level: <strong>Code</strong></div>
+            </div>
+
+            <div class="zoom-controls">
+                <button onclick="zoomIn()">+</button>
+                <button onclick="zoomOut()">−</button>
+                <button onclick="resetZoom()">⟲</button>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="value" id="deviceCount">0</div>
+                <div class="label">Devices</div>
+            </div>
+            <div class="stat-item">
+                <div class="value" id="linkCount">0</div>
+                <div class="label">Links</div>
+            </div>
+            <div class="stat-item">
+                <div class="value" id="alertCount">0</div>
+                <div class="label">Alerts</div>
+            </div>
+            <div class="stat-item">
+                <div class="value" id="bandwidthTotal">0</div>
+                <div class="label">Gbps Total</div>
+            </div>
+        </div>
+
+        <div class="legend" id="legend">
+            <!-- Legend items populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Device Detail Modal -->
+    <div class="modal-overlay" id="deviceModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalDeviceName">Device Name</h2>
+                <span class="device-type" id="modalDeviceType">DEVICE TYPE</span>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-container">
+                    <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+                    <button class="tab-button" onclick="switchTab('interfaces')">Interfaces</button>
+                    <button class="tab-button" onclick="switchTab('routing')">Routing</button>
+                    <button class="tab-button" onclick="switchTab('alerts')">Alerts</button>
+                    <button class="tab-button" onclick="switchTab('neighbors')">Neighbors</button>
+                </div>
+
+                <div id="tab-overview" class="tab-content active">
+                    <!-- Content populated by JavaScript -->
+                </div>
+
+                <div id="tab-interfaces" class="tab-content">
+                    <!-- Content populated by JavaScript -->
+                </div>
+
+                <div id="tab-routing" class="tab-content">
+                    <!-- Content populated by JavaScript -->
+                </div>
+
+                <div id="tab-alerts" class="tab-content">
+                    <!-- Content populated by JavaScript -->
+                </div>
+
+                <div id="tab-neighbors" class="tab-content">
+                    <!-- Content populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Overlay -->
+    <div class="help-overlay" id="helpOverlay">
+        <div class="help-content">
+            <h2>Keyboard Shortcuts</h2>
+            <div class="shortcut">
+                <span class="key">?</span>
+                <span class="description">Show this help overlay</span>
+            </div>
+            <div class="shortcut">
+                <span class="key">/</span>
+                <span class="description">Focus search bar</span>
+            </div>
+            <div class="shortcut">
+                <span class="key">F</span>
+                <span class="description">Fit view to viewport</span>
+            </div>
+            <div class="shortcut">
+                <span class="key">H</span>
+                <span class="description">Toggle heat map</span>
+            </div>
+            <div class="shortcut">
+                <span class="key">L</span>
+                <span class="description">Toggle live mode</span>
+            </div>
+            <div class="shortcut">
+                <span class="key">Esc</span>
+                <span class="description">Close modal / overlay</span>
+            </div>
+            <div class="shortcut">
+                <span class="key">+</span>
+                <span class="description">Zoom in</span>
+            </div>
+            <div class="shortcut">
+                <span class="key">-</span>
+                <span class="description">Zoom out</span>
+            </div>
+            <button class="close-help" onclick="closeHelp()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Device data for all scenarios
+        const networkFlowsDevices = [
+            { id: 'spine1', type: 'spine', name: 'Spine1', x: 300, y: 100, status: 'online' },
+            { id: 'spine2', type: 'spine', name: 'Spine2', x: 600, y: 100, status: 'online' },
+            { id: 'leaf1', type: 'leaf', name: 'Leaf1', x: 150, y: 300, status: 'online' },
+            { id: 'leaf2', type: 'leaf', name: 'Leaf2', x: 350, y: 300, status: 'online' },
+            { id: 'leaf3', type: 'leaf', name: 'Leaf3', x: 550, y: 300, status: 'warning' },
+            { id: 'leaf4', type: 'leaf', name: 'Leaf4', x: 750, y: 300, status: 'online' },
+            { id: 'web1', type: 'server', name: 'Web1', x: 100, y: 500, status: 'online' },
+            { id: 'web2', type: 'server', name: 'Web2', x: 200, y: 500, status: 'online' },
+            { id: 'db1', type: 'server', name: 'DB1', x: 500, y: 500, status: 'error' },
+            { id: 'db2', type: 'server', name: 'DB2', x: 600, y: 500, status: 'online' },
+            { id: 'app1', type: 'server', name: 'App1', x: 700, y: 500, status: 'online' },
+            { id: 'app2', type: 'server', name: 'App2', x: 800, y: 500, status: 'online' }
+        ];
+
+        const networkFlowsEdges = [
+            { from: 'spine1', to: 'leaf1', type: 'port-channel', label: 'Po1' },
+            { from: 'spine1', to: 'leaf2', type: 'port-channel', label: 'Po2' },
+            { from: 'spine1', to: 'leaf3', type: 'port-channel', label: 'Po3' },
+            { from: 'spine2', to: 'leaf2', type: 'port-channel', label: 'Po4' },
+            { from: 'spine2', to: 'leaf3', type: 'port-channel', label: 'Po5' },
+            { from: 'spine2', to: 'leaf4', type: 'port-channel', label: 'Po6' },
+            { from: 'leaf1', to: 'web1', type: 'port-channel', label: 'Po10' },
+            { from: 'leaf1', to: 'web2', type: 'port-channel', label: 'Po11' },
+            { from: 'leaf3', to: 'db1', type: 'port-channel', label: 'Po12' },
+            { from: 'leaf3', to: 'db2', type: 'port-channel', label: 'Po13' },
+            { from: 'leaf4', to: 'app1', type: 'port-channel', label: 'Po14' },
+            { from: 'leaf4', to: 'app2', type: 'port-channel', label: 'Po15' }
+        ];
+
+        const l2MapDevices = [
+            { id: 'core1', type: 'core', name: 'Core1', x: 250, y: 100, status: 'online' },
+            { id: 'core2', type: 'core', name: 'Core2', x: 550, y: 100, status: 'online' },
+            { id: 'dist1', type: 'dist', name: 'Dist1', x: 150, y: 250, status: 'online' },
+            { id: 'dist2', type: 'dist', name: 'Dist2', x: 350, y: 250, status: 'online' },
+            { id: 'dist3', type: 'dist', name: 'Dist3', x: 450, y: 250, status: 'online' },
+            { id: 'dist4', type: 'dist', name: 'Dist4', x: 650, y: 250, status: 'online' },
+            { id: 'acc1', type: 'acc', name: 'Acc1', x: 100, y: 400, status: 'online' },
+            { id: 'acc2', type: 'acc', name: 'Acc2', x: 200, y: 400, status: 'online' },
+            { id: 'acc3', type: 'acc', name: 'Acc3', x: 300, y: 400, status: 'online' },
+            { id: 'acc4', type: 'acc', name: 'Acc4', x: 400, y: 400, status: 'warning' },
+            { id: 'acc5', type: 'acc', name: 'Acc5', x: 500, y: 400, status: 'online' },
+            { id: 'acc6', type: 'acc', name: 'Acc6', x: 600, y: 400, status: 'online' },
+            { id: 'acc7', type: 'acc', name: 'Acc7', x: 700, y: 400, status: 'online' },
+            { id: 'acc8', type: 'acc', name: 'Acc8', x: 800, y: 400, status: 'online' },
+            { id: 'agg1', type: 'dist', name: 'Agg1', x: 400, y: 550, status: 'online' },
+            { id: 'agg2', type: 'dist', name: 'Agg2', x: 500, y: 550, status: 'online' }
+        ];
+
+        const l2MapEdges = [
+            { from: 'core1', to: 'core2', type: 'vpc', label: 'vPC Peer' },
+            { from: 'core1', to: 'dist1', type: 'port-channel', label: 'Po1' },
+            { from: 'core1', to: 'dist2', type: 'port-channel', label: 'Po2' },
+            { from: 'core2', to: 'dist3', type: 'port-channel', label: 'Po3' },
+            { from: 'core2', to: 'dist4', type: 'port-channel', label: 'Po4' },
+            { from: 'dist1', to: 'dist2', type: 'vpc', label: 'vPC' },
+            { from: 'dist3', to: 'dist4', type: 'vpc', label: 'vPC' },
+            { from: 'dist1', to: 'acc1', type: 'port-channel', label: 'Po10' },
+            { from: 'dist1', to: 'acc2', type: 'port-channel', label: 'Po11' },
+            { from: 'dist2', to: 'acc3', type: 'port-channel', label: 'Po12' },
+            { from: 'dist2', to: 'acc4', type: 'port-channel', label: 'Po13' },
+            { from: 'dist3', to: 'acc5', type: 'port-channel', label: 'Po14' },
+            { from: 'dist3', to: 'acc6', type: 'port-channel', label: 'Po15' },
+            { from: 'dist4', to: 'acc7', type: 'port-channel', label: 'Po16' },
+            { from: 'dist4', to: 'acc8', type: 'port-channel', label: 'Po17' },
+            { from: 'agg1', to: 'agg2', type: 'vpc', label: 'vPC' }
+        ];
+
+        const l3MapDevices = [
+            { id: 'core-rt1', type: 'spine', name: 'Core-RT1', x: 250, y: 100, status: 'online' },
+            { id: 'core-rt2', type: 'spine', name: 'Core-RT2', x: 550, y: 100, status: 'online' },
+            { id: 'dist-rt1', type: 'leaf', name: 'Dist-RT1', x: 150, y: 250, status: 'online' },
+            { id: 'dist-rt2', type: 'leaf', name: 'Dist-RT2', x: 350, y: 250, status: 'online' },
+            { id: 'dist-rt3', type: 'leaf', name: 'Dist-RT3', x: 450, y: 250, status: 'online' },
+            { id: 'dist-rt4', type: 'leaf', name: 'Dist-RT4', x: 650, y: 250, status: 'online' },
+            { id: 'subnet1', type: 'subnet', name: '10.1.0.0/24', x: 100, y: 400, status: 'online' },
+            { id: 'subnet2', type: 'subnet', name: '10.2.0.0/24', x: 200, y: 400, status: 'online' },
+            { id: 'subnet3', type: 'subnet', name: '10.3.0.0/24', x: 300, y: 400, status: 'online' },
+            { id: 'subnet4', type: 'subnet', name: '10.4.0.0/24', x: 400, y: 400, status: 'online' },
+            { id: 'subnet5', type: 'subnet', name: '10.5.0.0/24', x: 500, y: 400, status: 'online' },
+            { id: 'subnet6', type: 'subnet', name: '10.6.0.0/24', x: 600, y: 400, status: 'online' },
+            { id: 'subnet7', type: 'subnet', name: '10.7.0.0/24', x: 700, y: 400, status: 'online' },
+            { id: 'subnet8', type: 'subnet', name: '10.8.0.0/24', x: 800, y: 400, status: 'online' }
+        ];
+
+        const l3MapEdges = [
+            { from: 'core-rt1', to: 'dist-rt1', type: 'ospf', label: 'OSPF' },
+            { from: 'core-rt1', to: 'dist-rt2', type: 'ospf', label: 'OSPF' },
+            { from: 'core-rt2', to: 'dist-rt3', type: 'ospf', label: 'OSPF' },
+            { from: 'core-rt2', to: 'dist-rt4', type: 'ospf', label: 'OSPF' },
+            { from: 'dist-rt1', to: 'subnet1', type: 'connected', label: 'C' },
+            { from: 'dist-rt1', to: 'subnet2', type: 'connected', label: 'C' },
+            { from: 'dist-rt2', to: 'subnet3', type: 'connected', label: 'C' },
+            { from: 'dist-rt2', to: 'subnet4', type: 'connected', label: 'C' },
+            { from: 'dist-rt3', to: 'subnet5', type: 'connected', label: 'C' },
+            { from: 'dist-rt3', to: 'subnet6', type: 'connected', label: 'C' },
+            { from: 'dist-rt4', to: 'subnet7', type: 'connected', label: 'C' },
+            { from: 'dist-rt4', to: 'subnet8', type: 'connected', label: 'C' }
+        ];
+
+        const combinedViewDevices = [
+            // L2 Layer
+            { id: 'core1-l2', type: 'core', name: 'Core1', x: 250, y: 80, status: 'online', layer: 'l2' },
+            { id: 'core2-l2', type: 'core', name: 'Core2', x: 550, y: 80, status: 'online', layer: 'l2' },
+            { id: 'dist1-l2', type: 'dist', name: 'Dist1', x: 150, y: 200, status: 'online', layer: 'l2' },
+            { id: 'dist2-l2', type: 'dist', name: 'Dist2', x: 350, y: 200, status: 'online', layer: 'l2' },
+            { id: 'dist3-l2', type: 'dist', name: 'Dist3', x: 450, y: 200, status: 'online', layer: 'l2' },
+            { id: 'dist4-l2', type: 'dist', name: 'Dist4', x: 650, y: 200, status: 'online', layer: 'l2' },
+            // L3 Layer
+            { id: 'core-rt1', type: 'spine', name: 'Core-RT1', x: 250, y: 350, status: 'online', layer: 'l3' },
+            { id: 'core-rt2', type: 'spine', name: 'Core-RT2', x: 550, y: 350, status: 'online', layer: 'l3' },
+            { id: 'subnet1', type: 'subnet', name: '10.1.0.0/24', x: 100, y: 500, status: 'online', layer: 'l3' },
+            { id: 'subnet2', type: 'subnet', name: '10.2.0.0/24', x: 200, y: 500, status: 'online', layer: 'l3' },
+            { id: 'subnet3', type: 'subnet', name: '10.3.0.0/24', x: 300, y: 500, status: 'online', layer: 'l3' },
+            { id: 'subnet4', type: 'subnet', name: '10.4.0.0/24', x: 400, y: 500, status: 'online', layer: 'l3' },
+            { id: 'subnet5', type: 'subnet', name: '10.5.0.0/24', x: 500, y: 500, status: 'online', layer: 'l3' },
+            { id: 'subnet6', type: 'subnet', name: '10.6.0.0/24', x: 600, y: 500, status: 'online', layer: 'l3' }
+        ];
+
+        const combinedViewEdges = [
+            { from: 'core1-l2', to: 'core2-l2', type: 'vpc', label: 'vPC', layer: 'l2' },
+            { from: 'core1-l2', to: 'dist1-l2', type: 'port-channel', label: 'Po1', layer: 'l2' },
+            { from: 'core1-l2', to: 'dist2-l2', type: 'port-channel', label: 'Po2', layer: 'l2' },
+            { from: 'core2-l2', to: 'dist3-l2', type: 'port-channel', label: 'Po3', layer: 'l2' },
+            { from: 'core2-l2', to: 'dist4-l2', type: 'port-channel', label: 'Po4', layer: 'l2' },
+            { from: 'core-rt1', to: 'subnet1', type: 'connected', label: 'C', layer: 'l3' },
+            { from: 'core-rt1', to: 'subnet2', type: 'connected', label: 'C', layer: 'l3' },
+            { from: 'core-rt1', to: 'subnet3', type: 'connected', label: 'C', layer: 'l3' },
+            { from: 'core-rt2', to: 'subnet4', type: 'connected', label: 'C', layer: 'l3' },
+            { from: 'core-rt2', to: 'subnet5', type: 'connected', label: 'C', layer: 'l3' },
+            { from: 'core-rt2', to: 'subnet6', type: 'connected', label: 'C', layer: 'l3' },
+            { from: 'core1-l2', to: 'core-rt1', type: 'relationship', label: 'L2→L3', layer: 'relationship' },
+            { from: 'core2-l2', to: 'core-rt2', type: 'relationship', label: 'L2→L3', layer: 'relationship' }
+        ];
+
+        let currentScenario = 'network-flows';
+        let liveMode = false;
+        let liveModeInterval = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderScenario('network-flows');
+            updateLegend('network-flows');
+            setupKeyboardShortcuts();
+        });
+
+        function switchScenario(scenarioId) {
+            currentScenario = scenarioId;
+            
+            // Update buttons
+            document.querySelectorAll('.scenario-switcher button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Hide all scenarios
+            document.querySelectorAll('.scenario-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Show selected scenario
+            document.getElementById(scenarioId).classList.add('active');
+            
+            // Render scenario
+            renderScenario(scenarioId);
+            updateLegend(scenarioId);
+        }
+
+        function renderScenario(scenarioId) {
+            const container = document.getElementById(scenarioId);
+            container.innerHTML = '<div class="zoom-level-indicator">Zoom Level: <strong>' + getZoomLevel(scenarioId) + '</strong></div>';
+            
+            let devices, edges;
+            
+            switch(scenarioId) {
+                case 'network-flows':
+                    devices = networkFlowsDevices;
+                    edges = networkFlowsEdges;
+                    break;
+                case 'l2-map':
+                    devices = l2MapDevices;
+                    edges = l2MapEdges;
+                    break;
+                case 'l3-map':
+                    devices = l3MapDevices;
+                    edges = l3MapEdges;
+                    break;
+                case 'combined-view':
+                    devices = combinedViewDevices;
+                    edges = combinedViewEdges;
+                    break;
+            }
+            
+            // Render edges
+            edges.forEach(edge => {
+                const fromDevice = devices.find(d => d.id === edge.from);
+                const toDevice = devices.find(d => d.id === edge.to);
+                
+                if (fromDevice && toDevice) {
+                    const edgeEl = createEdge(fromDevice, toDevice, edge);
+                    container.appendChild(edgeEl);
+                }
+            });
+            
+            // Render nodes
+            devices.forEach(device => {
+                const nodeEl = createNode(device);
+                container.appendChild(nodeEl);
+            });
+            
+            // Update stats
+            document.getElementById('deviceCount').textContent = devices.length;
+            document.getElementById('linkCount').textContent = edges.length;
+            document.getElementById('alertCount').textContent = devices.filter(d => d.status !== 'online').length;
+            document.getElementById('bandwidthTotal').textContent = calculateTotalBandwidth(devices);
+        }
+
+        function createNode(device) {
+            const node = document.createElement('div');
+            node.className = `network-node ${device.type}`;
+            node.id = device.id;
+            node.style.left = device.x + 'px';
+            node.style.top = device.y + 'px';
+            node.textContent = device.name;
+            
+            // Status dot
+            const statusDot = document.createElement('div');
+            statusDot.className = 'status-dot';
+            if (device.status === 'warning') statusDot.classList.add('warning');
+            if (device.status === 'error') statusDot.classList.add('error');
+            node.appendChild(statusDot);
+            
+            // Label
+            const label = document.createElement('div');
+            label.className = 'label';
+            label.textContent = device.type.toUpperCase();
+            node.appendChild(label);
+            
+            // Click handler
+            node.addEventListener('click', () => openModal(device));
+            
+            return node;
+        }
+
+        function createEdge(fromDevice, toDevice, edge) {
+            const edgeEl = document.createElement('div');
+            edgeEl.className = `network-edge ${edge.type}`;
+            
+            // Calculate position and rotation
+            const dx = toDevice.x - fromDevice.x;
+            const dy = toDevice.y - fromDevice.y;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            
+            edgeEl.style.left = (fromDevice.x + 37.5) + 'px';
+            edgeEl.style.top = (fromDevice.y + 37.5) + 'px';
+            edgeEl.style.width = length + 'px';
+            edgeEl.style.transform = `rotate(${angle}deg)`;
+            
+            // Edge label
+            const label = document.createElement('div');
+            label.className = `network-edge-label ${edge.type}`;
+            label.textContent = edge.label;
+            edgeEl.appendChild(label);
+            
+            // Flow animation for network-flows
+            if (currentScenario === 'network-flows' && liveMode) {
+                const particle = document.createElement('div');
+                particle.className = 'flow-particle';
+                edgeEl.appendChild(particle);
+            }
+            
+            return edgeEl;
+        }
+
+        function getZoomLevel(scenarioId) {
+            switch(scenarioId) {
+                case 'network-flows': return 'Context';
+                case 'l2-map': return 'Container';
+                case 'l3-map': return 'Component';
+                case 'combined-view': return 'Code';
+                default: return 'Context';
+            }
+        }
+
+        function updateLegend(scenarioId) {
+            const legend = document.getElementById('legend');
+            legend.innerHTML = '';
+            
+            const types = getScenarioTypes(scenarioId);
+            types.forEach(type => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = `<div class="dot ${type}"></div><span>${type.charAt(0).toUpperCase() + type.slice(1)}</span>`;
+                legend.appendChild(item);
+            });
+        }
+
+        function getScenarioTypes(scenarioId) {
+            switch(scenarioId) {
+                case 'network-flows': return ['spine', 'leaf', 'server'];
+                case 'l2-map': return ['core', 'dist', 'acc'];
+                case 'l3-map': return ['spine', 'leaf', 'subnet'];
+                case 'combined-view': return ['core', 'dist', 'spine', 'subnet'];
+                default: return [];
+            }
+        }
+
+        function calculateTotalBandwidth(devices) {
+            // Simulated bandwidth calculation
+            return (devices.length * 8.4).toFixed(1);
+        }
+
+        // Modal functions
+        function openModal(device) {
+            document.getElementById('modalDeviceName').textContent = device.name;
+            document.getElementById('modalDeviceType').textContent = device.type.toUpperCase();
+            
+            // Populate tabs
+            populateOverviewTab(device);
+            populateInterfacesTab(device);
+            populateRoutingTab(device);
+            populateAlertsTab(device);
+            populateNeighborsTab(device);
+            
+            document.getElementById('deviceModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('deviceModal').classList.remove('active');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function populateOverviewTab(device) {
+            const tab = document.getElementById('tab-overview');
+            const statusClass = device.status === 'online' ? 'status-online' : 
+                              device.status === 'warning' ? 'status-warning' : 'status-error';
+            
+            tab.innerHTML = `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value ${statusClass}">${device.status.charAt(0).toUpperCase() + device.status.slice(1)}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Type</div>
+                        <div class="info-value">${device.type.toUpperCase()}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Uptime</div>
+                        <div class="info-value">${Math.floor(Math.random() * 30) + 1}d ${Math.floor(Math.random() * 24)}h</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Platform</div>
+                        <div class="info-value">Cisco Catalyst</div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">CPU Utilization</div>
+                        <div class="info-value">${Math.floor(Math.random() * 60) + 10}%</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" style="width: ${Math.floor(Math.random() * 60) + 10}%;"></div>
+                        </div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">Memory Usage</div>
+                        <div class="info-value">${(Math.random() * 4 + 2).toFixed(1)} GB / 8 GB</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" style="width: ${Math.floor(Math.random() * 50) + 30}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function populateInterfacesTab(device) {
+            const tab = document.getElementById('tab-interfaces');
+            const interfaceCount = Math.floor(Math.random() * 8) + 4;
+            
+            let html = '<table class="interface-table"><thead><tr><th>Interface</th><th>Status</th><th>IP/VLAN</th><th>Description</th><th>Speed</th></tr></thead><tbody>';
+            
+            for (let i = 0; i < interfaceCount; i++) {
+                const isUp = Math.random() > 0.2;
+                const isPortChannel = Math.random() > 0.7;
+                const statusClass = isUp ? 'up' : 'down';
+                
+                html += `
+                    <tr>
+                        <td>GigabitEthernet${Math.floor(Math.random() * 4)}/0/${i + 1} ${isPortChannel ? '<span class="port-channel-badge">Po' + (i + 1) + '</span>' : ''}</td>
+                        <td><span class="interface-status ${statusClass}"></span>${isUp ? 'Up' : 'Down'}</td>
+                        <td>${device.type === 'server' ? '10.' + (Math.floor(Math.random() * 255) + 1) + '.0.' + (i + 1) + '/24' : 'VLAN ' + (10 + i)}</td>
+                        <td>${device.type + ' Port ' + (i + 1)}</td>
+                        <td>${isPortChannel ? '10' : '1'} Gbps</td>
+                    </tr>
+                `;
+            }
+            
+            html += '</tbody></table>';
+            tab.innerHTML = html;
+        }
+
+        function populateRoutingTab(device) {
+            const tab = document.getElementById('tab-routing');
+            
+            if (device.type === 'server' || device.type === 'subnet') {
+                tab.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;">No routing table available for this device type</p>';
+                return;
+            }
+            
+            const protocols = ['connected', 'ospf', 'bgp', 'static'];
+            const protocolColors = { connected: 'protocol-connected', ospf: 'protocol-ospf', bgp: 'protocol-bgp', static: 'protocol-static' };
+            
+            let html = '<table class="routing-table"><thead><tr><th>Destination</th><th>Protocol</th><th>Next Hop</th><th>Interface</th><th>Metric</th><th>VRF</th></tr></thead><tbody>';
+            
+            for (let i = 0; i < 8; i++) {
+                const protocol = protocols[Math.floor(Math.random() * protocols.length)];
+                const vrf = Math.random() > 0.7 ? '<span class="vrf-tag">VRF_' + String.fromCharCode(65 + Math.floor(Math.random() * 3)) + '</span>' : '<span class="vrf-tag">default</span>';
+                
+                html += `
+                    <tr>
+                        <td>10.${i + 1}.0.0/24</td>
+                        <td><span class="protocol-badge ${protocolColors[protocol]}">${protocol.charAt(0).toUpperCase()}</span></td>
+                        <td>${protocol === 'connected' ? 'directly connected' : '10.255.255.' + (i + 1)}</td>
+                        <td>Gig0/${i}</td>
+                        <td>${protocol === 'connected' ? 0 : Math.floor(Math.random() * 200) + 1}</td>
+                        <td>${vrf}</td>
+                    </tr>
+                `;
+            }
+            
+            html += '</tbody></table>';
+            tab.innerHTML = html;
+        }
+
+        function populateAlertsTab(device) {
+            const tab = document.getElementById('tab-alerts');
+            const alertCount = device.status === 'online' ? Math.floor(Math.random() * 2) : Math.floor(Math.random() * 3) + 1;
+            
+            if (alertCount === 0) {
+                tab.innerHTML = '<p style="color: #10b981; text-align: center; padding: 20px;">No active alerts</p>';
+                return;
+            }
+            
+            const alertTypes = ['critical', 'warning', 'info'];
+            const alertIcons = { critical: '!', warning: '⚠', info: 'ℹ' };
+            const alertTitles = [
+                'High CPU Utilization',
+                'Interface Flapping',
+                'Memory Warning',
+                'BGP Neighbor Down',
+                'Port Security Violation',
+                'STP Topology Change'
+            ];
+            
+            let html = '';
+            for (let i = 0; i < alertCount; i++) {
+                const type = alertTypes[Math.floor(Math.random() * alertTypes.length)];
+                html += `
+                    <div class="alert-item ${type}">
+                        <div class="alert-icon ${type}">${alertIcons[type]}</div>
+                        <div class="alert-content">
+                            <div class="alert-title">${alertTitles[Math.floor(Math.random() * alertTitles.length)]}</div>
+                            <div class="alert-time">${Math.floor(Math.random() * 60) + 1} minutes ago</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            tab.innerHTML = html;
+        }
+
+        function populateNeighborsTab(device) {
+            const tab = document.getElementById('tab-neighbors');
+            const neighborCount = Math.floor(Math.random() * 4) + 2;
+            
+            const neighborTypes = ['SW', 'RT', 'SV', 'FW'];
+            const protocols = ['CDP', 'LLDP', 'OSPF', 'BGP', 'ARP'];
+            
+            let html = '';
+            for (let i = 0; i < neighborCount; i++) {
+                const type = neighborTypes[Math.floor(Math.random() * neighborTypes.length)];
+                const protocol = protocols[Math.floor(Math.random() * protocols.length)];
+                
+                html += `
+                    <div class="neighbor-item">
+                        <div class="neighbor-icon">${type}</div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-name">${type}-${device.name}-${i + 1}</div>
+                            <div class="neighbor-detail">via ${protocol} · Gig0/${i + 1}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            tab.innerHTML = html;
+        }
+
+        // Toolbar functions
+        function toggleLiveMode() {
+            liveMode = !liveMode;
+            const btn = document.getElementById('liveModeBtn');
+            btn.textContent = 'Live Mode: ' + (liveMode ? 'ON' : 'OFF');
+            btn.classList.toggle('active', liveMode);
+            
+            if (liveMode) {
+                startLiveMode();
+            } else {
+                stopLiveMode();
+            }
+        }
+
+        function startLiveMode() {
+            liveModeInterval = setInterval(() => {
+                // Simulate data updates
+                updateDeviceStatuses();
+                if (currentScenario === 'network-flows') {
+                    renderScenario('network-flows');
+                }
+            }, 3000);
+        }
+
+        function stopLiveMode() {
+            if (liveModeInterval) {
+                clearInterval(liveModeInterval);
+                liveModeInterval = null;
+            }
+        }
+
+        function updateDeviceStatuses() {
+            // Randomly update device statuses for demo
+            const devices = getCurrentDevices();
+            devices.forEach(device => {
+                if (Math.random() > 0.9) {
+                    device.status = device.status === 'online' ? 'warning' : 'online';
+                }
+            });
+        }
+
+        function getCurrentDevices() {
+            switch(currentScenario) {
+                case 'network-flows': return networkFlowsDevices;
+                case 'l2-map': return l2MapDevices;
+                case 'l3-map': return l3MapDevices;
+                case 'combined-view': return combinedViewDevices;
+                default: return [];
+            }
+        }
+
+        function showHelp() {
+            document.getElementById('helpOverlay').classList.add('active');
+        }
+
+        function closeHelp() {
+            document.getElementById('helpOverlay').classList.remove('active');
+        }
+
+        function fitView() {
+            // Reset zoom to fit all devices
+            renderScenario(currentScenario);
+        }
+
+        function toggleHeatMap() {
+            // Toggle heat map visualization
+            alert('Heat map visualization toggled (demo feature)');
+        }
+
+        function exportView() {
+            alert('Export functionality (demo feature)');
+        }
+
+        function zoomIn() {
+            alert('Zoom in (demo feature)');
+        }
+
+        function zoomOut() {
+            alert('Zoom out (demo feature)');
+        }
+
+        function resetZoom() {
+            fitView();
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '?') {
+                    showHelp();
+                } else if (e.key === 'Escape') {
+                    closeModal();
+                    closeHelp();
+                } else if (e.key === 'f' || e.key === 'F') {
+                    fitView();
+                } else if (e.key === 'h' || e.key === 'H') {
+                    toggleHeatMap();
+                } else if (e.key === 'l' || e.key === 'L') {
+                    toggleLiveMode();
+                }
+            });
+
+            // Close modals on outside click
+            document.getElementById('deviceModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+
+            document.getElementById('helpOverlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeHelp();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+=== NST unified Playwright E2E (CI-browser, not EXE) ===
++ node cli_credential_id.spec.mjs
+PASS  page loads /cli_terminal
+PASS  no severe console errors on load
+PASS  credential selector visible
+PASS  username/password secret fields absent
+PASS  connUsername is not password type
+PASS  no plaintext compatibility warning/control
+PASS  selector uses metadata (netops option present)
+PASS  credentials list has no password fields
+PASS  missing credential_id shows understandable error
+PASS  error message has no secret
+PASS  invalid credential fails safely
+PASS  invalid-cred error has no secret
+PASS  Socket.IO connect payload has credential_id
+PASS  connect payload has no username/password secret fields
+PASS  connect payload does not contain vault secret
+PASS  UI shows connection/loading/result state
+PASS  UI reaches connected (mocked SSH)
+PASS  after connect: no secret in HTML
+PASS  after connect: no secret in URL
+PASS  after connect: no secret in browser storage
+PASS  after connect: no secret in DOM attributes
+PASS  after refresh: no secret in HTML
+PASS  after refresh: no secret in URL
+PASS  after refresh: no secret in browser storage
+PASS  after refresh: no secret in DOM attributes
+PASS  refresh HTML has no password inputs
+PASS  reconnect emit uses explicit credential_id only
+PASS  reconnect emit has no password
+PASS  after disconnect, connect without credential_id does not inherit prior auth
+PASS  keyboard can focus credential selector
+PASS  Connect control has accessible name
+PASS  credential selector has accessible name
+PASS  primary Connect has visible focus state
+PASS  console output has no vault secret
+
+All browser credential_id scenarios passed.
++ node operator_program_status.spec.mjs
+PASS  operator index loads
+PASS  brand link present
+PASS  main workspace region present
+PASS  no severe console errors on first paint
+PASS  first paint HTML has no vault secret
+PASS  program-status API returns 200
+PASS  program-status release_gate BLOCKED
+PASS  program-status hard_stop true
+PASS  may_claim_enterprise_ready false
+PASS  program-status JSON has no password field values
+PASS  Discovery tab shows HARD STOP gate
+PASS  Discovery gate denies enterprise ready
+PASS  Discovery related-surface jump buttons present
+PASS  Swiss Tools overview shows blocked gate
+PASS  Swiss Tools overview mentions three surfaces
+PASS  jump to Discovery tab works
+PASS  Evidence overview shows blocked gate
+PASS  Evidence job table present
+PASS  visible copy does not claim enterprise operational ready
+PASS  visible copy does not claim live vendor validated
+PASS  hash nst-about opens About workspace
+PASS  hash nst-discovery returns to Discovery
+PASS  jobs API returns 200
+PASS  jobs API has no vault secret
+PASS  version API returns 200
+PASS  version API has version string
+PASS  missing discovery report is 4xx
+PASS  reload still reports BLOCKED gate
+PASS  reload still hard_stop
+
+All operator Program Status browser scenarios passed.
++ node operator_swiss_tools_overlay.spec.mjs
+PASS  Maps workspace lede: replay is not a live poll
+PASS  Maps workspace lede: Live SSH is not SNMP
+PASS  Maps lede: overlay does not certify topology
+PASS  Live SSH utilization control exists in DOM
+PASS  Live SSH control is visible before a map run
+PASS  Live SSH control is disabled until Standard L2 completes
+PASS  live start without Standard L2 map fails closed
+PASS  live start without map did not POST utilization_live
+PASS  live start without credential_id fails closed with honesty copy
+PASS  live start without credential did not POST utilization_live
+PASS  utilization status API 200
+PASS  utilization status idle or non-running
+PASS  utilization status note: Not SNMP
+PASS  utilization status does not clear release_gate in copy
+PASS  utilization status JSON has no vault secret
+PASS  overlay status poll does not clear release_gate
+PASS  overlay status poll leaves hard_stop true
+
+All Swiss Tools overlay honesty browser scenarios passed.
++ node operator_enterprise_shell.spec.mjs
+[INFO] telnetlib compatibility shim installed (Python 3.13+ support)
+{
+  "standard_l2": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/unified_fix_validate_playwright_exe_pass/generated_outputs/maps/standard_l2_overlay_replay.html",
+  "discovery": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/unified_fix_validate_playwright_exe_pass/generated_outputs/maps/discovery_command_center.html",
+  "overlay": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/unified_fix_validate_playwright_exe_pass/generated_outputs/overlays/utilization_overlay_replay.json",
+  "bound_ok": true,
+  "disc_ok": true,
+  "actual": {
+    "device_count": 8,
+    "l2_edge_count": 7,
+    "non_cable_count": 2,
+    "standard_l2_vis_edges": 7,
+    "discovery_vis_edges": 9,
+    "paint_eligible_mixed": 7,
+    "overlay_ok": true,
+    "overlay_painted": 1,
+    "overlay_bindings": [
+      "e0"
+    ],
+    "discovery_host": true,
+    "discovery_bindings": [
+      "e0"
+    ],
+    "discovery_evpn_unpainted": true,
+    "fingerprint_unchanged": true,
+    "trust_tiers": [
+      "high",
+      "high",
+      "high",
+      "high",
+      "medium",
+      "high",
+      "high"
+    ],
+    "link_issue_count": 1,
+    "honesty": "Offline fixture lab. Not live vendor evidence. Not a certified cable plant."
+  }
+}
+PASS  brand present
+PASS  chrome meta present
+PASS  vault pill id preserved
+PASS  inventory workspace active
+PASS  inventory editor in workspace
+PASS  parsed hosts table present
+PASS  task log starts collapsed
+PASS  no Made by AI IDE
+PASS  maps lede: replay honesty
+PASS  maps lede: live ssh not snmp
+PASS  swiss tools shortcuts demoted to btn-mac
+PASS  goToSearchTab still callable
+PASS  goToToolsTab still callable
+operator_enterprise_shell: ALL PASS
++ node offline_map_html.spec.mjs
+PASS  Standard L2 HTML has no vault secret field
+PASS  overlay checkbox present
+PASS  replay overlay available on Standard L2
+PASS  overlay checkbox enabled when document present
+PASS  overlay on: banner visible
+PASS  overlay on: replay not a live poll
+PASS  overlay on: not topology claim
+PASS  gray dashed copy present
+PASS  file:// Live SSH button stays disabled
+PASS  file:// Live SSH title mentions file:// or operator console
+PASS  file:// Live SSH title says not SNMP
+PASS  unmapped table lists leftover interfaces, not new cables
+PASS  Discovery overlay host is discovery
+PASS  Discovery does not offer Live SSH start (no button or disabled viewer)
+PASS  Discovery omits Live SSH button (viewer host)
+PASS  Discovery map has EVPN/non-cable vis edges
+PASS  Discovery overlay-on does not gray EVPN as unsampled cable
+PASS  Discovery overlay-on does not gray STP-blocked as unsampled cable
+
+All offline map HTML overlay scenarios passed.
++ node ux_demo_09_8vendor.spec.mjs
+PASS  8 vendor devices named
+PASS  honesty: replay is not a live poll
+PASS  honesty: Live SSH is not SNMP
+PASS  no password field
+PASS  replay paints core L2 hot
+PASS  replay does not gray EVPN as unsampled cable
+PASS  replay does not gray STP-blocked as unsampled cable
+PASS  EVPN color unchanged by overlay
+PASS  inspector shows core L2 identity
+PASS  Discovery disables Live SSH
+PASS  Standard L2 enables Live SSH button
+PASS  live without credential does not claim live poll
+PASS  live with credential is labeled simulation / not SNMP
+PASS  live simulation still leaves EVPN purple
+PASS  overlay off restores core L2 (not hot red)
+
+All UX demo 09 8-vendor lab scenarios passed.
+PASS: unified Playwright E2E (CI-browser, offline/operator scope)

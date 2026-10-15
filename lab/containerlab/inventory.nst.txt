@@ -1,0 +1,11 @@
+# Generated for Containerlab Clos (mgmt network 172.28.28.0/24)
+# Credentials: admin / admin (startup-config)
+# Port 22 (SSH on mgmt)
+
+[Spines]
+172.28.28.11,cisco_nxos,Spines
+172.28.28.12,cisco_nxos,Spines
+
+[Leaves]
+172.28.28.21,cisco_nxos,Leaves
+172.28.28.22,cisco_nxos,Leaves

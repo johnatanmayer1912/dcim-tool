@@ -1,0 +1,6 @@
+2026 Oct 10 14:05:11 LAB-NXOS-LEAF2 %VPC-2-PEER_KEEP_ALIVE_RECV_FAIL: In domain 10, VPC peer keep-alive receive has failed
+2026 Oct 10 14:05:12 LAB-NXOS-LEAF2 %VPC-2-PEER_LINK_DOWN: In domain 10, peer-link is down
+2026 Oct 10 14:05:14 LAB-NXOS-LEAF2 %VPC-6-PEER_VPC_TAKEOVER: Peer role change — secondary assuming forwarding for orphans
+2026 Oct 10 14:06:00 LAB-NXOS-LEAF2 %ETHPORT-5-IF_DOWN_ADMIN_DOWN: Interface Ethernet1/5 is down (Administratively down)
+2026 Oct 10 14:07:22 LAB-NXOS-LEAF2 %STP-2-BLOCK_BPDUGUARD: Received BPDU on port Ethernet1/10 with BPDU Guard enabled. Disabling port.
+2026 Oct 10 14:07:22 LAB-NXOS-LEAF2 %PM-4-ERR_DISABLE: bpduguard error detected on Ethernet1/10, putting in err-disable state

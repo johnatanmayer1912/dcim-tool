@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NST Look &amp; Feel — Demo Portal v7.4.25</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@450;650;750&display=swap');
+  :root {
+    --cyan: #00c2d7; --teal: #14b8a6; --ink: #0b1220; --muted: #64748b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: Outfit, system-ui, sans-serif; color: var(--ink);
+    min-height: 100vh;
+    background:
+      radial-gradient(900px 500px at 0% -10%, rgba(0,194,215,0.22), transparent 55%),
+      radial-gradient(800px 480px at 100% 0%, rgba(20,184,166,0.16), transparent 50%),
+      linear-gradient(165deg, #eef3f9, #d5e0ee);
+  }
+  main { max-width: 920px; margin: 0 auto; padding: 36px 20px 56px; }
+  h1 { margin: 0 0 8px; font-size: 34px; letter-spacing: -0.04em; font-weight: 750; }
+  .lead { color: var(--muted); font-size: 16px; line-height: 1.5; margin: 0 0 28px; max-width: 58ch; }
+  .grid { display: grid; gap: 14px; }
+  .card {
+    background: rgba(255,255,255,0.78); backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.75); border-radius: 18px;
+    padding: 20px 22px; box-shadow: 0 16px 40px rgba(15,23,42,0.08);
+  }
+  .card h2 { margin: 0 0 6px; font-size: 18px; }
+  .card p { margin: 0 0 14px; color: var(--muted); font-size: 14px; line-height: 1.45; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  a.btn {
+    display: inline-flex; align-items: center; text-decoration: none;
+    font-weight: 650; font-size: 14px; padding: 11px 18px; border-radius: 999px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  a.btn:hover { transform: translateY(-1px); }
+  a.primary {
+    background: linear-gradient(135deg, var(--cyan), var(--teal));
+    color: #04202a; box-shadow: 0 12px 28px rgba(0,194,215,0.28);
+  }
+  a.ghost {
+    background: #fff; color: var(--ink); border: 1px solid rgba(11,18,32,0.12);
+  }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 650; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 5px 10px; border-radius: 999px;
+    background: rgba(0,194,215,0.12); color: #0e7490; margin-bottom: 12px;
+  }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 18px; }
+  code { background: rgba(11,18,32,0.06); padding: 2px 6px; border-radius: 6px; font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="badge">Apex Fusion · Look &amp; Feel Portal</div>
+  <h1>Feel Network Swiss Tool Pro</h1>
+  <p class="lead">
+    Live operator console (Flask) plus the Apex Fusion vision mock.
+    Use the live app for real controls; open the mock for the full WOW composition.
+  </p>
+
+  <div class="grid">
+    <section class="card">
+      <h2>1 · Live program (look &amp; feel here)</h2>
+      <p>Real Flask UI on loopback — Apex Fusion tokens, session HUD, command strip, vault, inventory, maps.</p>
+      <div class="actions">
+        <a class="btn primary" href="http://127.0.0.1:5051/" target="_blank" rel="noopener">Open live console →</a>
+        <a class="btn ghost" href="http://127.0.0.1:5051/api/version" target="_blank" rel="noopener">Check /api/version</a>
+        <a class="btn ghost" href="http://127.0.0.1:5051/api/health-check/demo-map/discovery" target="_blank" rel="noopener">Discovery demo map</a>
+        <a class="btn ghost" href="http://127.0.0.1:5051/api/health-check/demo-map/vpc" target="_blank" rel="noopener">vPC demo map</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2 · Apex Fusion wow mock (Option 4)</h2>
+      <p>Northglass × OpsRail stakeholder composition — glass HUD, rail, command strip.</p>
+      <div class="actions">
+        <a class="btn primary" href="mocks/gui_external_audit_2026-10-07/04_team_apex_fusion.html">Open Apex Fusion mock</a>
+        <a class="btn ghost" href="mocks/gui_external_audit_2026-10-07/00_INDEX.html">All GUI audit mocks</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3 · Classic topology demos</h2>
+      <p>Standalone Vis.js demo maps (offline HTML).</p>
+      <div class="actions">
+        <a class="btn ghost" href="DEMO_DISCOVERY_COMMAND_CENTER_v7.0.4.html">Discovery Command Center</a>
+        <a class="btn ghost" href="DEMO_VPC_TOPOLOGY_v7.0.4.html">vPC Topology</a>
+      </div>
+    </section>
+  </div>
+
+  <p class="hint">
+    Server: <code>NST_WEB_PORT=5051 python3 vlan_checker_web.py</code> · Product <code>v7.4.25</code> · Live shell matches Apex Fusion mock layout · Localhost only.
+  </p>
+</main>
+</body>
+</html>

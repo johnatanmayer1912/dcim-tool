@@ -1,0 +1,2552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Swiss Tool Pro - Current vs Proposed State</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #c4b5fd;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .view-toggle button {
+            padding: 12px 24px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            color: #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .view-toggle button:hover {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        .view-toggle button.active {
+            background: #4f46e5;
+            border-color: #6366f1;
+            color: #fff;
+        }
+
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #334155;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .panel-header h2 {
+            font-size: 1.3rem;
+            color: #a5b4fc;
+        }
+
+        .panel-header .badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-current {
+            background: #64748b;
+            color: #e2e8f0;
+        }
+
+        .badge-proposed {
+            background: #10b981;
+            color: #fff;
+        }
+
+        .visualization {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 450px;
+            position: relative;
+        }
+
+        .visualization-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .visualization-header h3 {
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toolbar button {
+            padding: 6px 12px;
+            background: #334155;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .toolbar button:hover {
+            background: #475569;
+        }
+
+        /* Current State Visualization */
+        .current-viz {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .current-viz .node {
+            width: 60px;
+            height: 60px;
+            background: #64748b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #e2e8f0;
+            margin: 0 auto;
+            border: 2px solid #475569;
+        }
+
+        .current-viz .edge {
+            height: 2px;
+            background: #475569;
+            margin: 5px 0;
+        }
+
+        .current-viz .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .current-viz .controls button {
+            padding: 8px 16px;
+            background: #334155;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Proposed State Visualization */
+        .proposed-viz {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .proposed-viz .toolbar-advanced {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #1e293b;
+            border-radius: 6px;
+        }
+
+        .proposed-viz .toolbar-advanced button {
+            padding: 6px 12px;
+            background: #4f46e5;
+            border: 1px solid #6366f1;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .proposed-viz .toolbar-advanced button:hover {
+            background: #6366f1;
+        }
+
+        .proposed-viz .keyboard-hint {
+            font-size: 10px;
+            color: #64748b;
+            margin-left: 4px;
+        }
+
+        .proposed-viz .node-enhanced {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #00bceb 0%, #0085a3 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+            margin: 0 auto;
+            border: 3px solid #33d6ff;
+            box-shadow: 0 4px 12px rgba(0, 188, 235, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .proposed-viz .node-enhanced:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 188, 235, 0.5);
+        }
+
+        .proposed-viz .node-gateway {
+            background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+            border-color: #fbbf24;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .proposed-viz .node-default-gw {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            border-color: #f87171;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .proposed-viz .node-subnet {
+            width: 90px;
+            height: 60px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            border-color: #a78bfa;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .proposed-viz .edge-enhanced {
+            height: 3px;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            margin: 8px 0;
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .proposed-viz .edge-enhanced::after {
+            content: '→';
+            position: absolute;
+            right: 10px;
+            top: -8px;
+            color: #10b981;
+            font-size: 12px;
+        }
+
+        .proposed-viz .edge-particle {
+            height: 3px;
+            background: #475569;
+            margin: 8px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .proposed-viz .edge-particle::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 100%;
+            background: #10b981;
+            border-radius: 50%;
+            animation: particle-flow 2s linear infinite;
+        }
+
+        @keyframes particle-flow {
+            0% { left: 0; }
+            100% { left: calc(100% - 10px); }
+        }
+
+        .proposed-viz .status-indicator {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2px solid #059669;
+        }
+
+        .proposed-viz .status-warning {
+            background: #f59e0b;
+            border-color: #b45309;
+        }
+
+        .proposed-viz .status-error {
+            background: #ef4444;
+            border-color: #b91c1c;
+        }
+
+        .proposed-viz .detail-panel {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .proposed-viz .detail-panel h4 {
+            font-size: 12px;
+            color: #a5b4fc;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .proposed-viz .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 11px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .proposed-viz .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .proposed-viz .detail-label {
+            color: #64748b;
+        }
+
+        .proposed-viz .detail-value {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .feature-list {
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: start;
+            gap: 10px;
+            padding: 10px;
+            background: #0f172a;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .feature-item .icon {
+            width: 20px;
+            height: 20px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .feature-item .icon.missing {
+            background: #64748b;
+        }
+
+        .feature-item .text {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .feature-item .text strong {
+            color: #e2e8f0;
+        }
+
+        .legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding: 10px;
+            background: #0f172a;
+            border-radius: 6px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .legend-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-item .dot.device {
+            background: #00bceb;
+        }
+
+        .legend-item .dot.gateway {
+            background: #f59e0b;
+        }
+
+        .legend-item .dot.default-gw {
+            background: #ef4444;
+        }
+
+        .legend-item .dot.subnet {
+            background: #8b5cf6;
+        }
+
+        .legend-item .dot.ospf {
+            background: #3b82f6;
+        }
+
+        .legend-item .dot.bgp {
+            background: #ef4444;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #0f172a;
+            border-radius: 6px;
+        }
+
+        .stat-item {
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-item .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .stat-item .label {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .zoom-controls {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .zoom-controls button {
+            width: 32px;
+            height: 32px;
+            background: #334155;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-controls button:hover {
+            background: #475569;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 8px 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #818cf8;
+        }
+
+        .search-bar button {
+            padding: 8px 16px;
+            background: #4f46e5;
+            border: 1px solid #6366f1;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .view-mode-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .view-mode-selector button {
+            padding: 6px 12px;
+            background: #334155;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .view-mode-selector button.active {
+            background: #4f46e5;
+            border-color: #6366f1;
+            color: #fff;
+        }
+
+        .help-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .help-overlay.active {
+            display: flex;
+        }
+
+        .help-content {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .help-content h2 {
+            color: #c4b5fd;
+            margin-bottom: 20px;
+        }
+
+        .help-content .shortcut {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .help-content .shortcut:last-child {
+            border-bottom: none;
+        }
+
+        .help-content .key {
+            background: #334155;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #e2e8f0;
+        }
+
+        .help-content .description {
+            color: #94a3b8;
+        }
+
+        .close-help {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #4f46e5;
+            border: none;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Device Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 0;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #312e81 0%, #4338ca 100%);
+            border-bottom: 1px solid #4f46e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: #fff;
+            font-size: 1.4rem;
+            margin: 0;
+        }
+
+        .modal-header .device-type {
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(85vh - 80px);
+        }
+
+        .modal-section {
+            margin-bottom: 24px;
+        }
+
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-section h3 {
+            color: #a5b4fc;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .info-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+
+        .info-item.full-width {
+            grid-column: span 2;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .info-value.status-online {
+            color: #10b981;
+        }
+
+        .info-value.status-warning {
+            color: #f59e0b;
+        }
+
+        .info-value.status-error {
+            color: #ef4444;
+        }
+
+        .interface-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .interface-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .interface-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        .interface-table tr:hover {
+            background: #0f172a;
+        }
+
+        .interface-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .interface-status.up {
+            background: #10b981;
+        }
+
+        .interface-status.down {
+            background: #ef4444;
+        }
+
+        .interface-status.admin-down {
+            background: #64748b;
+        }
+
+        .port-channel-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #4f46e5;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .routing-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .routing-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            font-weight: 600;
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .routing-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        .routing-table tr:hover {
+            background: #0f172a;
+        }
+
+        .protocol-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .protocol-ospf {
+            background: #3b82f6;
+            color: #bfdbfe;
+        }
+
+        .protocol-bgp {
+            background: #ef4444;
+            color: #fecaca;
+        }
+
+        .protocol-static {
+            background: #f59e0b;
+            color: #fde68a;
+        }
+
+        .protocol-connected {
+            background: #10b981;
+            color: #bbf7d0;
+        }
+
+        .vrf-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #8b5cf6;
+            color: #ddd6fe;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 6px;
+        }
+
+        .metric-bar {
+            height: 4px;
+            background: #1e293b;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .metric-bar-fill.warning {
+            background: linear-gradient(90deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        .metric-bar-fill.error {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            padding: 12px;
+            background: #0f172a;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .alert-item.critical {
+            border-left-color: #ef4444;
+        }
+
+        .alert-item.info {
+            border-left-color: #3b82f6;
+        }
+
+        .alert-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .alert-icon.warning {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .alert-icon.critical {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .alert-icon.info {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 2px;
+        }
+
+        .alert-time {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .neighbor-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: #0f172a;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+
+        .neighbor-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00bceb 0%, #0085a3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .neighbor-info {
+            flex: 1;
+        }
+
+        .neighbor-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .neighbor-detail {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: #0f172a;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tab-button:hover {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+        .tab-button.active {
+            background: #4f46e5;
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .clickable {
+            cursor: pointer;
+        }
+
+        .clickable:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Network Swiss Tool Pro</h1>
+            <p>Current State vs Proposed State - Competitive Enhancement Analysis</p>
+        </header>
+
+        <div class="view-toggle">
+            <button class="active" onclick="showView('network-flows')">Network Flows</button>
+            <button onclick="showView('l2-map')">L2 Map</button>
+            <button onclick="showView('l3-map')">L3 Map</button>
+            <button onclick="showView('combined-view')">Combined L2/L3</button>
+        </div>
+
+        <!-- Network Flows View -->
+        <div id="network-flows" class="comparison-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Network Flows - Current</h2>
+                    <span class="badge badge-current">Current</span>
+                </div>
+                <div class="visualization">
+                    <div class="visualization-header">
+                        <h3>Basic Flow Map</h3>
+                        <div class="toolbar">
+                            <button>Refresh</button>
+                            <button>Export</button>
+                        </div>
+                    </div>
+                    <div class="current-viz">
+                        <div style="display: flex; justify-content: center; gap: 30px; align-items: center;">
+                            <div class="node">Router1</div>
+                            <div class="edge" style="width: 100px;"></div>
+                            <div class="node">Switch1</div>
+                            <div class="edge" style="width: 100px;"></div>
+                            <div class="node">Server1</div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 30px; align-items: center; margin-top: 20px;">
+                            <div class="node">Router1</div>
+                            <div class="edge" style="width: 100px;"></div>
+                            <div class="node">Switch2</div>
+                            <div class="edge" style="width: 100px;"></div>
+                            <div class="node">Server2</div>
+                        </div>
+                        <div class="controls">
+                            <button>Zoom In</button>
+                            <button>Zoom Out</button>
+                            <button>Reset</button>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>Static visualization</strong> - No real-time updates</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>Basic node-link diagram</strong> - Limited visual encoding</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No flow animation</strong> - Static edges only</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>Manual navigation</strong> - No keyboard shortcuts</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Network Flows - Proposed</h2>
+                    <span class="badge badge-proposed">Proposed</span>
+                </div>
+                <div class="visualization">
+                    <div class="visualization-header">
+                        <h3>Advanced Flow Map with Real-Time Analytics</h3>
+                        <div class="toolbar">
+                            <button>Live</button>
+                            <button>Export</button>
+                            <button>Share</button>
+                        </div>
+                    </div>
+                    <div class="proposed-viz">
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search devices, IPs, flows... (Press /)">
+                            <button>Search</button>
+                        </div>
+                        <div class="toolbar-advanced">
+                            <button>Fit View <span class="keyboard-hint">F</span></button>
+                            <button>Focus Mode <span class="keyboard-hint">M</span></button>
+                            <button>Critical Path <span class="keyboard-hint">X</span></button>
+                            <button>Heat Map <span class="keyboard-hint">H</span></button>
+                            <button>Flow Overlay <span class="keyboard-hint">Q</span></button>
+                            <button>Help <span class="keyboard-hint">?</span></button>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 40px; align-items: center; position: relative;">
+                            <div class="node-enhanced node-default-gw">
+                                <div class="status-indicator"></div>
+                                Router1
+                            </div>
+                            <div class="edge-particle" style="width: 120px;"></div>
+                            <div class="node-enhanced">
+                                <div class="status-indicator"></div>
+                                Switch1
+                            </div>
+                            <div class="edge-particle" style="width: 120px;"></div>
+                            <div class="node-enhanced">
+                                <div class="status-indicator status-warning"></div>
+                                Server1
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 40px; align-items: center; margin-top: 20px; position: relative;">
+                            <div class="node-enhanced node-default-gw">
+                                <div class="status-indicator"></div>
+                                Router1
+                            </div>
+                            <div class="edge-particle" style="width: 120px;"></div>
+                            <div class="node-enhanced node-gateway">
+                                <div class="status-indicator"></div>
+                                Switch2
+                            </div>
+                            <div class="edge-enhanced" style="width: 120px;"></div>
+                            <div class="node-enhanced">
+                                <div class="status-indicator status-error"></div>
+                                Server2
+                            </div>
+                        </div>
+                        <div class="detail-panel">
+                            <h4>Selected: Switch1 - Details</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value" style="color: #10b981;">Online</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Throughput</span>
+                                <span class="detail-value">2.4 Gbps</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Connections</span>
+                                <span class="detail-value">48 active</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Latency</span>
+                                <span class="detail-value" style="color: #10b981;">1.2 ms</span>
+                            </div>
+                        </div>
+                        <div class="stats-bar">
+                            <div class="stat-item">
+                                <div class="value">12</div>
+                                <div class="label">Devices</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="value">8.4</div>
+                                <div class="label">Gbps Total</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="value">2</div>
+                                <div class="label">Alerts</div>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <div class="legend-item"><div class="dot device"></div> Device</div>
+                            <div class="legend-item"><div class="dot gateway"></div> Gateway</div>
+                            <div class="legend-item"><div class="dot default-gw"></div> Default GW</div>
+                            <div class="legend-item"><div class="dot subnet"></div> Subnet</div>
+                        </div>
+                        <div class="zoom-controls">
+                            <button>+</button>
+                            <button>−</button>
+                            <button>⟲</button>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Animated flow particles</strong> - Real-time traffic visualization</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Status indicators</strong> - Live device health monitoring</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Keyboard shortcuts</strong> - Power user navigation</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Detail panel</strong> - Click for device metrics</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Real-time stats</strong> - Live bandwidth & alerts</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- L2 Map View -->
+        <div id="l2-map" class="comparison-container hidden">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>L2 Physical Map - Current</h2>
+                    <span class="badge badge-current">Current</span>
+                </div>
+                <div class="visualization">
+                    <div class="visualization-header">
+                        <h3>Basic L2 Topology</h3>
+                        <div class="toolbar">
+                            <button>Refresh</button>
+                            <button>Export</button>
+                        </div>
+                    </div>
+                    <div class="current-viz">
+                        <div style="display: flex; justify-content: center; gap: 20px; align-items: center;">
+                            <div class="node">Core1</div>
+                            <div class="edge" style="width: 80px;"></div>
+                            <div class="node">Dist1</div>
+                            <div class="edge" style="width: 80px;"></div>
+                            <div class="node">Acc1</div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 20px; align-items: center; margin-top: 15px;">
+                            <div class="node">Core2</div>
+                            <div class="edge" style="width: 80px;"></div>
+                            <div class="node">Dist2</div>
+                            <div class="edge" style="width: 80px;"></div>
+                            <div class="node">Acc2</div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 20px; align-items: center; margin-top: 15px;">
+                            <div class="edge" style="width: 80px; transform: rotate(45deg);"></div>
+                        </div>
+                        <div class="controls">
+                            <button>Zoom In</button>
+                            <button>Zoom Out</button>
+                            <button>Reset</button>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>Flat hierarchy</strong> - No zoom levels</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>Static layout</strong> - Manual positioning only</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No port details</strong> - Device-level only</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No zone clustering</strong> - All devices visible</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>L2 Physical Map - Proposed</h2>
+                    <span class="badge badge-proposed">Proposed</span>
+                </div>
+                <div class="visualization">
+                    <div class="visualization-header">
+                        <h3>C4-Style L2 Topology with Zoom Levels</h3>
+                        <div class="toolbar">
+                            <button>Live</button>
+                            <button>Export</button>
+                            <button>Share</button>
+                        </div>
+                    </div>
+                    <div class="proposed-viz">
+                        <div class="view-mode-selector">
+                            <button class="active">Context</button>
+                            <button>Container</button>
+                            <button>Component</button>
+                            <button>Code</button>
+                        </div>
+                        <div class="toolbar-advanced">
+                            <button>Expand All <span class="keyboard-hint">Z</span></button>
+                            <button>Collapse All <span class="keyboard-hint">Shift+Z</span></button>
+                            <button>Zone Clustering <span class="keyboard-hint">K</span></button>
+                            <button>Voronoi <span class="keyboard-hint">J</span></button>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 30px; align-items: center; position: relative;">
+                            <div class="node-enhanced" style="width: 80px; height: 80px; font-size: 11px;">
+                                <div class="status-indicator"></div>
+                                Data Center
+                                <div style="font-size: 9px; margin-top: 2px;">24 devices</div>
+                            </div>
+                            <div class="edge-enhanced" style="width: 100px;"></div>
+                            <div class="node-enhanced" style="width: 80px; height: 80px; font-size: 11px;">
+                                <div class="status-indicator status-warning"></div>
+                                Branch A
+                                <div style="font-size: 9px; margin-top: 2px;">12 devices</div>
+                            </div>
+                            <div class="edge-enhanced" style="width: 100px;"></div>
+                            <div class="node-enhanced" style="width: 80px; height: 80px; font-size: 11px;">
+                                <div class="status-indicator"></div>
+                                Branch B
+                                <div style="font-size: 9px; margin-top: 2px;">8 devices</div>
+                            </div>
+                        </div>
+                        <div class="detail-panel">
+                            <h4>Zone: Data Center - Summary</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Devices</span>
+                                <span class="detail-value">24</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Switches</span>
+                                <span class="detail-value">8</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Routers</span>
+                                <span class="detail-value">2</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value" style="color: #10b981;">Healthy</span>
+                            </div>
+                        </div>
+                        <div class="stats-bar">
+                            <div class="stat-item">
+                                <div class="value">3</div>
+                                <div class="label">Zones</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="value">44</div>
+                                <div class="label">Devices</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="value">156</div>
+                                <div class="label">Links</div>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <div class="legend-item"><div class="dot device"></div> Zone Container</div>
+                            <div class="legend-item"><div class="dot gateway"></div> Expanded Device</div>
+                            <div class="legend-item"><div class="dot default-gw"></div> Critical Path</div>
+                        </div>
+                        <div class="zoom-controls">
+                            <button>+</button>
+                            <button>−</button>
+                            <button>⟲</button>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>C4 zoom levels</strong> - Context → Container → Component → Code</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Zone clustering</strong> - Automatic device grouping</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Count badges</strong> - Device counts on collapsed zones</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Progressive disclosure</strong> - Expand/collapse containers</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Zone summary panel</strong> - Quick stats per zone</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- L3 Map View -->
+        <div id="l3-map" class="comparison-container hidden">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>L3 Logical Map - Current</h2>
+                    <span class="badge badge-current">Current</span>
+                </div>
+                <div class="visualization">
+                    <div class="visualization-header">
+                        <h3>Basic L3 Topology</h3>
+                        <div class="toolbar">
+                            <button>Refresh</button>
+                            <button>Export</button>
+                        </div>
+                    </div>
+                    <div class="current-viz">
+                        <div style="display: flex; justify-content: center; gap: 25px; align-items: center;">
+                            <div class="node" style="width: 70px; height: 70px;">10.1.0.0/24</div>
+                            <div class="edge" style="width: 60px;"></div>
+                            <div class="node">Router</div>
+                            <div class="edge" style="width: 60px;"></div>
+                            <div class="node" style="width: 70px; height: 70px;">10.2.0.0/24</div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 25px; align-items: center; margin-top: 15px;">
+                            <div class="node" style="width: 70px; height: 70px;">10.3.0.0/24</div>
+                            <div class="edge" style="width: 60px;"></div>
+                            <div class="node">Router</div>
+                            <div class="edge" style="width: 60px;"></div>
+                            <div class="node" style="width: 70px; height: 70px;">10.4.0.0/24</div>
+                        </div>
+                        <div class="controls">
+                            <button>Zoom In</button>
+                            <button>Zoom Out</button>
+                            <button>Reset</button>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>Flat subnet display</strong> - No hierarchical grouping</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No gateway detection</strong> - Manual identification</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No protocol visualization</strong> - All edges same style</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No VRF support</strong> - Single routing table</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>L3 Logical Map - Proposed</h2>
+                    <span class="badge badge-proposed">Proposed</span>
+                </div>
+                <div class="visualization">
+                    <div class="visualization-header">
+                        <h3>Advanced L3 with Gateway Detection & Protocol Visualization</h3>
+                        <div class="toolbar">
+                            <button>Live</button>
+                            <button>Export</button>
+                            <button>Share</button>
+                        </div>
+                    </div>
+                    <div class="proposed-viz">
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search subnets, gateways, protocols... (Press /)">
+                            <button>Search</button>
+                        </div>
+                        <div class="toolbar-advanced">
+                            <button>Fit View <span class="keyboard-hint">F</span></button>
+                            <button>Bridge Hosts <span class="keyboard-hint">B</span></button>
+                            <button>Protocol Filter <span class="keyboard-hint">P</span></button>
+                            <button>VRF View <span class="keyboard-hint">V</span></button>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 35px; align-items: center; position: relative;">
+                            <div class="node-enhanced node-subnet">
+                                10.1.0.0/24
+                                <div style="font-size: 9px; margin-top: 2px;">VLAN 10</div>
+                            </div>
+                            <div class="edge-enhanced" style="width: 80px; background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);"></div>
+                            <div class="node-enhanced node-default-gw">
+                                <div class="status-indicator"></div>
+                                Core-Router
+                            </div>
+                            <div class="edge-enhanced" style="width: 80px; background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);"></div>
+                            <div class="node-enhanced node-subnet">
+                                10.2.0.0/24
+                                <div style="font-size: 9px; margin-top: 2px;">VLAN 20</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 35px; align-items: center; margin-top: 20px; position: relative;">
+                            <div class="node-enhanced node-subnet">
+                                10.3.0.0/24
+                                <div style="font-size: 9px; margin-top: 2px;">VLAN 30</div>
+                            </div>
+                            <div class="edge-enhanced" style="width: 80px; background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);"></div>
+                            <div class="node-enhanced node-gateway">
+                                <div class="status-indicator"></div>
+                                Edge-Router
+                            </div>
+                            <div class="edge-enhanced" style="width: 80px; background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);"></div>
+                            <div class="node-enhanced node-subnet">
+                                10.4.0.0/24
+                                <div style="font-size: 9px; margin-top: 2px;">VLAN 40</div>
+                            </div>
+                        </div>
+                        <div class="detail-panel">
+                            <h4>Subnet: 10.1.0.0/24 - Details</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Gateway</span>
+                                <span class="detail-value">10.0.0.1</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Devices</span>
+                                <span class="detail-value">12 hosts</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Protocol</span>
+                                <span class="detail-value" style="color: #3b82f6;">OSPF</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">VRF</span>
+                                <span class="detail-value">default</span>
+                            </div>
+                        </div>
+                        <div class="stats-bar">
+                            <div class="stat-item">
+                                <div class="value">4</div>
+                                <div class="label">Subnets</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="value">2</div>
+                                <div class="label">Gateways</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="value">3</div>
+                                <div class="label">Protocols</div>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <div class="legend-item"><div class="dot subnet"></div> Subnet</div>
+                            <div class="legend-item"><div class="dot gateway"></div> Gateway</div>
+                            <div class="legend-item"><div class="dot default-gw"></div> Default GW</div>
+                            <div class="legend-item"><div class="dot ospf"></div> OSPF</div>
+                            <div class="legend-item"><div class="dot bgp"></div> BGP</div>
+                        </div>
+                        <div class="zoom-controls">
+                            <button>+</button>
+                            <button>−</button>
+                            <button>⟲</button>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Subnet containers</strong> - Hierarchical grouping</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Gateway detection</strong> - Auto-identify default gateways</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Protocol visualization</strong> - Color-coded routing protocols</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>VRF support</strong> - Multi-VRF routing tables</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Bridge host detection</strong> - Multi-subnet devices</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combined L2/L3 View -->
+        <div id="combined-view" class="comparison-container hidden">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Combined L2/L3 - Current</h2>
+                    <span class="badge badge-current">Current</span>
+                </div>
+                <div class="visualization">
+                    <div class="visualization-header">
+                        <h3>Basic Combined View</h3>
+                        <div class="toolbar">
+                            <button>Refresh</button>
+                            <button>Export</button>
+                        </div>
+                    </div>
+                    <div class="current-viz">
+                        <div style="display: flex; justify-content: center; gap: 20px; align-items: center;">
+                            <div class="node">Switch</div>
+                            <div class="edge" style="width: 60px;"></div>
+                            <div class="node">Router</div>
+                            <div class="edge" style="width: 60px;"></div>
+                            <div class="node">Switch</div>
+                        </div>
+                        <div style="text-align: center; margin-top: 20px; color: #64748b; font-size: 12px;">
+                            No L2/L3 relationship visualization
+                        </div>
+                        <div class="controls">
+                            <button>Zoom In</button>
+                            <button>Zoom Out</button>
+                            <button>Reset</button>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No layer separation</strong> - L2 and L3 mixed</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No relationship mapping</strong> - Physical vs logical not linked</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No toggle controls</strong> - Cannot switch layers</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon missing">✗</div>
+                            <div class="text"><strong>No drill-down capability</strong> - Cannot explore relationships</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Combined L2/L3 - Proposed</h2>
+                    <span class="badge badge-proposed">Proposed</span>
+                </div>
+                <div class="visualization">
+                    <div class="visualization-header">
+                        <h3>Layered Visualization with Toggle Controls</h3>
+                        <div class="toolbar">
+                            <button>Live</button>
+                            <button>Export</button>
+                            <button>Share</button>
+                        </div>
+                    </div>
+                    <div class="proposed-viz">
+                        <div class="view-mode-selector">
+                            <button class="active">L2 Base</button>
+                            <button>L3 Overlay</button>
+                            <button>Combined</button>
+                            <button>Relationships</button>
+                        </div>
+                        <div class="toolbar-advanced">
+                            <button>Show L2 <span class="keyboard-hint">1</span></button>
+                            <button>Show L3 <span class="keyboard-hint">2</span></button>
+                            <button>Show Both <span class="keyboard-hint">3</span></button>
+                            <button>Link Layers <span class="keyboard-hint">L</span></button>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 30px; align-items: center; position: relative;">
+                            <div class="node-enhanced" style="background: linear-gradient(135deg, #00bceb 0%, #0085a3 100%);">
+                                <div class="status-indicator"></div>
+                                L2-Switch
+                            </div>
+                            <div class="edge-enhanced" style="width: 80px; background: #475569;"></div>
+                            <div class="node-enhanced node-default-gw">
+                                <div class="status-indicator"></div>
+                                L3-Router
+                            </div>
+                            <div class="edge-enhanced" style="width: 80px; background: #475569;"></div>
+                            <div class="node-enhanced" style="background: linear-gradient(135deg, #00bceb 0%, #0085a3 100%);">
+                                <div class="status-indicator"></div>
+                                L2-Switch
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 30px; align-items: center; margin-top: 20px; position: relative;">
+                            <div class="node-enhanced node-subnet" style="opacity: 0.5;">
+                                10.1.0.0/24
+                            </div>
+                            <div class="edge-particle" style="width: 80px; opacity: 0.5;"></div>
+                            <div class="node-enhanced node-default-gw" style="opacity: 0.5;">
+                                L3-Router
+                            </div>
+                            <div class="edge-particle" style="width: 80px; opacity: 0.5;"></div>
+                            <div class="node-enhanced node-subnet" style="opacity: 0.5;">
+                                10.2.0.0/24
+                            </div>
+                        </div>
+                        <div class="detail-panel">
+                            <h4>Layer Relationship: Switch → Router → Subnet</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">L2 Device</span>
+                                <span class="detail-value">Core-Switch1 (Gi0/1)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">L3 Device</span>
+                                <span class="detail-value">Core-Router (Gi0/1)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Subnet</span>
+                                <span class="detail-value">10.1.0.0/24 (VLAN 10)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Relationship</span>
+                                <span class="detail-value" style="color: #10b981;">Direct Uplink</span>
+                            </div>
+                        </div>
+                        <div class="stats-bar">
+                            <div class="stat-item">
+                                <div class="value">8</div>
+                                <div class="label">L2 Links</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="value">4</div>
+                                <div class="label">L3 Routes</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="value">12</div>
+                                <div class="label">Relationships</div>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <div class="legend-item"><div class="dot device"></div> L2 Device</div>
+                            <div class="legend-item"><div class="dot gateway"></div> L3 Device</div>
+                            <div class="legend-item"><div class="dot subnet"></div> Subnet</div>
+                            <div class="legend-item"><div class="dot default-gw"></div> Relationship</div>
+                        </div>
+                        <div class="zoom-controls">
+                            <button>+</button>
+                            <button>−</button>
+                            <button>⟲</button>
+                        </div>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Layer separation</strong> - Distinct L2 and L3 layers</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Toggle controls</strong> - Switch between layers</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Relationship mapping</strong> - Link physical to logical</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Drill-down capability</strong> - Explore device relationships</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="icon">✓</div>
+                            <div class="text"><strong>Combined view</strong> - See both layers simultaneously</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Overlay -->
+        <div class="help-overlay" id="helpOverlay">
+            <div class="help-content">
+                <h2>Keyboard Shortcuts</h2>
+                <div class="shortcut">
+                    <span class="key">?</span>
+                    <span class="description">Show this help overlay</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">/</span>
+                    <span class="description">Focus search bar</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">F</span>
+                    <span class="description">Fit view to viewport</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">M</span>
+                    <span class="description">Toggle focus mode</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">X</span>
+                    <span class="description">Highlight critical path</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">H</span>
+                    <span class="description">Toggle heat map</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">Z</span>
+                    <span class="description">Expand/collapse zones</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">K</span>
+                    <span class="description">Toggle zone clustering</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">B</span>
+                    <span class="description">Show bridge hosts</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">P</span>
+                    <span class="description">Filter by protocol</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">V</span>
+                    <span class="description">Toggle VRF view</span>
+                </div>
+                <div class="shortcut">
+                    <span class="key">Esc</span>
+                    <span class="description">Clear selection / close overlay</span>
+                </div>
+                <button class="close-help" onclick="closeHelp()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.comparison-container').forEach(container => {
+                container.classList.add('hidden');
+            });
+            
+            // Show selected view
+            document.getElementById(viewId).classList.remove('hidden');
+            
+            // Update button states
+            document.querySelectorAll('.view-toggle button').forEach(button => {
+                button.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function showHelp() {
+            document.getElementById('helpOverlay').classList.add('active');
+        }
+
+        function closeHelp() {
+            document.getElementById('helpOverlay').classList.remove('active');
+        }
+
+        // Close help on escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeHelp();
+            }
+            if (e.key === '?') {
+                showHelp();
+            }
+        });
+
+        // Close help when clicking outside
+        document.getElementById('helpOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeHelp();
+            }
+        });
+
+        // Modal functions
+        function openDeviceModal(deviceType, deviceName) {
+            const modal = document.getElementById('deviceModal');
+            const modalTitle = modal.querySelector('.modal-header h2');
+            const modalType = modal.querySelector('.device-type');
+            
+            modalTitle.textContent = deviceName;
+            modalType.textContent = deviceType;
+            
+            // Update content based on device type
+            updateModalContent(deviceType, deviceName);
+            
+            modal.classList.add('active');
+        }
+
+        function closeDeviceModal() {
+            document.getElementById('deviceModal').classList.remove('active');
+        }
+
+        function updateModalContent(deviceType, deviceName) {
+            const overviewTab = document.getElementById('tab-overview');
+            const interfacesTab = document.getElementById('tab-interfaces');
+            const routingTab = document.getElementById('tab-routing');
+            const alertsTab = document.getElementById('tab-alerts');
+            const neighborsTab = document.getElementById('tab-neighbors');
+            
+            // Update overview based on device type
+            if (deviceType === 'Router') {
+                overviewTab.innerHTML = getRouterOverview(deviceName);
+                routingTab.style.display = 'block';
+            } else if (deviceType === 'Switch') {
+                overviewTab.innerHTML = getSwitchOverview(deviceName);
+                routingTab.style.display = 'none';
+            } else if (deviceType === 'Server') {
+                overviewTab.innerHTML = getServerOverview(deviceName);
+                routingTab.style.display = 'none';
+            }
+            
+            // Update interfaces
+            interfacesTab.innerHTML = getInterfacesTable(deviceType);
+            
+            // Update routing (for routers)
+            if (deviceType === 'Router') {
+                routingTab.innerHTML = getRoutingTable(deviceName);
+            }
+            
+            // Update alerts
+            alertsTab.innerHTML = getAlertsList(deviceType);
+            
+            // Update neighbors
+            neighborsTab.innerHTML = getNeighborsList(deviceName);
+        }
+
+        function getRouterOverview(deviceName) {
+            return `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value status-online">Online</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Uptime</div>
+                        <div class="info-value">45d 12h 34m</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Platform</div>
+                        <div class="info-value">Cisco IOS-XE</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Serial Number</div>
+                        <div class="info-value">FOC1234ABCD</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Software Version</div>
+                        <div class="info-value">17.3.5</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Management IP</div>
+                        <div class="info-value">10.0.0.1</div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">CPU Utilization</div>
+                        <div class="info-value">23%</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" style="width: 23%;"></div>
+                        </div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">Memory Usage</div>
+                        <div class="info-value">4.2 GB / 8 GB</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" style="width: 52%;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getSwitchOverview(deviceName) {
+            return `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value status-online">Online</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Uptime</div>
+                        <div class="info-value">12d 8h 22m</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Platform</div>
+                        <div class="info-value">Cisco Catalyst 9300</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Serial Number</div>
+                        <div class="info-value">FDO2345EFGH</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Software Version</div>
+                        <div class="info-value">17.9.4</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Management IP</div>
+                        <div class="info-value">10.0.0.10</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Ports</div>
+                        <div class="info-value">48</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Active Ports</div>
+                        <div class="info-value">42</div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">Power Consumption</div>
+                        <div class="info-value">245W / 650W</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" style="width: 38%;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getServerOverview(deviceName) {
+            return `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value status-warning">Degraded</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Uptime</div>
+                        <div class="info-value">5d 3h 15m</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">OS</div>
+                        <div class="info-value">Ubuntu 22.04 LTS</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">IP Address</div>
+                        <div class="info-value">10.1.0.50</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">CPU Cores</div>
+                        <div class="info-value">16 vCPU</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Memory</div>
+                        <div class="info-value">64 GB</div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">CPU Utilization</div>
+                        <div class="info-value">78%</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill warning" style="width: 78%;"></div>
+                        </div>
+                    </div>
+                    <div class="info-item full-width">
+                        <div class="info-label">Disk Usage</div>
+                        <div class="info-value">450 GB / 1 TB</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill" style="width: 45%;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getInterfacesTable(deviceType) {
+            if (deviceType === 'Router') {
+                return `
+                    <table class="interface-table">
+                        <thead>
+                            <tr>
+                                <th>Interface</th>
+                                <th>Status</th>
+                                <th>IP Address</th>
+                                <th>Description</th>
+                                <th>Speed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>GigabitEthernet0/0 <span class="port-channel-badge">Po1</span></td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>10.0.0.1/24</td>
+                                <td>Uplink to Core</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>GigabitEthernet0/1 <span class="port-channel-badge">Po1</span></td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>10.0.0.1/24</td>
+                                <td>Uplink to Core</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>GigabitEthernet0/2</td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>192.168.1.1/24</td>
+                                <td>LAN Segment A</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>GigabitEthernet0/3</td>
+                                <td><span class="interface-status admin-down"></span>Admin Down</td>
+                                <td>-</td>
+                                <td>Reserved</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>TenGigabitEthernet0/0/0</td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>10.255.255.1/30</td>
+                                <td>WAN Link</td>
+                                <td>10 Gbps</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+            } else if (deviceType === 'Switch') {
+                return `
+                    <table class="interface-table">
+                        <thead>
+                            <tr>
+                                <th>Interface</th>
+                                <th>Status</th>
+                                <th>VLAN</th>
+                                <th>Description</th>
+                                <th>Speed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>GigabitEthernet1/0/1</td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>10</td>
+                                <td>Server Port 1</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>GigabitEthernet1/0/2</td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>10</td>
+                                <td>Server Port 2</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>GigabitEthernet1/0/3</td>
+                                <td><span class="interface-status down"></span>Down</td>
+                                <td>10</td>
+                                <td>Server Port 3</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>GigabitEthernet1/0/4</td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>20</td>
+                                <td>Workstation Port</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>TenGigabitEthernet1/0/1 <span class="port-channel-badge">Po10</span></td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>Trunk</td>
+                                <td>Uplink to Router</td>
+                                <td>10 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>TenGigabitEthernet1/0/2 <span class="port-channel-badge">Po10</span></td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>Trunk</td>
+                                <td>Uplink to Router</td>
+                                <td>10 Gbps</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                return `
+                    <table class="interface-table">
+                        <thead>
+                            <tr>
+                                <th>Interface</th>
+                                <th>Status</th>
+                                <th>IP Address</th>
+                                <th>MTU</th>
+                                <th>Speed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>eth0</td>
+                                <td><span class="interface-status up"></span>Up</td>
+                                <td>10.1.0.50/24</td>
+                                <td>1500</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                            <tr>
+                                <td>eth1</td>
+                                <td><span class="interface-status admin-down"></span>Admin Down</td>
+                                <td>-</td>
+                                <td>1500</td>
+                                <td>1 Gbps</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+            }
+        }
+
+        function getRoutingTable(deviceName) {
+            return `
+                <table class="routing-table">
+                    <thead>
+                        <tr>
+                            <th>Destination</th>
+                            <th>Protocol</th>
+                            <th>Next Hop</th>
+                            <th>Interface</th>
+                            <th>Metric</th>
+                            <th>VRF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0.0.0.0/0</td>
+                            <td><span class="protocol-badge protocol-static">S</span></td>
+                            <td>10.255.255.2</td>
+                            <td>TenGig0/0/0</td>
+                            <td>1</td>
+                            <td><span class="vrf-tag">default</span></td>
+                        </tr>
+                        <tr>
+                            <td>10.0.0.0/24</td>
+                            <td><span class="protocol-badge protocol-connected">C</span></td>
+                            <td>directly connected</td>
+                            <td>Gig0/0</td>
+                            <td>0</td>
+                            <td><span class="vrf-tag">default</span></td>
+                        </tr>
+                        <tr>
+                            <td>192.168.1.0/24</td>
+                            <td><span class="protocol-badge protocol-connected">C</span></td>
+                            <td>directly connected</td>
+                            <td>Gig0/2</td>
+                            <td>0</td>
+                            <td><span class="vrf-tag">default</span></td>
+                        </tr>
+                        <tr>
+                            <td>10.255.255.0/30</td>
+                            <td><span class="protocol-badge protocol-connected">C</span></td>
+                            <td>directly connected</td>
+                            <td>TenGig0/0/0</td>
+                            <td>0</td>
+                            <td><span class="vrf-tag">default</span></td>
+                        </tr>
+                        <tr>
+                            <td>172.16.0.0/16</td>
+                            <td><span class="protocol-badge protocol-ospf">O</span></td>
+                            <td>10.255.255.2</td>
+                            <td>TenGig0/0/0</td>
+                            <td>110</td>
+                            <td><span class="vrf-tag">default</span></td>
+                        </tr>
+                        <tr>
+                            <td>10.100.0.0/16</td>
+                            <td><span class="protocol-badge protocol-bgp">B</span></td>
+                            <td>10.255.255.2</td>
+                            <td>TenGig0/0/0</td>
+                            <td>200</td>
+                            <td><span class="vrf-tag">default</span></td>
+                        </tr>
+                        <tr>
+                            <td>192.168.100.0/24</td>
+                            <td><span class="protocol-badge protocol-connected">C</span></td>
+                            <td>directly connected</td>
+                            <td>Gig0/0</td>
+                            <td>0</td>
+                            <td><span class="vrf-tag">VRF_A</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function getAlertsList(deviceType) {
+            if (deviceType === 'Server') {
+                return `
+                    <div class="alert-item critical">
+                        <div class="alert-icon critical">!</div>
+                        <div class="alert-content">
+                            <div class="alert-title">High CPU Utilization</div>
+                            <div class="alert-time">2 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="alert-item warning">
+                        <div class="alert-icon warning">⚠</div>
+                        <div class="alert-content">
+                            <div class="alert-title">Disk Space Warning</div>
+                            <div class="alert-time">1 hour ago</div>
+                        </div>
+                    </div>
+                `;
+            } else if (deviceType === 'Switch') {
+                return `
+                    <div class="alert-item warning">
+                        <div class="alert-icon warning">⚠</div>
+                        <div class="alert-content">
+                            <div class="alert-title">Port Gig1/0/3 Down</div>
+                            <div class="alert-time">15 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="alert-item info">
+                        <div class="alert-icon info">ℹ</div>
+                        <div class="alert-content">
+                            <div class="alert-title">STP Topology Change</div>
+                            <div class="alert-time">2 hours ago</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="alert-item info">
+                        <div class="alert-icon info">ℹ</div>
+                        <div class="alert-content">
+                            <div class="alert-title">BGP Neighbor Up</div>
+                            <div class="alert-time">5 minutes ago</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function getNeighborsList(deviceType) {
+            if (deviceType === 'Router') {
+                return `
+                    <div class="neighbor-item">
+                        <div class="neighbor-icon">SW</div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-name">Core-Switch1</div>
+                            <div class="neighbor-detail">via OSPF · Gig0/0</div>
+                        </div>
+                    </div>
+                    <div class="neighbor-item">
+                        <div class="neighbor-icon">RT</div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-name">Edge-Router</div>
+                            <div class="neighbor-detail">via BGP · TenGig0/0/0</div>
+                        </div>
+                    </div>
+                    <div class="neighbor-item">
+                        <div class="neighbor-icon">SW</div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-name">Dist-Switch2</div>
+                            <div class="neighbor-detail">via CDP · Gig0/2</div>
+                        </div>
+                    </div>
+                `;
+            } else if (deviceType === 'Switch') {
+                return `
+                    <div class="neighbor-item">
+                        <div class="neighbor-icon">RT</div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-name">Core-Router</div>
+                            <div class="neighbor-detail">via LLDP · TenGig1/0/1</div>
+                        </div>
+                    </div>
+                    <div class="neighbor-item">
+                        <div class="neighbor-icon">SW</div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-name">Access-Switch1</div>
+                            <div class="neighbor-detail">via CDP · Gig1/0/24</div>
+                        </div>
+                    </div>
+                    <div class="neighbor-item">
+                        <div class="neighbor-icon">SV</div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-name">Server-Web01</div>
+                            <div class="neighbor-detail">via LLDP · Gig1/0/1</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="neighbor-item">
+                        <div class="neighbor-icon">SW</div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-name">Core-Switch1</div>
+                            <div class="neighbor-detail">via ARP · 10.0.0.10</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Add click handlers to nodes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make nodes clickable
+            document.querySelectorAll('.node-enhanced').forEach(node => {
+                node.classList.add('clickable');
+                node.addEventListener('click', function(e) {
+                    const deviceName = this.textContent.trim();
+                    let deviceType = 'Device';
+                    
+                    if (deviceName.includes('Router')) {
+                        deviceType = 'Router';
+                    } else if (deviceName.includes('Switch')) {
+                        deviceType = 'Switch';
+                    } else if (deviceName.includes('Server')) {
+                        deviceType = 'Server';
+                    }
+                    
+                    openDeviceModal(deviceType, deviceName);
+                });
+            });
+
+            // Close modal on escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeDeviceModal();
+                }
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('deviceModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeDeviceModal();
+                }
+            });
+        });
+    </script>
+
+    <!-- Device Detail Modal -->
+    <div class="modal-overlay" id="deviceModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Device Name</h2>
+                <span class="device-type">DEVICE TYPE</span>
+                <button class="modal-close" onclick="closeDeviceModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-container">
+                    <button class="tab-button active" onclick="switchTab('overview')">Overview</button>
+                    <button class="tab-button" onclick="switchTab('interfaces')">Interfaces</button>
+                    <button class="tab-button" onclick="switchTab('routing')">Routing</button>
+                    <button class="tab-button" onclick="switchTab('alerts')">Alerts</button>
+                    <button class="tab-button" onclick="switchTab('neighbors')">Neighbors</button>
+                </div>
+
+                <div id="tab-overview" class="tab-content active">
+                    <div class="modal-section">
+                        <h3>Device Information</h3>
+                        <!-- Content populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="tab-interfaces" class="tab-content">
+                    <div class="modal-section">
+                        <h3>Interface Details</h3>
+                        <!-- Content populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="tab-routing" class="tab-content">
+                    <div class="modal-section">
+                        <h3>Routing Table</h3>
+                        <!-- Content populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="tab-alerts" class="tab-content">
+                    <div class="modal-section">
+                        <h3>Active Alerts</h3>
+                        <!-- Content populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="tab-neighbors" class="tab-content">
+                    <div class="modal-section">
+                        <h3>Network Neighbors</h3>
+                        <!-- Content populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

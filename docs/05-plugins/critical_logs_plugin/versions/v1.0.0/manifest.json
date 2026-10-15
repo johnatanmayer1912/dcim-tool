@@ -1,0 +1,11 @@
+{
+  "plugin_id": "critical_logs",
+  "version": "1.0.0",
+  "display_name": "Critical Log Scanner",
+  "created_date": "2026-04-20T10:00:00Z",
+  "author": "Network Swiss Tool",
+  "category": "Audit",
+  "qa_status": "approved",
+  "documentation_complete": true,
+  "status": "current"
+}

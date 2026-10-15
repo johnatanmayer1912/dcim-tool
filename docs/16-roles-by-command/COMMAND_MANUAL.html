@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network Swiss Tool Pro — Command Manual v7.0.29</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --border: #2d3a4f;
+      --text: #e6edf3;
+      --muted: #8b9cb3;
+      --accent: #3b82f6;
+      --accent-dim: #2563eb;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --mono: 'Cascadia Code', 'Consolas', 'Monaco', monospace;
+      --sans: 'Segoe UI', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: relative; height: auto; }
+    }
+    .sidebar {
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      padding: 1.25rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar h1 {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+    .sidebar .ver { font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem; }
+    .search {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+    .nav a {
+      display: block;
+      padding: 0.4rem 0.6rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      margin-bottom: 2px;
+    }
+    .nav a:hover, .nav a.active { background: var(--bg); color: var(--accent); }
+    .nav .section { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 1rem 0 0.4rem; }
+    main { padding: 2rem 2.5rem 4rem; max-width: 960px; }
+    h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    h2:first-child { margin-top: 0; }
+    h3 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: var(--accent); }
+    p { margin-bottom: 0.75rem; color: var(--muted); }
+    p strong { color: var(--text); }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .card.featured { border-color: var(--accent); }
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 0.35rem;
+    }
+    .badge-council { background: #7c3aed33; color: #a78bfa; }
+    .badge-docs { background: #0ea5e933; color: #38bdf8; }
+    .badge-ship { background: #22c55e33; color: var(--green); }
+    .badge-ux { background: #f59e0b33; color: var(--amber); }
+    .meta { font-size: 0.8rem; color: var(--muted); margin: 0.5rem 0; }
+    .roles { font-size: 0.8rem; color: var(--green); font-family: var(--mono); }
+    .cmd-wrap { position: relative; margin: 0.75rem 0; }
+    .cmd-block {
+      position: relative;
+      background: #0a0e14;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 3rem 1rem 1rem;
+      margin: 0.75rem 0;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #c9d1d9;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--accent-dim);
+      color: white;
+      border: none;
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.7rem;
+    }
+    .copy-btn:hover { background: var(--accent); }
+    .copy-btn.ok { background: var(--green); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 1rem 0; }
+    th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; }
+    .note {
+      background: #1e3a5f33;
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h1>Command Manual</h1>
+      <div class="ver">Network Swiss Tool Pro · v7.0.29 · PC / Offline</div>
+      <input type="search" class="search" id="search" placeholder="Filter commands…" aria-label="Search commands">
+      <nav class="nav" id="nav">
+        <div class="section">Start</div>
+        <a href="#intro">Introduction</a>
+        <a href="#how">How to use</a>
+        <div class="section">Tier 1 — Council</div>
+        <a href="#full-docs-sync">Full docs sync</a>
+        <a href="#find-bugs-fix">Find all bugs &amp; fix</a>
+        <a href="#ui-ux">UI/UX audit</a>
+        <a href="#next-steps">Next steps council</a>
+        <div class="section">Tier 2 — Quality</div>
+        <a href="#bug-sweep">Bug sweep (find only)</a>
+        <a href="#code-review">Code review</a>
+        <a href="#release">Release &amp; ship</a>
+        <div class="section">Tier 3 — Dev</div>
+        <a href="#implement">Implement / fix</a>
+        <div class="section">Tier 4–6</div>
+        <a href="#docs-gov">Docs &amp; governance</a>
+        <a href="#arch-sec">Architecture &amp; security</a>
+        <a href="#rebuild">Build &amp; rebuild</a>
+        <a href="#roles">Role reference</a>
+      </nav>
+    </aside>
+    <main id="content">
+
+      <section id="intro" data-keywords="intro start manual offline pc cursor ide">
+        <h2>Introduction</h2>
+        <p>This manual lists every <strong>AI IDE command</strong> for Network Swiss Tool Pro. Commands activate multiple <strong>team roles</strong> (R-ENG, R-QA, R-LIB, …) automatically for a holistic result.</p>
+        <div class="note">Designed for <strong>offline Windows PC</strong> use by network engineers. Open this file in a browser from the repo — no internet required.</div>
+        <p><strong>Markdown source:</strong> <code>docs/17-roles-by-command/ROLES_BY_COMMAND_REFERENCE.md</code><br>
+        <strong>Workflow hub:</strong> <code>docs/13-master-prompts/PROMPT_COMMAND_CENTER.md</code></p>
+      </section>
+
+      <section id="how" data-keywords="how usage copy paste slash">
+        <h2>How to use</h2>
+        <ol style="margin-left:1.25rem;color:var(--muted)">
+          <li>Click <strong>Copy</strong> on any command block below.</li>
+          <li>Paste into Cursor chat and send.</li>
+          <li>AI loads the workflow file and all listed roles.</li>
+          <li>Review deliverables (reports under <code>docs/14-bug-reports/</code>, action logs).</li>
+        </ol>
+      </section>
+
+      <section id="full-docs-sync" data-keywords="full docs sync documentation parity rebuild registry">
+        <h2><span class="badge badge-docs">Docs</span> Full docs sync</h2>
+        <div class="card featured">
+          <p><strong>Aliases:</strong> <code>/full-docs-sync</code> · <code>full docs sync</code> · <code>sync all documentation</code></p>
+          <p class="roles">Roles: R-GOV-LIB, R-LIB, R-RECON, R-ARCH, R-QA, R-REL</p>
+          <p class="meta">Workflow: docs/13-master-prompts/roles/FULL_DOCS_SYNC.md</p>
+          <p>Complete parity: CODE_INVENTORY, API docs, plugin READMEs, 15-rebuild-roadmap, PROMPT_REGISTRY, link validation.</p>
+          <div class="cmd-wrap"><div class="cmd-block" data-copy>/full-docs-sync
+
+Execute docs/13-master-prompts/roles/FULL_DOCS_SYNC.md — all phases.
+Run python scripts/validate_docs_links.py before and after.
+Log: docs/13-master-prompts/action-logs/YYYY-MM-DD_full-docs-sync.md</div><button class="copy-btn" type="button">Copy</button></div>
+        </div>
+      </section>
+
+      <section id="find-bugs-fix" data-keywords="find bugs fix sweep criticality holistic council fix all">
+        <h2><span class="badge badge-council">Council</span> Find all bugs and fix</h2>
+        <div class="card featured">
+          <p><strong>Aliases:</strong> <code>/find-all-bugs-and-fix</code> · <code>find all bugs and fix</code></p>
+          <p class="roles">Roles: ALL council (R-GOV-LIB, R-ARCH, R-ENG, R-QA, R-SEC, R-OBS, R-LIB, R-REL, R-PROD, R-COUNCIL)</p>
+          <p class="meta">Workflow: docs/13-master-prompts/roles/FIND_ALL_BUGS_AND_FIX.md</p>
+          <p><strong>Output:</strong> Bug list with severity · root cause · fix prompts per bug · <code>FIX-ALL-CONSOLIDATED-PROMPT.md</code> for one-shot fix run.</p>
+          <div class="cmd-block" data-copy>/find-all-bugs-and-fix
+
+Execute docs/13-master-prompts/roles/FIND_ALL_BUGS_AND_FIX.md
+
+Phase A: Full bug sweep (all roles) → docs/14-bug-reports/W-BUG-SWEEP-*.md
+Phase B: Council synthesis → 01-prioritized-bug-list.md with Critical/High/Medium/Low
+Phase C: Generate 04-fix-workflow/FIX-ALL-CONSOLIDATED-PROMPT.md
+
+Each bug folder must include: bug-report.md, fix-prompt.md, validation-prompt.md</div>
+          <button class="copy-btn" type="button">Copy</button>
+          <h3>After sweep — fix everything</h3>
+          <div class="cmd-block" data-copy>execute fix all from latest bug sweep
+
+Run docs/14-bug-reports/04-fix-workflow/FIX-ALL-CONSOLIDATED-PROMPT.md in priority order.
+After each bug: pytest + _prebuild.py. Then /full-docs-sync.</div>
+          <button class="copy-btn" type="button">Copy</button>
+          <h3>Auto-fix (find + fix in one session)</h3>
+          <div class="cmd-block" data-copy>/find-all-bugs-and-fix auto proceed
+
+Same as find-all-bugs-and-fix but continue into fixes without waiting.
+Stop only on test regression or council escalation.</div>
+          <button class="copy-btn" type="button">Copy</button>
+        </div>
+      </section>
+
+      <section id="ui-ux" data-keywords="ui ux audit desktop offline 1024 professional glitch">
+        <h2><span class="badge badge-ux">UX</span> UI/UX audit</h2>
+        <div class="card featured">
+          <p><strong>Aliases:</strong> <code>/ui-ux-audit</code> · <code>ui ux check</code></p>
+          <p class="roles">Roles: R-PROD, R-ENG, R-QA, R-ARCH, R-LIB, R-OBS, R-COUNCIL</p>
+          <p class="meta">Workflow: docs/13-master-prompts/roles/UI_UX_AUDIT.md</p>
+          <p>Audits <code>index.html</code> and offline maps for <strong>PC engineers</strong>: 1024×768+, no CDN, no mobile-only UI, professional tech aesthetic.</p>
+          <div class="cmd-block" data-copy>/ui-ux-audit
+
+Execute docs/13-master-prompts/roles/UI_UX_AUDIT.md
+
+Review all tabs in modules/web/templates/index.html
+Verify offline EXE has no external CDN dependencies
+Run HTML contract tests (discovery + vpc map)
+Output: docs/14-bug-reports/W-UI-UX-AUDIT-YYYY-MM-DD.md with severity + fix prompts</div>
+          <button class="copy-btn" type="button">Copy</button>
+        </div>
+      </section>
+
+      <section id="next-steps" data-keywords="next steps roadmap improve features council 360 engineer">
+        <h2><span class="badge badge-council">Council</span> Next steps — improvement roadmap</h2>
+        <div class="card featured">
+          <p><strong>Aliases:</strong> <code>/next-steps</code> · <code>what are the next steps to improve the program</code></p>
+          <p class="roles">Roles: ALL council — R-COUNCIL synthesizes</p>
+          <p class="meta">Workflow: docs/13-master-prompts/roles/NEXT_STEPS_COUNCIL.md</p>
+          <p>360° recommendations for <strong>network engineers</strong>: time saved, simplicity, professionalism. Each item includes decision, why, complexity (S/M/L/XL), and <strong>implementation prompt</strong>.</p>
+          <div class="cmd-block" data-copy>/next-steps
+
+Execute docs/13-master-prompts/roles/NEXT_STEPS_COUNCIL.md
+
+Output: docs/14-bug-reports/03-team-contributions/NEXT-STEPS-COUNCIL-YYYY-MM-DD.md
+Each NEXT-* row: Decision, Why, What it adds, Complexity, Roles, Implementation prompt (copy-paste)
+Focus: engineer effectiveness, offline PC, time-saving workflows</div>
+          <button class="copy-btn" type="button">Copy</button>
+          <h3>Implement a council recommendation</h3>
+          <div class="cmd-block" data-copy>implement NEXT-001
+
+Run the implementation prompt from the latest NEXT-STEPS-COUNCIL document for NEXT-001.
+Then /full-docs-sync</div>
+          <button class="copy-btn" type="button">Copy</button>
+        </div>
+      </section>
+
+      <section id="bug-sweep" data-keywords="check system bugs sweep find only">
+        <h2>Bug sweep (find only)</h2>
+        <div class="card">
+          <p><strong>Aliases:</strong> <code>check system for bugs</code> · <code>/check-system-bugs</code></p>
+          <p class="roles">Roles: All council</p>
+          <p class="meta">Workflow: docs/13-master-prompts/roles/CHECK_SYSTEM_FOR_BUGS.md</p>
+          <div class="cmd-block" data-copy>check system for bugs</div>
+          <button class="copy-btn" type="button">Copy</button>
+        </div>
+      </section>
+
+      <section id="code-review" data-keywords="code review architecture test doc sync">
+        <h2>Code review &amp; quality</h2>
+        <div class="card">
+          <p><code>/code-review-doc-sync</code> — ARCH → ENG → QA → LIB</p>
+          <div class="cmd-block" data-copy>/code-review-doc-sync</div>
+          <button class="copy-btn" type="button">Copy</button>
+        </div>
+        <div class="card">
+          <p><code>/full-fix-and-ship [description]</code></p>
+          <div class="cmd-block" data-copy>/full-fix-and-ship [describe fix or feature here]</div>
+          <button class="copy-btn" type="button">Copy</button>
+        </div>
+      </section>
+
+      <section id="release" data-keywords="release exe build version ship">
+        <h2><span class="badge badge-ship">Release</span> Release &amp; build</h2>
+        <div class="card">
+          <div class="cmd-block" data-copy>/release-v7.0.30
+
+pytest + prebuild PASS → VERSION + CHANGELOG + release notes + EXE + exe-smoke-checklist</div>
+          <button class="copy-btn" type="button">Copy</button>
+        </div>
+        <div class="card">
+          <div class="cmd-block" data-copy>build exe
+
+python _prebuild.py then PyInstaller per BUILD_GUIDE.md</div>
+          <button class="copy-btn" type="button">Copy</button>
+        </div>
+      </section>
+
+      <section id="implement" data-keywords="implement fix bug validate">
+        <h2>Implement &amp; fix</h2>
+        <table>
+          <tr><th>Command</th><th>Roles</th></tr>
+          <tr><td><code>implement [feature]</code></td><td>ARCH, ENG, QA, LIB, RECON</td></tr>
+          <tr><td><code>fix bug BUG-NNNN</code></td><td>ENG, QA, LIB, RECON</td></tr>
+          <tr><td><code>validate fix BUG-NNNN</code></td><td>QA, LIB</td></tr>
+        </table>
+      </section>
+
+      <section id="docs-gov" data-keywords="documentation audit govern prompts">
+        <h2>Documentation &amp; governance</h2>
+        <table>
+          <tr><th>Command</th><th>Notes</th></tr>
+          <tr><td><code>/full-docs-sync</code></td><td>Complete sync (preferred)</td></tr>
+          <tr><td><code>sync documentation</code></td><td>Partial / quick pass</td></tr>
+          <tr><td><code>/doc-audit</code></td><td>Gap analysis</td></tr>
+          <tr><td><code>govern prompts</code></td><td>Registry + INDEX</td></tr>
+        </table>
+      </section>
+
+      <section id="arch-sec" data-keywords="architecture security review">
+        <h2>Architecture &amp; security</h2>
+        <table>
+          <tr><td><code>review architecture</code></td><td>R-ARCH, R-LIB</td></tr>
+          <tr><td><code>security review</code></td><td>R-SEC, R-ENG, R-LIB</td></tr>
+        </table>
+      </section>
+
+      <section id="rebuild" data-keywords="rebuild disaster recovery batch exe">
+        <h2>Build &amp; disaster recovery</h2>
+        <div class="cmd-block" data-copy>rebuild from docs — Batch 1 only
+
+Per docs/15-rebuild-roadmap/DISASTER_RECOVERY_COMMAND.md (max 4 prompts per message)</div>
+        <button class="copy-btn" type="button">Copy</button>
+      </section>
+
+      <section id="roles" data-keywords="roles R-ENG R-QA reference">
+        <h2>Role reference</h2>
+        <table>
+          <tr><th>ID</th><th>Mission</th></tr>
+          <tr><td>R-ENG</td><td>Implementation</td></tr>
+          <tr><td>R-QA</td><td>Tests &amp; gates</td></tr>
+          <tr><td>R-LIB</td><td>Documentation parity</td></tr>
+          <tr><td>R-RECON</td><td>Rebuild roadmap</td></tr>
+          <tr><td>R-ARCH</td><td>Architecture</td></tr>
+          <tr><td>R-PROD</td><td>Product / engineer UX</td></tr>
+          <tr><td>R-SEC</td><td>Security</td></tr>
+          <tr><td>R-OBS</td><td>Logs &amp; diagnostics</td></tr>
+          <tr><td>R-REL</td><td>Release &amp; VERSION</td></tr>
+          <tr><td>R-GOV-LIB</td><td>Prompts &amp; registry</td></tr>
+          <tr><td>R-COUNCIL</td><td>Synthesis &amp; conflicts</td></tr>
+        </table>
+        <p class="meta" style="margin-top:1rem">© 2026 Network Swiss Tool Pro · Offline command manual</p>
+      </section>
+
+    </main>
+  </div>
+  <script>
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      const block = btn.previousElementSibling;
+      if (!block || !block.classList.contains('cmd-block')) return;
+      btn.addEventListener('click', () => {
+        const text = block.getAttribute('data-copy') || block.textContent;
+        navigator.clipboard.writeText(text.trim()).then(() => {
+          btn.textContent = 'Copied';
+          btn.classList.add('ok');
+          setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 2000);
+        }).catch(() => {
+          const ta = document.createElement('textarea');
+          ta.value = text.trim();
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          btn.textContent = 'Copied';
+        });
+      });
+    });
+    const search = document.getElementById('search');
+    const sections = document.querySelectorAll('main section');
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase().trim();
+      sections.forEach(sec => {
+        const kw = (sec.getAttribute('data-keywords') || '') + ' ' + sec.textContent;
+        sec.classList.toggle('hidden', q && !kw.toLowerCase().includes(q));
+      });
+    });
+  </script>
+</body>
+</html>

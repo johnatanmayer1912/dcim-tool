@@ -1,0 +1,38 @@
+{
+  "authorized": true,
+  "live_vendor_validated": false,
+  "note": "Offline capture pack for Phase 5 gated harness replay. NOT live SSH. NOT live vendor validation. No secrets. Multi-family incomplete-observation coverage (IOS/XE/NX-OS/Junos).",
+  "captures": [
+    {
+      "host": "lab-ios-edge-01",
+      "device_type": "cisco_ios",
+      "command": "show cdp neighbors detail",
+      "output": "-------------------------\nDevice ID: TRUNC-PEER.example.com\nEntry address(es):\n  IP address: 10.0.0.44\nPlatform: cisco C9300-48P,  Capabilities: Switch\n"
+    },
+    {
+      "host": "lab-ios-edge-01",
+      "device_type": "cisco_ios",
+      "command": "show lldp neighbors detail",
+      "output": "Chassis id: aabb.ccdd.ee01\nSystem Name: TRUNC-LLDP-PEER\nSystem Description: Cisco IOS Software\nManagement Address: 10.0.0.55\nPort id: GigabitEthernet1/0/99\n"
+    },
+    {
+      "host": "lab-ios-edge-02",
+      "device_type": "cisco_xe",
+      "command": "show cdp neighbors detail",
+      "output": "-------------------------\nDevice ID: DIST-SW01.example.com\nEntry address(es):\n  IP address: 10.0.0.2\nPlatform: cisco C9300-48P,  Capabilities: Switch IGMP\nInterface: GigabitEthernet1/0/1,  Port ID (outgoing port): GigabitEthernet1/0/48\nHoldtime : 168 sec\n"
+    },
+    {
+      "host": "lab-nxos-01",
+      "device_type": "cisco_nxos",
+      "command": "show cdp neighbors detail",
+      "output": "-------------------------\nDevice ID: NX-TRUNC-PEER.example.com\nEntry address(es):\n  IP address: 10.0.0.66\nPlatform: N9K-C93180YC-EX,  Capabilities: Switch\n"
+    },
+    {
+      "host": "lab-junos-01",
+      "device_type": "juniper_junos",
+      "command": "show lldp neighbors",
+      "parser": "juniper_lldp_alternative",
+      "output": "ge-0/0/9\n  Management address: 10.9.9.9\n  Port ID: ge-0/0/10\nge-0/0/10\n  System Name: ALT-PEER-01\n  Management address: 10.9.9.10\n  Port ID: ge-0/0/11\n"
+    }
+  ]
+}

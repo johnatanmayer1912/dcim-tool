@@ -1,0 +1,8 @@
+NAME: "Chassis",  DESCR: "Nexus9000 C93180YC-FX Chassis"
+PID: N9K-C93180YC-FX     ,  VID: V02 ,  SN: FOC12345678
+
+NAME: "Slot 1",  DESCR: "48x10/25G + 6x40/100G Ethernet Module"
+PID: N9K-X9464TX        ,  VID: V02 ,  SN: SAL23456789
+
+NAME: "Power Supply 1",  DESCR: "Nexus9000 950W AC PS"
+PID: NXA-PAC-950W-PI     ,  VID: V01 ,  SN: ART23456789

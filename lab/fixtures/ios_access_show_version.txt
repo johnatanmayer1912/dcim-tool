@@ -1,0 +1,31 @@
+Cisco IOS XE Software, Version 17.09.04a
+Cisco IOS Software [Cupertino], Catalyst L3 Switch Software (CAT9K_IOSXE), Version 17.9.4a, RELEASE SOFTWARE (fc3)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2023 by Cisco Systems, Inc.
+Compiled Fri 28-Jul-23 12:00 by mcpre
+
+ROM: IOS-XE ROMMON
+BOOTLDR: System Bootstrap, Version 17.9.1r, RELEASE SOFTWARE
+
+LAB-IOS-ACCESS1 uptime is 5 days, 2 hours, 15 minutes
+Uptime for this control processor is 5 days, 2 hours, 16 minutes
+System returned to ROM by Reload Command
+System image file is "flash:packages.conf"
+Last reload reason: Reload Command
+
+cisco C9300-24P (X86) processor with 1414622K/6147K bytes of memory.
+Processor board ID FCW2123L0AB
+Model Number: C9300-24P
+1 Virtual Ethernet interface
+24 Gigabit Ethernet interfaces
+4 Ten Gigabit Ethernet interfaces
+2048K bytes of non-volatile configuration memory.
+8388608K bytes of physical memory.
+
+Base Ethernet MAC Address          : 00:1a:2b:3c:4d:01
+Motherboard Assembly Number        : 73-18270-03
+Motherboard Serial Number          : FOC2123X0AB
+Model Revision Number              : B0
+Motherboard Revision Number        : B0
+Model Number                       : C9300-24P
+System Serial Number               : FCW2123L0AB

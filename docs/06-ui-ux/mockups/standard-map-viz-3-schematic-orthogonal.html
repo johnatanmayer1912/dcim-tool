@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viz 3 — Schematic Orthogonal Map</title>
+  <style>
+    :root { --bg:#0d1117; --surface:#161b22; --elevated:#21262d; --border:#30363d; --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --line:#58a6ff; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:12px; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+    .banner { background:#23863622; border-bottom:1px solid var(--border); padding:0.4rem 1rem; font-size:0.7rem; color:var(--muted); text-align:center; }
+    .banner strong { color:#3fb950; }
+    .toolbar { display:flex; padding:0.6rem 1rem; border-bottom:1px solid var(--border); align-items:center; gap:0.75rem; }
+    .map-switch { margin-left:auto; display:flex; gap:0.2rem; }
+    .map-switch span { padding:0.3rem 0.55rem; border:1px solid var(--border); border-radius:5px; font-size:0.65rem; color:var(--muted); }
+    .map-switch span.on { border-color:#3fb950; color:#3fb950; background:rgba(63,185,80,0.1); }
+    .split { flex:1; display:grid; grid-template-columns:1fr 300px; min-height:0; }
+    .map-pane { border-right:1px solid var(--border); display:flex; flex-direction:column; }
+    .map-head { padding:0.5rem 1rem; font-size:0.65rem; text-transform:uppercase; font-weight:700; color:var(--muted); border-bottom:1px solid var(--border); }
+    .schematic { flex:1; padding:1.5rem; overflow:auto; }
+    .device {
+      background:var(--surface); border:2px solid var(--border); border-radius:4px;
+      padding:0.4rem 0.6rem; font-size:0.7rem; font-weight:600; position:absolute;
+      font-family:Consolas,monospace;
+    }
+    .device.router { border-color:#a371f7; }
+    .device.switch { border-color:#58a6ff; }
+    .port-label { font-size:0.55rem; color:var(--accent); font-weight:400; fill:var(--accent); }
+    .link-path { fill:none; stroke:var(--line); stroke-width:2; }
+    .link-path.po { stroke-dasharray:6 3; stroke:#d29922; }
+    .link-path.sel { stroke-width:3; filter:drop-shadow(0 0 4px rgba(88,166,255,0.6)); }
+    .right-pane { background:var(--surface); display:flex; flex-direction:column; }
+    table { width:100%; font-size:0.72rem; border-collapse:collapse; }
+    th, td { padding:0.4rem; border-bottom:1px solid var(--border); }
+    th { color:var(--muted); font-size:0.6rem; text-transform:uppercase; }
+    .detail { padding:0.65rem; font-size:0.72rem; border-top:1px solid var(--border); background:var(--elevated); }
+    .print-note { font-size:0.65rem; color:var(--muted); padding:0.5rem 1rem; border-top:1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <div class="banner"><strong>Viz 3 — Schematic Orthogonal</strong> · Visio-style · Best for export, change records, NOC handoff PDF</div>
+  <div class="toolbar">
+    <h1 style="font-size:1rem">Schematic map</h1>
+    <div class="map-switch"><span>Tier</span><span>Radial</span><span class="on">Schematic</span><span>Focus</span><span>Matrix</span></div>
+  </div>
+  <div class="split">
+    <div class="map-pane">
+      <div class="map-head">90° routing · port labels on links · Po shown as thick dashed line</div>
+      <div class="schematic" style="position:relative; min-height:380px;">
+        <svg width="100%" height="360" viewBox="0 0 620 360">
+          <!-- CORE pair -->
+          <rect x="240" y="20" width="60" height="36" rx="4" fill="#161b22" stroke="#a371f7" stroke-width="2"/>
+          <text x="270" y="42" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">CORE-01</text>
+          <rect x="320" y="20" width="60" height="36" rx="4" fill="#161b22" stroke="#a371f7" stroke-width="2"/>
+          <text x="350" y="42" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">CORE-02</text>
+          <path class="link-path po" d="M300,38 L320,38"/>
+          <text class="port-label" x="310" y="32" text-anchor="middle">Po1</text>
+          <!-- Uplinks to DIST -->
+          <path class="link-path sel" d="M270,56 L270,100 L150,100 L150,140"/>
+          <path class="link-path" d="M350,56 L350,100 L470,100 L470,140"/>
+          <text class="port-label" x="200" y="95">Te1/0/1</text>
+          <text class="port-label" x="400" y="95">Te1/0/2</text>
+          <!-- DIST -->
+          <rect x="110" y="140" width="80" height="36" rx="4" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+          <text x="150" y="162" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">DIST-N1</text>
+          <rect x="430" y="140" width="80" height="36" rx="4" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+          <text x="470" y="162" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">DIST-N2</text>
+          <!-- Down to access -->
+          <path class="link-path" d="M150,176 L150,220 L100,220 L100,260"/>
+          <path class="link-path" d="M150,176 L150,220 L200,220 L200,260"/>
+          <text class="port-label" x="125" y="215">Gi1/0/48</text>
+          <text class="port-label" x="175" y="215">Gi1/0/47</text>
+          <!-- ACCESS -->
+          <rect x="60" y="260" width="80" height="32" rx="4" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+          <text x="100" y="280" text-anchor="middle" fill="#e6edf3" font-size="9" font-weight="600">SW-ACC-01</text>
+          <rect x="160" y="260" width="80" height="32" rx="4" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+          <text x="200" y="280" text-anchor="middle" fill="#e6edf3" font-size="9" font-weight="600">SW-ACC-02</text>
+          <!-- AP -->
+          <path class="link-path" d="M100,292 L100,320 L100,330"/>
+          <rect x="60" y="330" width="80" height="28" rx="4" fill="#161b22" stroke="#8b949e" stroke-width="1"/>
+          <text x="100" y="348" text-anchor="middle" fill="#8b949e" font-size="8">AP-F2-03</text>
+          <text class="port-label" x="115" y="318">Gi1/0/24</text>
+        </svg>
+      </div>
+      <div class="print-note">Export uses this layout · white background · legend embedded</div>
+    </div>
+    <div class="right-pane">
+      <div style="padding:0.65rem;border-bottom:1px solid var(--border);font-size:0.72rem"><strong>Connection index</strong> (synced)</div>
+      <table>
+        <thead><tr><th>Link</th><th>Ports</th><th>Type</th></tr></thead>
+        <tbody>
+          <tr style="background:rgba(88,166,255,0.12)"><td>CORE-01 ↔ DIST-N1</td><td>Te1/0/1 · Te1/1/1</td><td>trunk</td></tr>
+          <tr><td>CORE-01 ↔ CORE-02</td><td>Po1 · Po1</td><td>bundle</td></tr>
+          <tr><td>DIST-N1 ↔ SW-ACC-01</td><td>Gi1/0/48 · Gi1/0/1</td><td>access</td></tr>
+        </tbody>
+      </table>
+      <div class="detail"><strong>Highlighted:</strong> CORE-01 Te1/0/1 → DIST-N1 Te1/1/1 · CDP · 10G</div>
+    </div>
+  </div>
+</body>
+</html>

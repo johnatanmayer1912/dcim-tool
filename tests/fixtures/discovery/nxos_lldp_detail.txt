@@ -1,0 +1,9 @@
+Chassis id: 5254.00a1.b2c3.d4e5
+Local Intf: Eth1/2
+Port id: Eth1/1
+System Name: SPINE-NXOS-05
+
+Enabled Capabilities: B,R
+System Description: Cisco Nexus Operating System (NX-OS) Software
+
+Management Address: 10.0.0.5

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standard Map — Demo Concepts</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4f;
+      --text: #e8edf4;
+      --muted: #8b9cb3;
+      --accent: #3b82f6;
+      --green: #22c55e;
+      --amber: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    .badge {
+      display: inline-block;
+      background: rgba(59,130,246,0.15);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+    }
+    .grid { display: grid; gap: 1rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .card-id {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: rgba(59,130,246,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+    .card h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .card p { font-size: 0.85rem; color: var(--muted); }
+    .card .tag {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .tag-rec { background: rgba(34,197,94,0.15); color: var(--green); }
+    .tag-alt { background: rgba(245,158,11,0.15); color: var(--amber); }
+    .note {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .note strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <span class="badge">Standard Map Redesign · v7.0.48+</span>
+    <h1>Choose a demo direction</h1>
+    <p class="subtitle">Four mockups for how Standard Map should look and behave after redesign. Open each in a new tab, compare, then tell us A / B / C / D (or a hybrid).</p>
+
+    <div class="grid">
+      <a class="card" href="standard-map-demo-a-briefing-board.html" target="_blank">
+        <div class="card-id">A</div>
+        <div>
+          <h2>NOC Briefing Board</h2>
+          <p>Site KPIs, tier swimlanes, anomaly strip, rich link table with WHO/WHAT/HOW. Graph supports the story.</p>
+        </div>
+        <span class="tag tag-rec">Recommended for daily ops</span>
+      </a>
+
+      <a class="card" href="standard-map-demo-b-twin-pane.html" target="_blank">
+        <div class="card-id">B</div>
+        <div>
+          <h2>Physical + Logical Twin</h2>
+          <p>Left: port-level physical panel. Right: logical adjacency graph. Selection syncs both layers.</p>
+        </div>
+        <span class="tag tag-alt">Best for troubleshooting</span>
+      </a>
+
+      <a class="card" href="standard-map-demo-c-connection-index.html" target="_blank">
+        <div class="card-id">C</div>
+        <div>
+          <h2>Connection Index First</h2>
+          <p>Sortable connection table is primary. Mini topology + path finder (A→B). Fastest “who connects to who”.</p>
+        </div>
+        <span class="tag tag-alt">Best for audit / CMDB</span>
+      </a>
+
+      <a class="card" href="standard-map-demo-d-infographic.html" target="_blank">
+        <div class="card-id">D</div>
+        <div>
+          <h2>Single Infographic Export</h2>
+          <p>Print-ready A4 landscape handoff: summary, tier diagram, top links, legend. Management-friendly.</p>
+        </div>
+        <span class="tag tag-alt">Best for PDF / change records</span>
+      </a>
+    </div>
+
+    <div class="note">
+      <strong>Connection map styles (how links are drawn):</strong>
+      <a href="standard-map-viz-demo-index.html" style="color:var(--accent)">5 map visualization options</a> — Tier, Radial, Schematic, Focus, Matrix. Each shows map <em>alongside</em> the connection table.<br><br>
+      <strong>Plan document:</strong> <code>.cursor/audits/STANDARD_MAP_REDESIGN_PLAN.md</code><br>
+      These demos use sample campus data (CORE / DIST / ACCESS). After you pick UI shell + map style, we implement R1 in the product HTML + Swiss Tools tab.
+    </div>
+  </div>
+</body>
+</html>

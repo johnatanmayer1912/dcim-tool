@@ -1,0 +1,5 @@
+# Committed by Network Swiss Tool Pro
+# Format: IP,device_type[,group] or IP,device_type,port,group
+
+[Default]
+127.0.0.1,cisco_ios,Default

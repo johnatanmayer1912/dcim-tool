@@ -1,0 +1,12 @@
+{
+  "platform": "juniper_junos",
+  "vendor": "juniper",
+  "device_id": "qfx-01",
+  "xpath": "/interfaces/interface[name='xe-0/0/0']/optics/rx-power",
+  "metric_name": "rx-power",
+  "entity": "xe-0/0/0",
+  "value": -3.45,
+  "unit": "dBm",
+  "event_time": "2026-08-20T18:02:00.123Z",
+  "sequence": 1001
+}

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NST GUI Mock — Team Northglass</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@450;550;650;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  :root {
+    --ink: #0c1222;
+    --ink-soft: #3a4458;
+    --muted: #6b7385;
+    --line: rgba(12, 18, 34, 0.08);
+    --glass: rgba(255, 255, 255, 0.55);
+    --glass-strong: rgba(255, 255, 255, 0.78);
+    --cyan: #00b4d8;
+    --cyan-deep: #0077a8;
+    --ok: #0f9f6e;
+    --warn: #d97706;
+    --danger: #e11d48;
+    --bg0: #dfe7f2;
+    --radius: 18px;
+    --font: "Instrument Sans", "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background:
+      radial-gradient(900px 520px at 8% -8%, rgba(0, 180, 216, 0.22), transparent 55%),
+      radial-gradient(700px 480px at 92% 0%, rgba(15, 159, 110, 0.12), transparent 50%),
+      linear-gradient(165deg, #edf2f8 0%, #d5dee9 48%, #c9d4e3 100%);
+    overflow: hidden;
+  }
+  .stage {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 18px 20px 14px;
+    gap: 14px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  /* Audit ribbon */
+  .audit {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 12px 16px;
+    background: rgba(12, 18, 34, 0.92);
+    color: #eef3fb;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.45;
+    animation: rise 0.55s ease both;
+  }
+  .audit strong { color: var(--cyan); letter-spacing: 0.04em; text-transform: uppercase; font-size: 11px; }
+  .audit ul { margin: 4px 0 0; padding-left: 18px; color: #b8c4d6; }
+  .badge {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--cyan), #5eead4);
+    color: #04202a;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  /* Shell */
+  .shell {
+    display: grid;
+    grid-template-columns: 248px 1fr 300px;
+    gap: 14px;
+    min-height: 0;
+    animation: rise 0.7s 0.08s ease both;
+  }
+  .panel {
+    background: var(--glass);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.65);
+    border-radius: var(--radius);
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255,255,255,0.7);
+    min-height: 0;
+  }
+  .side { display: flex; flex-direction: column; padding: 18px 16px; }
+  .brand {
+    display: flex; flex-direction: column; gap: 2px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand .name {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.1;
+  }
+  .brand .tag { font-size: 12px; color: var(--muted); }
+  .brand .ver {
+    margin-top: 8px; display: inline-flex; align-self: flex-start;
+    font-family: var(--mono); font-size: 10px; padding: 3px 8px;
+    border-radius: 999px; background: rgba(0,180,216,0.12); color: var(--cyan-deep);
+  }
+  .nav-label {
+    font-size: 10px; font-weight: 650; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin: 10px 0 8px;
+  }
+  .nav a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border-radius: 12px; text-decoration: none;
+    color: var(--ink-soft); font-weight: 550; font-size: 14px;
+    transition: background 0.2s, transform 0.2s, color 0.2s;
+  }
+  .nav a:hover { background: rgba(255,255,255,0.55); color: var(--ink); transform: translateX(2px); }
+  .nav a.active {
+    background: linear-gradient(135deg, rgba(0,180,216,0.18), rgba(255,255,255,0.7));
+    color: var(--ink); box-shadow: inset 0 0 0 1px rgba(0,180,216,0.25);
+  }
+  .nav a .kbd { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .cred-card {
+    margin-top: auto;
+    padding: 14px;
+    border-radius: 14px;
+    background: var(--glass-strong);
+    border: 1px solid var(--line);
+  }
+  .cred-card h4 { margin: 0 0 6px; font-size: 12px; color: var(--muted); font-weight: 650; }
+  .cred-card .who { font-size: 15px; font-weight: 650; }
+  .cred-card .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px; padding: 5px 10px; border-radius: 999px;
+    background: rgba(15,159,110,0.12); color: var(--ok); font-size: 11px; font-weight: 650;
+  }
+  .pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(15,159,110,0.2); }
+
+  .main { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px 10px; gap: 12px; flex-wrap: wrap;
+  }
+  .topbar h1 {
+    margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.045em;
+  }
+  .topbar p { margin: 4px 0 0; color: var(--muted); font-size: 13px; max-width: 42ch; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    border: 0; cursor: pointer; font-family: inherit; font-weight: 650; font-size: 13px;
+    padding: 10px 16px; border-radius: 999px; transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--cyan), var(--cyan-deep));
+    color: #fff; box-shadow: 0 10px 24px rgba(0, 119, 168, 0.28);
+  }
+  .btn-ghost { background: rgba(255,255,255,0.7); color: var(--ink); border: 1px solid var(--line); }
+
+  .workspace {
+    padding: 8px 20px 20px;
+    overflow: auto;
+    display: grid;
+    gap: 14px;
+  }
+  .hero-job {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 22px;
+    background:
+      linear-gradient(120deg, rgba(0,180,216,0.14), transparent 40%),
+      var(--glass-strong);
+    border: 1px solid rgba(0,180,216,0.2);
+  }
+  .hero-job::after {
+    content: "";
+    position: absolute; right: -40px; top: -40px;
+    width: 180px; height: 180px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,180,216,0.25), transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  .hero-job .label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan-deep); font-weight: 650; }
+  .hero-job h2 { margin: 6px 0 8px; font-size: 20px; letter-spacing: -0.03em; }
+  .hero-job .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .chip {
+    font-family: var(--mono); font-size: 11px; padding: 5px 9px;
+    border-radius: 8px; background: rgba(12,18,34,0.05); color: var(--ink-soft);
+  }
+  .progress {
+    margin-top: 14px; height: 6px; border-radius: 999px; background: rgba(12,18,34,0.08); overflow: hidden;
+  }
+  .progress > span {
+    display: block; height: 100%; width: 62%;
+    background: linear-gradient(90deg, var(--cyan), #5eead4);
+    border-radius: inherit;
+    animation: grow 1.4s ease both;
+  }
+
+  .grid-3 {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  }
+  @media (max-width: 1100px) {
+    .shell { grid-template-columns: 220px 1fr; }
+    .console { display: none; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+  .tile {
+    padding: 16px; border-radius: 14px; background: var(--glass-strong);
+    border: 1px solid var(--line);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .tile:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(15,23,42,0.08); }
+  .tile h3 { margin: 0 0 6px; font-size: 14px; }
+  .tile p { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .tile .stat { margin-top: 12px; font-size: 26px; font-weight: 700; letter-spacing: -0.04em; }
+
+  .console {
+    display: flex; flex-direction: column;
+    background: linear-gradient(180deg, #0f1729 0%, #0a1020 100%);
+    color: #d7e0ef; border: 1px solid rgba(255,255,255,0.06);
+  }
+  .console header {
+    padding: 14px 16px; font-size: 12px; font-weight: 650;
+    letter-spacing: 0.08em; text-transform: uppercase; color: #7dd3fc;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .log {
+    flex: 1; overflow: auto; padding: 14px 16px;
+    font-family: var(--mono); font-size: 11.5px; line-height: 1.55;
+  }
+  .log .ok { color: #5eead4; }
+  .log .warn { color: #fbbf24; }
+  .log .dim { color: #64748b; }
+
+  .taskbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; border-radius: 14px;
+    background: rgba(12,18,34,0.88); color: #e8eef8; font-size: 13px;
+    animation: rise 0.6s 0.12s ease both;
+  }
+  .taskbar .left { display: flex; gap: 14px; align-items: center; }
+  .taskbar button {
+    border: 0; background: rgba(255,255,255,0.1); color: #fff;
+    padding: 7px 12px; border-radius: 999px; font-weight: 650; cursor: pointer;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+  @keyframes grow { from { width: 0; } to { width: 62%; } }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <aside class="audit" aria-label="External audit findings">
+      <span class="badge">Team Northglass · Product Design</span>
+      <div>
+        <strong>External GUI audit — thesis</strong>
+        Make the console feel like a premium instrument: brand-first chrome, one primary action, glass depth, and a calm cyan signal language. Reduce “dashboard clutter”; elevate the active job.
+        <ul>
+          <li>Sidebar brand becomes a hero nameblock (not a tiny badge).</li>
+          <li>Active job card owns the first glance; secondary tools sit as calm tiles.</li>
+          <li>Console is a dark instrument panel — not a leftover column.</li>
+          <li>Motion: gentle rise on load, hover lift on tiles, live progress grow.</li>
+        </ul>
+      </div>
+    </aside>
+
+    <div class="shell">
+      <aside class="panel side">
+        <div class="brand">
+          <div class="name">Network Swiss<br/>Tool Pro</div>
+          <div class="tag">Offline network visibility</div>
+          <span class="ver">v7.4.23 · MOCK</span>
+        </div>
+        <div class="nav-label">Workspace</div>
+        <nav class="nav">
+          <a class="active" href="#">Find <span class="kbd">1</span></a>
+          <a href="#">Change <span class="kbd">2</span></a>
+          <a href="#">Maps <span class="kbd">3</span></a>
+          <a href="#">Evidence <span class="kbd">4</span></a>
+          <a href="#">Settings <span class="kbd">5</span></a>
+        </nav>
+        <div class="nav-label">Scope</div>
+        <nav class="nav">
+          <a href="#">Inventory · 48 hosts</a>
+          <a href="#">Group · Core</a>
+        </nav>
+        <div class="cred-card">
+          <h4>Active credential</h4>
+          <div class="who">ops-primary</div>
+          <div class="meta">Vault unlocked · fallback ×2</div>
+          <div class="pill"><i></i> Ready for SSH</div>
+        </div>
+      </aside>
+
+      <main class="panel main">
+        <div class="topbar">
+          <div>
+            <h1>Find</h1>
+            <p>Search MAC, descriptions, and reachability — one calm surface for discovery work.</p>
+          </div>
+          <div class="actions">
+            <button class="btn btn-ghost" type="button">Open last report</button>
+            <button class="btn btn-primary" type="button">Start MAC search</button>
+          </div>
+        </div>
+        <div class="workspace">
+          <section class="hero-job">
+            <div class="label">Live job</div>
+            <h2>MAC search · aa:bb:cc:11:22:33</h2>
+            <div class="row">
+              <span class="chip">scope: Core</span>
+              <span class="chip">48 devices</span>
+              <span class="chip">elapsed 00:42</span>
+            </div>
+            <div class="progress" aria-hidden="true"><span></span></div>
+          </section>
+          <div class="grid-3">
+            <article class="tile">
+              <h3>Hits</h3>
+              <p>Ports with MAC evidence this run.</p>
+              <div class="stat">12</div>
+            </article>
+            <article class="tile">
+              <h3>Scanned</h3>
+              <p>Devices finished without auth failure.</p>
+              <div class="stat">31/48</div>
+            </article>
+            <article class="tile">
+              <h3>Trust</h3>
+              <p>Edges used for path reconstruct.</p>
+              <div class="stat">L2 · 86</div>
+            </article>
+          </div>
+          <article class="tile" style="padding:18px;">
+            <h3 style="margin-bottom:10px;">Results preview</h3>
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+              <thead>
+                <tr style="text-align:left; color:var(--muted); font-size:11px; letter-spacing:0.06em; text-transform:uppercase;">
+                  <th style="padding:8px 6px;">Host</th>
+                  <th>Port</th>
+                  <th>VLAN</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-top:1px solid var(--line);"><td style="padding:10px 6px; font-weight:650;">dist-01</td><td style="font-family:var(--mono); font-size:12px;">Gi1/0/24</td><td>120</td><td style="color:var(--ok); font-weight:650;">Found</td></tr>
+                <tr style="border-top:1px solid var(--line);"><td style="padding:10px 6px; font-weight:650;">access-07</td><td style="font-family:var(--mono); font-size:12px;">Gi1/0/11</td><td>120</td><td style="color:var(--ok); font-weight:650;">Found</td></tr>
+                <tr style="border-top:1px solid var(--line);"><td style="padding:10px 6px; font-weight:650;">access-12</td><td style="font-family:var(--mono); font-size:12px;">—</td><td>—</td><td style="color:var(--warn); font-weight:650;">No hit</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+      </main>
+
+      <aside class="panel console">
+        <header>
+          <span>Task log</span>
+          <span style="color:#64748b; font-weight:500; letter-spacing:0;">Online</span>
+        </header>
+        <div class="log">
+          <div class="dim">[12:01:04] Job queued · mac_check</div>
+          <div class="ok">[12:01:05] Vault resolve · ops-primary</div>
+          <div>[12:01:08] dist-01 · show mac address-table</div>
+          <div class="ok">[12:01:09] hit · Gi1/0/24 vlan 120</div>
+          <div>[12:01:18] access-07 · show mac address-table</div>
+          <div class="ok">[12:01:19] hit · Gi1/0/11 vlan 120</div>
+          <div class="warn">[12:01:31] access-12 · auth retry · secondary</div>
+          <div class="dim">[12:01:40] scanning… 31/48</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="taskbar">
+      <div class="left">
+        <span style="color:#7dd3fc; font-weight:650;">Running</span>
+        <span>MAC search · 31/48 · Cancel anytime</span>
+      </div>
+      <button type="button">Cancel job</button>
+    </footer>
+  </div>
+</body>
+</html>

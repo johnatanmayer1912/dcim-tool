@@ -1,0 +1,59 @@
+{
+  "plugin_id": "interface_manager",
+  "version": "1.0.0",
+  "display_name": "Interface Configuration Manager",
+  "author": "Network Engineering Team",
+  "category": "Management",
+  "description": "Enterprise-grade interface configuration management with vendor awareness and deployment safety",
+  "min_platform_version": "7.0.10",
+  "release_date": "2026-06-03",
+  "file": "interface_manager_v1.0.0.py",
+  "file_hash": "sha256:PLACEHOLDER_HASH",
+  "file_size": 0,
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-06-03",
+      "changes": "Initial release with interface discovery, validation, and deployment",
+      "author": "Network Engineering Team",
+      "qa_status": "pending"
+    }
+  ],
+  "documentation": {
+    "readme": "README.md",
+    "release_notes": "RELEASE_NOTES.md",
+    "prompt": "PROMPT.md",
+    "changelog": "CHANGELOG.md",
+    "test_results": "TEST_RESULTS.md",
+    "compatibility": "COMPATIBILITY.md"
+  },
+  "supported_vendors": [
+    "cisco_nxos",
+    "cisco_ios",
+    "cisco_ios_xe",
+    "juniper_junos"
+  ],
+  "supported_operations": [
+    "discover",
+    "validate",
+    "deploy"
+  ],
+  "capabilities": {
+    "supports_parallel": false,
+    "supports_dry_run": true,
+    "modifies_device": true,
+    "requires_enable": true
+  },
+  "dependencies": {
+    "netmiko": ">=4.0.0",
+    "paramiko": ">=2.7.0",
+    "flask": ">=2.0.0",
+    "flask_socketio": ">=5.0.0"
+  },
+  "metadata": {
+    "created_by": "Network Engineering Team",
+    "creation_date": "2026-06-03",
+    "status": "current",
+    "archive_location": "docs/plugins/interface_manager/versions/v1.0.0/"
+  }
+}

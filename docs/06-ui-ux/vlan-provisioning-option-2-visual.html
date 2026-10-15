@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLAN Provisioning - Visual Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #212529;
+        }
+
+        .vlan-visual {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .vlan-visual-number {
+            font-size: 64px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .vlan-visual-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .vlan-visual-status {
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .content {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .content h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #212529;
+        }
+
+        .device-visual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .device-visual-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 16px;
+            border: 3px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .device-visual-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .device-visual-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .device-visual-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .device-visual-card.selected::before {
+            opacity: 1;
+        }
+
+        .device-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .device-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 4px;
+        }
+
+        .device-type {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .device-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            background: #d3f9d8;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2b8a3e;
+        }
+
+        .config-visual {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        .config-visual h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #212529;
+        }
+
+        .config-block {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .config-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .config-block-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .config-block-status {
+            padding: 4px 12px;
+            background: #d3f9d8;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2b8a3e;
+        }
+
+        .config-block-content {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            margin-top: 24px;
+        }
+
+        .action-bar .btn {
+            flex: 1;
+        }
+
+        .validation-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #d3f9d8;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .validation-badge.error {
+            background: #ffe3e3;
+        }
+
+        .validation-badge-icon {
+            font-size: 20px;
+        }
+
+        .validation-badge-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2b8a3e;
+        }
+
+        .validation-badge.error .validation-badge-text {
+            color: #c92a2a;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .device-visual-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 VLAN Provisioning</h1>
+            <p>Visual VLAN management with intuitive device selection and configuration preview</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value">24</div>
+                <div class="stat-label">Total VLANs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">18</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">156</div>
+                <div class="stat-label">Devices</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Selected</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="sidebar">
+                <div class="vlan-visual">
+                    <div class="vlan-visual-number">10</div>
+                    <div class="vlan-visual-name">Servers</div>
+                    <div class="vlan-visual-status">Active on 3 devices</div>
+                </div>
+
+                <h2>VLAN Configuration</h2>
+                <div class="form-group">
+                    <label>VLAN ID</label>
+                    <input type="number" value="10" readonly>
+                </div>
+                <div class="form-group">
+                    <label>VLAN Name</label>
+                    <input type="text" value="Servers" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea rows="3">Server infrastructure VLAN</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Port Type</label>
+                    <select>
+                        <option>Access</option>
+                        <option>Trunk</option>
+                        <option>Hybrid</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;">💾 Save Configuration</button>
+            </div>
+
+            <div class="content">
+                <h2>Select Devices</h2>
+                <div class="device-visual-grid">
+                    <div class="device-visual-card selected">
+                        <div class="device-icon">🖥️</div>
+                        <div class="device-name">switch-core-01</div>
+                        <div class="device-type">Cisco NX-OS</div>
+                        <div class="device-status">✓ Online</div>
+                    </div>
+                    <div class="device-visual-card selected">
+                        <div class="device-icon">🖥️</div>
+                        <div class="device-name">switch-dist-02</div>
+                        <div class="device-type">Cisco NX-OS</div>
+                        <div class="device-status">✓ Online</div>
+                    </div>
+                    <div class="device-visual-card selected">
+                        <div class="device-icon">🖥️</div>
+                        <div class="device-name">switch-access-03</div>
+                        <div class="device-type">Cisco IOS</div>
+                        <div class="device-status">✓ Online</div>
+                    </div>
+                    <div class="device-visual-card">
+                        <div class="device-icon">🖥️</div>
+                        <div class="device-name">switch-access-04</div>
+                        <div class="device-type">Cisco IOS</div>
+                        <div class="device-status">✓ Online</div>
+                    </div>
+                    <div class="device-visual-card">
+                        <div class="device-icon">🖥️</div>
+                        <div class="device-name">switch-access-05</div>
+                        <div class="device-type">Cisco IOS</div>
+                        <div class="device-status">✓ Online</div>
+                    </div>
+                    <div class="device-visual-card">
+                        <div class="device-icon">🖥️</div>
+                        <div class="device-name">switch-access-06</div>
+                        <div class="device-type">Cisco IOS</div>
+                        <div class="device-status">✓ Online</div>
+                    </div>
+                </div>
+
+                <div class="config-visual">
+                    <h3>Configuration Preview</h3>
+                    <div class="config-block">
+                        <div class="config-block-header">
+                            <div class="config-block-title">switch-core-01</div>
+                            <div class="config-block-status">Ready</div>
+                        </div>
+                        <div class="config-block-content">vlan 10
+  name Servers
+  description Server infrastructure VLAN</div>
+                    </div>
+                    <div class="config-block">
+                        <div class="config-block-header">
+                            <div class="config-block-title">switch-dist-02</div>
+                            <div class="config-block-status">Ready</div>
+                        </div>
+                        <div class="config-block-content">vlan 10
+  name Servers
+  description Server infrastructure VLAN</div>
+                    </div>
+                    <div class="config-block">
+                        <div class="config-block-header">
+                            <div class="config-block-title">switch-access-03</div>
+                            <div class="config-block-status">Ready</div>
+                        </div>
+                        <div class="config-block-content">vlan 10
+  name Servers
+  description Server infrastructure VLAN</div>
+                    </div>
+                </div>
+
+                <div class="validation-badge">
+                    <span class="validation-badge-icon">✓</span>
+                    <span class="validation-badge-text">Configuration validated successfully</span>
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-secondary">← Back</button>
+                    <button class="btn btn-secondary">Validate</button>
+                    <button class="btn btn-primary">🚀 Deploy to 3 Devices</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

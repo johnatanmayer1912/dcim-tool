@@ -1,0 +1,16 @@
+{
+  "plugin_id": "network_discovery",
+  "version": "1.0.0",
+  "release_date": "2026-05-26",
+  "files": {
+    "plugin": "modules/plugins/network_discovery.py",
+    "readme": "docs/plugins/network_discovery/README.md",
+    "release_notes": "docs/plugins/network_discovery/RELEASE_NOTES.md",
+    "changelog": "docs/plugins/network_discovery/CHANGELOG.md",
+    "test_results": "docs/plugins/network_discovery/TEST_RESULTS.md",
+    "compatibility": "docs/plugins/network_discovery/COMPATIBILITY.md"
+  },
+  "compatibility": {
+    "min_platform_version": "6.9.21"
+  }
+}

@@ -1,0 +1,71 @@
+[10:35:39] [test] Starting Interface Configuration Manager - deploy...
+[10:35:39] [test] Connecting to cisco_ios...
+[10:35:39] [test] Connecting to device...
+[10:35:42] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:35:42] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:35:42] [test] Starting Interface Configuration Manager - discover...
+[10:35:42] [test] Connecting to cisco_ios...
+[10:35:42] [test] Connecting to device...
+[10:35:45] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:35:45] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:35:45] [test] Starting Interface Configuration Manager - validate...
+[10:35:45] [test] Connecting to cisco_ios...
+[10:35:45] [test] Connecting to device...
+[10:35:47] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:35:47] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[10:35:49] [Discovery] Job a028288d started — seeds: ['10.0.0.1'], depth: 2
+[10:35:49] [Discovery] Job a028288d failed: No valid seed hosts

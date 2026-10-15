@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX refined — Option A v2+ (recommended improvements)</title>
+    <link rel="icon" href="../../favicon_program.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0f172a;
+            --color-accent: #3b82f6;
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --bg-console: #0f172a;
+            --border-light: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --header-chrome: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #cbd5e1;
+            color: var(--text-primary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .top-banner {
+            background: linear-gradient(135deg, #065f46 0%, #0f766e 100%);
+            color: #fff;
+            padding: 22px 28px;
+        }
+
+        .top-banner h1 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+        .top-banner p { font-size: 13px; opacity: 0.92; max-width: 820px; }
+
+        .content { padding: 24px 28px 40px; max-width: 1320px; margin: 0 auto; }
+
+        .improve-list {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .improve-list h2 {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #047857;
+        }
+
+        .improve-list ol {
+            margin-left: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .improve-list li { margin-bottom: 6px; }
+        .improve-list strong { color: var(--text-primary); }
+
+        .compare-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 960px) {
+            .compare-row { grid-template-columns: 1fr; }
+        }
+
+        .col-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .col-label.a { color: #64748b; }
+        .col-label.b { color: #047857; }
+
+        .mini-app {
+            background: var(--bg-main);
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border-light);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .mini-app.refined {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), var(--shadow-md);
+        }
+
+        /* —— Headers —— */
+        .mini-header {
+            height: 48px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 10px;
+        }
+
+        .mini-header.plain {
+            background: var(--bg-card);
+        }
+
+        .mini-header.chrome {
+            background: var(--header-chrome);
+        }
+
+        .traffic { display: flex; gap: 6px; flex-shrink: 0; }
+        .traffic span { width: 10px; height: 10px; border-radius: 50%; }
+        .traffic .r { background: #ff5f56; }
+        .traffic .y { background: #ffbd2e; }
+        .traffic .g { background: #27c93f; }
+
+        .header-empty {
+            flex: 1;
+            text-align: center;
+            font-size: 11px;
+            color: #cbd5e1;
+            font-style: italic;
+        }
+
+        .header-chrome-hint {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 10px;
+            color: #94a3b8;
+            letter-spacing: 0.02em;
+        }
+
+        .header-chrome-hint::before,
+        .header-chrome-hint::after {
+            content: '';
+            height: 1px;
+            width: 32px;
+            background: #e2e8f0;
+        }
+
+        /* —— Badges (production) —— */
+        .ver-badge {
+            background: rgba(0, 122, 255, 0.1);
+            color: #007aff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .date-badge {
+            color: #a0aec0;
+            font-size: 11px;
+        }
+
+        .branding-badge {
+            background: rgba(233, 69, 96, 0.1);
+            color: #e94560;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .mini-body { display: flex; height: 460px; }
+
+        .mini-sidebar {
+            width: 248px;
+            flex-shrink: 0;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-light);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* v2 baseline brand */
+        .sidebar-brand-v2 {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+        }
+
+        .sidebar-brand-v2 .logo-wrap,
+        .sidebar-brand-refined .logo-wrap {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+
+        .sidebar-brand-v2 .logo-wrap img,
+        .sidebar-brand-refined .logo-wrap img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .sidebar-brand-v2 .text-block,
+        .sidebar-brand-refined .text-block {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-name {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 8px;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-brand-v2 .date-long {
+            flex: 1 1 100%;
+            font-size: 11px;
+            color: #a0aec0;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        /* —— Refined brand block —— */
+        .sidebar-brand-refined {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .sidebar-brand-refined:hover {
+            border-color: #93c5fd;
+            box-shadow: var(--shadow-sm);
+            background: #fafbfc;
+        }
+
+        .sidebar-brand-refined:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
+
+        .sidebar-brand-refined .meta-row {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-brand-refined .date-badge {
+            white-space: nowrap;
+        }
+
+        .sidebar-brand-refined .hint-about {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .sidebar-brand-refined .hint-about span {
+            color: var(--color-accent);
+            font-weight: 500;
+        }
+
+        .callout-pill {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #d1fae5;
+            color: #047857;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .mini-group {
+            background: var(--bg-main);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 12px;
+        }
+
+        .mini-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .fake-input {
+            height: 26px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            margin-bottom: 5px;
+        }
+
+        .fake-btn-row { display: flex; gap: 6px; margin-top: 6px; }
+        .fake-btn {
+            flex: 1;
+            height: 26px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .fake-textarea {
+            height: 48px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            margin-top: 6px;
+        }
+
+        .scope-flex { flex: 1; display: flex; flex-direction: column; }
+        .fake-exit { margin-top: auto; height: 34px; background: #ef4444; border-radius: 8px; opacity: 0.85; }
+
+        .mini-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+        .mini-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 10px 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .mini-tab {
+            padding: 5px 8px;
+            font-size: 10px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 8px 8px 0 0;
+            color: var(--text-secondary);
+        }
+
+        .mini-tab.on { font-weight: 600; color: var(--text-primary); border-bottom-color: #fff; }
+
+        .mini-workspace {
+            flex: 1;
+            margin: 0 10px 10px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 0 8px 8px 8px;
+            padding: 12px;
+        }
+
+        .mini-card {
+            height: 56px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            opacity: 0.4;
+        }
+        .mini-card.y { background: #fef9c3; border: 1px solid #fde047; }
+        .mini-card.p { background: #f3e8ff; border: 1px solid #d8b4fe; }
+        .mini-card.g { background: #dcfce7; border: 1px solid #86efac; }
+
+        .mini-console {
+            width: 175px;
+            flex-shrink: 0;
+            background: var(--bg-console);
+            padding: 8px;
+            font-size: 9px;
+            color: #94a3b8;
+            font-family: ui-monospace, monospace;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .detail-grid { grid-template-columns: 1fr; }
+        }
+
+        .detail-card {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+        }
+
+        .detail-card h3 {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .detail-card.refined h3 { color: #047857; }
+
+        .detail-card p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .approve-box {
+            background: #ecfdf5;
+            border: 2px solid #10b981;
+            border-radius: var(--radius-lg);
+            padding: 18px 22px;
+            font-size: 13px;
+        }
+
+        .approve-box code {
+            background: #d1fae5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header class="top-banner">
+        <h1>UX refined mockup — v2 + recommended polish</h1>
+        <p>
+            Left: your approved <strong>v2</strong> layout. Right: <strong>refined v2+</strong> with expert tweaks
+            (subtle header chrome, short date in UI, full date on hover, clickable brand → About).
+        </p>
+    </header>
+
+    <div class="content">
+        <div class="improve-list">
+            <h2>What changes in the refined version (right)</h2>
+            <ol>
+                <li><strong>Header:</strong> Light chrome tint (<code>#f8fafc</code>) + subtle center rule — reads as intentional bar, not “missing title”.</li>
+                <li><strong>Date:</strong> Sidebar shows <code>Updated: 2026-05-24</code> only; long release note stays in tooltip + About/CHANGELOG.</li>
+                <li><strong>Meta row:</strong> Version pill + short date on one line when width allows (<code>flex-wrap</code>).</li>
+                <li><strong>Brand strip:</strong> Hover + keyboard focus; click opens <strong>About &amp; Help</strong> (affordance, not decoration).</li>
+                <li><strong>Layout:</strong> Logo/text <code>align-items: flex-start</code> — multi-line date never misaligns icon.</li>
+            </ol>
+        </div>
+
+        <div class="compare-row">
+            <div>
+                <div class="col-label a">Your v2 approval mockup</div>
+                <div class="mini-app" id="app-v2"></div>
+            </div>
+            <div>
+                <div class="col-label b">Recommended refined (v2+)</div>
+                <div class="mini-app refined" id="app-refined"></div>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-card">
+                <h3>① Header — empty vs chrome</h3>
+                <div class="mini-header plain" style="border:1px solid var(--border-light); border-radius:8px;">
+                    <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                    <div class="header-empty">feels incomplete</div>
+                </div>
+                <p>Plain white + italic placeholder.</p>
+            </div>
+            <div class="detail-card refined">
+                <h3>① Header — refined chrome</h3>
+                <div class="mini-header chrome" style="border:1px solid var(--border-light); border-radius:8px;">
+                    <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                    <div class="header-chrome-hint">workspace</div>
+                </div>
+                <p>Tinted bar + optional subtle dividers (no text clutter).</p>
+            </div>
+            <div class="detail-card refined">
+                <h3>② Date — short UI, full on hover</h3>
+                <p style="margin:0 0 8px;font-size:11px;color:#a0aec0;word-break:break-all;">
+                    v2: Updated: 2026-05-24 (search_it progress + tab refresh v7.0.7)
+                </p>
+                <p style="margin:0;font-size:11px;">
+                    refined: <span class="date-badge">Updated: 2026-05-24</span>
+                    <br><span style="font-size:10px;color:var(--text-muted);">title="2026-05-24 (search_it…)" on hover</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="detail-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="detail-card">
+                <h3>Brand block — v2 (static)</h3>
+                <div style="max-width:248px" id="brand-v2-only"></div>
+            </div>
+            <div class="detail-card refined">
+                <h3>Brand block — refined (hover me)</h3>
+                <div style="max-width:248px" id="brand-refined-only"></div>
+                <p>Pointer cursor, hover border, “Click for About &amp; Help” hint.</p>
+            </div>
+        </div>
+
+        <div class="approve-box">
+            <p><strong>To adopt refined v2+</strong> (includes your v2 layout + polish above), reply:</p>
+            <p><code>Approved — apply Option A UX refined mockup</code></p>
+            <p style="margin:8px 0 0;font-size:12px;color:var(--text-secondary);">
+                Or: <code>Approved v2 only</code> if you want the left column exactly, without refinements.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const LOGO = '../../favicon_program.png';
+        const VERSION = '7.0.8';
+        const DATE_SHORT = '2026-05-24';
+        const DATE_FULL = '2026-05-24 (search_it progress + tab refresh v7.0.7)';
+
+        function img() {
+            return `<img src="${LOGO}" alt="" width="40" height="40" onerror="this.style.opacity='0.25'">`;
+        }
+
+        function verBadge() {
+            return `<span class="ver-badge">${VERSION}</span>`;
+        }
+
+        function brandV2() {
+            return `
+                <div class="sidebar-brand-v2">
+                    <div class="logo-wrap">${img()}</div>
+                    <div class="text-block">
+                        <div class="product-name">Network Swiss Tool</div>
+                        <div class="meta-row">
+                            ${verBadge()}
+                        </div>
+                        <div class="date-long">Updated: ${DATE_FULL}</div>
+                        <span class="branding-badge">Made by AI IDE</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function brandRefined(interactive) {
+            const tag = interactive ? 'a' : 'div';
+            const attrs = interactive
+                ? ' href="#about" class="sidebar-brand-refined" title="Open About &amp; Help — full release: ' + DATE_FULL + '" onclick="event.preventDefault();alert(\'Would switch to About & Help tab\');"'
+                : ' class="sidebar-brand-refined"';
+            return `
+                <${tag}${attrs}>
+                    <div class="logo-wrap">${img()}</div>
+                    <div class="text-block">
+                        <div class="product-name">Network Swiss Tool<span class="callout-pill">v2+</span></div>
+                        <div class="meta-row">
+                            ${verBadge()}
+                            <span class="date-badge" title="${DATE_FULL}">Updated: ${DATE_SHORT}</span>
+                        </div>
+                        <span class="branding-badge">Made by AI IDE</span>
+                        ${interactive ? '<div class="hint-about">Click for <span>About &amp; Help</span></div>' : ''}
+                    </div>
+                </${tag}>
+            `;
+        }
+
+        function sidebarRest() {
+            return `
+                <div class="mini-group">
+                    <span class="mini-label">🔐 Credentials</span>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                </div>
+                <div class="mini-group scope-flex">
+                    <span class="mini-label">🎯 Target Scope</span>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                    <div class="fake-btn-row">
+                        <div class="fake-btn">📥 Import</div>
+                        <div class="fake-btn" style="flex:0 0 60px">📁 Browse</div>
+                    </div>
+                    <div class="fake-textarea"></div>
+                </div>
+                <div class="fake-exit"></div>
+            `;
+        }
+
+        function mainArea() {
+            return `
+                <div class="mini-main">
+                    <div class="mini-tabs">
+                        <span class="mini-tab on">search_it</span>
+                        <span class="mini-tab">Interfaces</span>
+                        <span class="mini-tab">Swiss Tools</span>
+                    </div>
+                    <div class="mini-workspace">
+                        <div class="mini-card y"></div>
+                        <div class="mini-card p"></div>
+                        <div class="mini-card g"></div>
+                    </div>
+                </div>
+                <div class="mini-console">&gt; ready</div>
+            `;
+        }
+
+        function buildApp(headerInner, brandHtml) {
+            return `
+                <div class="mini-header ${headerInner.class}">${headerInner.html}</div>
+                <div class="mini-body">
+                    <div class="mini-sidebar">${brandHtml}${sidebarRest()}</div>
+                    ${mainArea()}
+                </div>
+            `;
+        }
+
+        document.getElementById('app-v2').innerHTML = buildApp(
+            {
+                class: 'plain',
+                html: `<div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                       <div class="header-empty">(empty header)</div>`
+            },
+            brandV2()
+        );
+
+        document.getElementById('app-refined').innerHTML = buildApp(
+            {
+                class: 'chrome',
+                html: `<div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                       <div class="header-chrome-hint">workspace</div>`
+            },
+            brandRefined(true)
+        );
+
+        document.getElementById('brand-v2-only').innerHTML = brandV2();
+        document.getElementById('brand-refined-only').innerHTML = brandRefined(true);
+    </script>
+</body>
+</html>

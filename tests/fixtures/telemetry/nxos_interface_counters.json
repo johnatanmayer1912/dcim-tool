@@ -1,0 +1,11 @@
+{
+  "platform": "cisco_nxos",
+  "vendor": "cisco",
+  "device": "leaf-nx-01",
+  "path": "sys/intf/phys-[eth1/1]/dbgStats/inOctets",
+  "if_name": "Ethernet1/1",
+  "val": "2048",
+  "units": "bytes",
+  "msg_timestamp": "2026-08-20T18:01:00Z",
+  "seq": 7
+}

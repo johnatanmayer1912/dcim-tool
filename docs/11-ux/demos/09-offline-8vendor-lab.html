@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>09 Offline 8-vendor lab — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+  <style>
+    .swatch.purple { background: #a855f7; }
+    .swatch.orange { background: #f97316; }
+    .swatch.amber { background: #f59e0b; border-style: dashed; }
+    .lab-toolbar { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; }
+    .map-canvas svg { height: 340px; }
+    .map-canvas line.hit { cursor: pointer; }
+    .map-canvas line.is-sel { filter: drop-shadow(0 0 3px #93c5fd); }
+    .map-canvas circle.hit { cursor: pointer; }
+    dialog#live-dlg { width: min(28rem, 92vw); }
+    .chip { display: inline-block; font-size: 11px; font-weight: 700; padding: 0.12rem 0.45rem; border-radius: 999px; border: 1px solid var(--border); }
+    .chip.ok { background: var(--ok-bg); }
+    .chip.warn { background: var(--warn-bg); }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 09 · 8-vendor fixture lab</strong>
+    <span>Same topology as <code>tests/fixtures/demo_lab/unified_e2e_lab.json</code>. Replay/SSH paint — <strong>not SNMP</strong>. Not live-vendor.</span>
+    <a href="index.html">All demos</a>
+    <a href="07-maps-utilization.html">07 overlay contract</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.1.0 · demo</span></a>
+        <a class="pill is-on" href="06-settings-vault.html"><span class="ico" aria-hidden="true">●</span> Vault UNLOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select id="cred-select" aria-label="Named credential set">
+            <option value="">— none —</option>
+            <option value="lab-ops" selected>lab-ops (ssh)</option>
+          </select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope"><option selected>8-vendor fixture lab — 8 devices</option></select>
+        </label>
+      </div>
+      <p class="freshness" id="freshness">Last L2: fixture · Overlay: replay off · Live SSH: not started · Evidence: fixture-only</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html" aria-current="page">Maps <span class="badge">2</span><span class="kbd">2</span></a>
+      <a href="03-find.html">Find <span class="kbd">3</span></a>
+      <a href="04-change.html">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Offline 8-vendor lab</h1>
+          <p class="lede">3 NX-OS · 2 IOS · 1 IOS-XE · 2 Junos. Overlay paints <strong>existing L2 cables only</strong>. EVPN is not a cable. STP-blocked is not a forwarding utilization. Incomplete CDP stays a diagnostic.</p>
+        </div>
+      </div>
+
+      <div class="banner info" id="honesty-banner">
+        <strong>Not live.</strong> Replay is not a live poll. Live SSH is not SNMP and does not certify topology. Gray dashed = no sample — not down. Overlay never creates edges.
+      </div>
+
+      <div class="card">
+        <h2>Operator controls (same jobs as Swiss Tools)</h2>
+        <div class="lab-toolbar">
+          <button type="button" class="primary" id="btn-std-l2" aria-pressed="true">Standard L2 map</button>
+          <button type="button" id="btn-discovery" aria-pressed="false">Discovery viewer</button>
+          <label class="field inline">
+            <input type="checkbox" id="overlay-on">
+            <span>Utilization overlay</span>
+          </label>
+          <button type="button" id="btn-replay">Apply replay</button>
+          <button type="button" id="btn-live">Live SSH utilization</button>
+          <button type="button" id="btn-overlay-off">Overlay off</button>
+        </div>
+        <p class="muted" id="mode-hint">Host: Standard L2. Live SSH is allowed after a vault credential is selected. Discovery is view-only.</p>
+      </div>
+
+      <div class="legend" aria-label="Map legend">
+        <span><i class="swatch gray" aria-hidden="true"></i> unsampled L2 (not down)</span>
+        <span><i class="swatch green" aria-hidden="true"></i> &lt;70%</span>
+        <span><i class="swatch yellow" aria-hidden="true"></i> 70–90%</span>
+        <span><i class="swatch red" aria-hidden="true"></i> ≥90%</span>
+        <span><i class="swatch purple" aria-hidden="true"></i> EVPN overlay (not a cable)</span>
+        <span><i class="swatch orange" aria-hidden="true"></i> STP-blocked</span>
+        <span><i class="swatch amber" aria-hidden="true"></i> one-sided L2</span>
+      </div>
+
+      <div class="map-canvas" id="map" aria-label="8-vendor L2 topology">
+        <svg viewBox="0 0 640 340" role="img" aria-labelledby="lab-title">
+          <title id="lab-title">Eight-device fixture lab: seven L2 cables, EVPN overlay, STP-blocked</title>
+          <!-- L2 cables -->
+          <line id="e-core" class="hit l2" data-id="core" x1="210" y1="48" x2="420" y2="48" stroke="#64748b" stroke-width="3"/>
+          <line id="e-c1d1" class="hit l2" data-id="c1d1" x1="210" y1="48" x2="250" y2="140" stroke="#64748b" stroke-width="2.5"/>
+          <line id="e-c2xe" class="hit l2" data-id="c2xe" x1="420" y1="48" x2="420" y2="140" stroke="#64748b" stroke-width="2.5"/>
+          <line id="e-agg" class="hit l2" data-id="agg" x1="90" y1="140" x2="210" y2="48" stroke="#64748b" stroke-width="2.5"/>
+          <line id="e-onesided" class="hit l2 onesided" data-id="onesided" x1="250" y1="140" x2="180" y2="250" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="5 4"/>
+          <line id="e-j1" class="hit l2" data-id="j1" x1="250" y1="140" x2="320" y2="250" stroke="#64748b" stroke-width="2.5"/>
+          <line id="e-j2" class="hit l2" data-id="j2" x1="420" y1="140" x2="470" y2="250" stroke="#64748b" stroke-width="2.5"/>
+          <!-- Non-cables -->
+          <line id="e-evpn" class="hit noncable" data-id="evpn" x1="210" y1="36" x2="420" y2="36" stroke="#a855f7" stroke-width="2" stroke-dasharray="3 3"/>
+          <line id="e-stp" class="hit noncable" data-id="stp" x1="270" y1="150" x2="200" y2="250" stroke="#f97316" stroke-width="2" stroke-dasharray="4 3"/>
+          <!-- Nodes -->
+          <circle class="hit" data-node="NX-CORE-01" cx="210" cy="48" r="18" fill="#1e3a5f"/><text class="node-label" x="210" y="52" text-anchor="middle">NX-CORE-01</text>
+          <circle class="hit" data-node="NX-CORE-02" cx="420" cy="48" r="18" fill="#1e3a5f"/><text class="node-label" x="420" y="52" text-anchor="middle">NX-CORE-02</text>
+          <circle class="hit" data-node="NX-AGG-01" cx="90" cy="140" r="16" fill="#1e3a5f"/><text class="node-label" x="90" y="144" text-anchor="middle">NX-AGG-01</text>
+          <circle class="hit" data-node="IOS-DIST-01" cx="250" cy="140" r="16" fill="#334155"/><text class="node-label" x="250" y="144" text-anchor="middle">IOS-DIST-01</text>
+          <circle class="hit" data-node="IOS-XE-DIST-02" cx="420" cy="140" r="16" fill="#334155"/><text class="node-label" x="420" y="144" text-anchor="middle">IOS-XE-DIST-02</text>
+          <circle class="hit" data-node="IOS-ACC-01" cx="180" cy="250" r="14" fill="#475569"/><text class="node-label" x="180" y="254" text-anchor="middle">IOS-ACC-01</text>
+          <circle class="hit" data-node="JN-ACC-01" cx="320" cy="250" r="14" fill="#14532d"/><text class="node-label" x="320" y="254" text-anchor="middle">JN-ACC-01</text>
+          <circle class="hit" data-node="JN-ACC-02" cx="470" cy="250" r="14" fill="#14532d"/><text class="node-label" x="470" y="254" text-anchor="middle">JN-ACC-02</text>
+          <text class="node-label" x="315" y="28" text-anchor="middle" fill="#c084fc">EVPN nve1</text>
+          <text class="node-label" x="560" y="210" text-anchor="middle" fill="#fdba74">STP blocked</text>
+        </svg>
+      </div>
+
+      <div class="card" id="diag-card">
+        <h2>Diagnostics (not cables)</h2>
+        <table>
+          <thead><tr><th>Kind</th><th>Where</th><th>Operator truth</th></tr></thead>
+          <tbody>
+            <tr><td>Incomplete CDP</td><td class="mono">IOS-ACC-01 Gi1/0/24</td><td>Peer identity missing — <strong>not an edge</strong></td></tr>
+            <tr><td>EVPN overlay</td><td class="mono">NX-CORE-01 nve1 ↔ NX-CORE-02 nve1</td><td>Overlay CLI peer — not a cable; overlay paint must not gray it</td></tr>
+            <tr><td>STP-blocked</td><td class="mono">IOS-DIST-01 Gi1/0/2 ↔ IOS-ACC-01 Gi1/0/2</td><td>Not a forwarding utilization path</td></tr>
+            <tr><td>One-sided L2</td><td class="mono">IOS-DIST-01 Gi1/0/48 → IOS-ACC-01 Gi1/0/1</td><td>Spoof-risk. May get partial paint. Not High verified</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Unmapped counters (not drawn)</h2>
+        <table>
+          <thead><tr><th>Device</th><th>ifName</th><th>Why omitted</th></tr></thead>
+          <tbody>
+            <tr><td>NX-CORE-01</td><td class="mono">mgmt0</td><td>mgmt / L3 SVI — never a cable</td></tr>
+            <tr><td>NX-CORE-01</td><td class="mono">Eth1/99</td><td>No matching L2 edge</td></tr>
+            <tr><td>NX-CORE-01</td><td class="mono">Eth1/10</td><td>Bundle member not on graph</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="muted">Product HTML maps (vis.js) are generated by <code>python3 scripts/generate_unified_e2e_demo.py</code>. This page is the operator-console UX freeze of that same lab — static, no Flask, no secrets.</p>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Inspector</h2>
+      <p id="insp-status"><span class="chip">idle</span> Click an edge or node.</p>
+      <dl id="insp-dl">
+        <dt>Lab</dt>
+        <dd>unified-e2e-8vendor-2026-08-22</dd>
+        <dt>Devices</dt>
+        <dd>8 (3 NX-OS, 2 IOS, 1 IOS-XE, 2 Junos)</dd>
+        <dt>L2 cables</dt>
+        <dd>7 — overlay may paint these only</dd>
+        <dt>Must not imply</dt>
+        <dd>Live vendor proof, cable certification, or SNMP polling.</dd>
+      </dl>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span></footer>
+
+  <dialog id="live-dlg" aria-labelledby="live-dlg-title">
+    <h2 id="live-dlg-title">Start Live SSH utilization?</h2>
+    <p>Two CLI counter samples on Standard L2 map nodes. <strong>Not SNMP.</strong> Does not certify topology. Requires vault <code>credential_id</code>.</p>
+    <p id="live-dlg-cred" class="muted"></p>
+    <div class="title-actions">
+      <button type="button" id="live-cancel">Cancel</button>
+      <button type="button" class="primary" id="live-go">Start Live SSH</button>
+    </div>
+  </dialog>
+
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var host = "standard";
+      var overlayOn = false;
+      var overlayMode = "off";
+      var freshness = document.getElementById("freshness");
+      var hint = document.getElementById("mode-hint");
+      var liveBtn = document.getElementById("btn-live");
+      var dlg = document.getElementById("live-dlg");
+      var cred = document.getElementById("cred-select");
+      var overlayCb = document.getElementById("overlay-on");
+      var orig = {};
+
+      document.querySelectorAll("#map line.l2, #map line.noncable").forEach(function (ln) {
+        orig[ln.id] = {
+          stroke: ln.getAttribute("stroke"),
+          width: ln.getAttribute("stroke-width"),
+          dash: ln.getAttribute("stroke-dasharray") || ""
+        };
+      });
+
+      function setPressed(id, on) {
+        var b = document.getElementById(id);
+        if (b) b.setAttribute("aria-pressed", on ? "true" : "false");
+      }
+
+      function paintReplay() {
+        overlayOn = true;
+        overlayMode = "replay";
+        overlayCb.checked = true;
+        document.querySelectorAll("#map line.l2").forEach(function (ln) {
+          ln.setAttribute("stroke", "#64748b");
+          ln.setAttribute("stroke-dasharray", "5 4");
+          ln.setAttribute("stroke-width", "2");
+        });
+        var hot = document.getElementById("e-core");
+        hot.setAttribute("stroke", "#ef4444");
+        hot.removeAttribute("stroke-dasharray");
+        hot.setAttribute("stroke-width", "4");
+        ["e-evpn", "e-stp"].forEach(function (id) {
+          var ln = document.getElementById(id);
+          var o = orig[id];
+          ln.setAttribute("stroke", o.stroke);
+          ln.setAttribute("stroke-width", o.width);
+          ln.setAttribute("stroke-dasharray", o.dash);
+        });
+        freshness.textContent = "Last L2: fixture · Overlay: replay on · Live SSH: not started · Gray ≠ down";
+        nstDemoSetTask("idle");
+      }
+
+      function paintLiveSim() {
+        overlayOn = true;
+        overlayMode = "live";
+        overlayCb.checked = true;
+        paintReplay();
+        overlayMode = "live";
+        freshness.textContent = "Last L2: fixture · Overlay: Live SSH simulation (not SNMP, not a lab poll) · Topology unchanged";
+        nstDemoSetTask("cancelled");
+        document.getElementById("task-strip-body").innerHTML =
+          "<strong>Live SSH utilization</strong> · fixture simulation — <span>not a device poll</span>";
+      }
+
+      function overlayOff() {
+        overlayOn = false;
+        overlayMode = "off";
+        overlayCb.checked = false;
+        document.querySelectorAll("#map line.l2, #map line.noncable").forEach(function (ln) {
+          var o = orig[ln.id];
+          ln.setAttribute("stroke", o.stroke);
+          ln.setAttribute("stroke-width", o.width);
+          if (o.dash) ln.setAttribute("stroke-dasharray", o.dash);
+          else ln.removeAttribute("stroke-dasharray");
+        });
+        freshness.textContent = "Last L2: fixture · Overlay: off · Live SSH: not started · Evidence: fixture-only";
+        nstDemoSetTask("idle");
+      }
+
+      function syncHost() {
+        var disc = host === "discovery";
+        liveBtn.disabled = disc;
+        liveBtn.title = disc
+          ? "Live SSH is Standard L2 only. Discovery is a viewer. Not SNMP."
+          : "Two SSH samples. Requires credential_id. Not SNMP. Does not certify topology.";
+        hint.textContent = disc
+          ? "Host: Discovery viewer. Overlay may paint existing L2 only. Live SSH start is hidden/disabled. EVPN stays purple."
+          : "Host: Standard L2. Live SSH is allowed after a vault credential is selected. Discovery is view-only.";
+        setPressed("btn-std-l2", !disc);
+        setPressed("btn-discovery", disc);
+      }
+
+      document.getElementById("btn-std-l2").addEventListener("click", function () {
+        host = "standard";
+        syncHost();
+      });
+      document.getElementById("btn-discovery").addEventListener("click", function () {
+        host = "discovery";
+        syncHost();
+        if (overlayOn) paintReplay();
+      });
+      overlayCb.addEventListener("change", function () {
+        if (overlayCb.checked) paintReplay();
+        else overlayOff();
+      });
+      document.getElementById("btn-replay").addEventListener("click", paintReplay);
+      document.getElementById("btn-overlay-off").addEventListener("click", overlayOff);
+      document.getElementById("btn-live").addEventListener("click", function () {
+        if (host === "discovery") return;
+        document.getElementById("live-dlg-cred").textContent = cred.value
+          ? ("credential_id=" + cred.value + " (password never shown)")
+          : "No credential_id selected — start must fail closed.";
+        if (typeof dlg.showModal === "function") dlg.showModal();
+        else dlg.setAttribute("open", "");
+      });
+      document.getElementById("live-cancel").addEventListener("click", function () { dlg.close(); });
+      document.getElementById("live-go").addEventListener("click", function () {
+        if (!cred.value) {
+          dlg.close();
+          window.alert("Live SSH utilization requires a vault credential_id. Unlock the vault and select a stored credential. Not SNMP. Does not certify topology.");
+          return;
+        }
+        dlg.close();
+        nstDemoSetTask("running");
+        window.setTimeout(paintLiveSim, 400);
+      });
+
+      var facts = {
+        core: { t: "L2 cable", d: "NX-CORE-01 Eth1/1 — NX-CORE-02 Eth1/1", n: "CDP bidirectional. Replay paints this edge hot (~94%). Overlay does not change trust_tier." },
+        c1d1: { t: "L2 cable", d: "NX-CORE-01 Eth1/49 — IOS-DIST-01 Te1/1/1", n: "Unsampled when overlay on — gray dashed, not down." },
+        c2xe: { t: "L2 cable", d: "NX-CORE-02 Eth1/49 — IOS-XE-DIST-02 Te1/1/1", n: "IOS-XE in the mix. Same L2 contract as IOS/NX-OS." },
+        agg: { t: "L2 cable", d: "NX-AGG-01 Eth1/1 — NX-CORE-01 Eth1/2", n: "Distribution NX-OS. Unsampled under replay." },
+        onesided: { t: "One-sided L2", d: "IOS-DIST-01 Gi1/0/48 → IOS-ACC-01 Gi1/0/1", n: "Spoof-risk. Partial paint allowed. Not a certified cable." },
+        j1: { t: "L2 cable", d: "IOS-DIST-01 Gi1/0/47 — JN-ACC-01 ge-0/0/0", n: "Junos access. Unsampled under this replay fixture." },
+        j2: { t: "L2 cable", d: "IOS-XE-DIST-02 Gi1/0/24 — JN-ACC-02 ge-0/0/1", n: "Second Junos access. Still an L2 cable, not overlay." },
+        evpn: { t: "EVPN overlay", d: "NX-CORE-01 nve1 — NX-CORE-02 nve1", n: "Not a cable. Utilization must not gray this as an unsampled L2 edge." },
+        stp: { t: "STP-blocked", d: "IOS-DIST-01 Gi1/0/2 — IOS-ACC-01 Gi1/0/2", n: "Not a forwarding-path utilization. Not paint-eligible." }
+      };
+
+      document.querySelectorAll("#map line.hit").forEach(function (ln) {
+        ln.addEventListener("click", function () {
+          document.querySelectorAll("#map line.hit").forEach(function (x) { x.classList.remove("is-sel"); });
+          ln.classList.add("is-sel");
+          var f = facts[ln.getAttribute("data-id")];
+          if (!f) return;
+          document.getElementById("insp-status").innerHTML = '<span class="chip warn">edge</span> ' + f.t;
+          document.getElementById("insp-dl").innerHTML =
+            "<dt>Link</dt><dd>" + f.d + "</dd><dt>Truth</dt><dd>" + f.n + "</dd><dt>Overlay</dt><dd>" +
+            (overlayOn ? ("on (" + overlayMode + ")") : "off") + "</dd>";
+        });
+      });
+      document.querySelectorAll("#map circle.hit").forEach(function (c) {
+        c.addEventListener("click", function () {
+          var id = c.getAttribute("data-node");
+          document.getElementById("insp-status").innerHTML = '<span class="chip ok">device</span> ' + id;
+          document.getElementById("insp-dl").innerHTML =
+            "<dt>Device</dt><dd>" + id + "</dd><dt>Lab</dt><dd>Fixture inventory only — no SSH this page</dd>";
+        });
+      });
+
+      syncHost();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+Ethernet1/1 is up
+admin state is up, Dedicated Interface
+  Hardware: 1000/10000 Ethernet, address: 0022.3344.5566 (bia 0022.3344.5566)
+  Description: peer-link
+  MTU 1500 bytes, BW 10000000 Kbit, DLY 10 usec
+  reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, medium is broadcast
+  Port mode is trunk
+  full-duplex, 10 Gb/s, media type is 10G
+  Beacon is turned off
+  Auto-Negotiation is turned off
+  Input flow-control is off, output flow-control is off
+  Auto-mdix is turned off
+  Switchport monitor is off
+  EtherType is 0x8100
+  30 seconds input rate 8000 bits/sec, 10 packets/sec
+  30 seconds output rate 16000 bits/sec, 12 packets/sec
+  Load-Interval #2: 5 minute (300 seconds)
+    input rate 1.00 Kbps, 1 pps; output rate 2.00 Kbps, 2 pps
+  RX
+    100 unicast packets  200 multicast packets  300 broadcast packets
+    600 input packets  8000000000 bytes
+    0 jumbo packets  0 storm suppression bytes
+    0 runts  0 giants  0 CRC  0 no buffer
+  TX
+    50 unicast packets  20 multicast packets  10 broadcast packets
+    80 output packets  1000000000 bytes
+    0 jumbo packets
+    0 underrun  0 collision  0 deferred
+
+Ethernet1/2 is down (Link not connected)
+admin state is up
+  Hardware: 1000/10000 Ethernet, address: 0022.3344.5567
+  MTU 1500 bytes, BW 10000000 Kbit, DLY 10 usec
+  RX
+    0 unicast packets  0 multicast packets  0 broadcast packets
+    0 input packets  0 bytes
+  TX
+    0 unicast packets  0 multicast packets  0 broadcast packets
+    0 output packets  0 bytes
+
+Port-channel10 is up
+admin state is up
+  Hardware: Port-Channel, address: 0022.3344.55aa
+  MTU 1500 bytes, BW 20000000 Kbit, DLY 10 usec
+  RX
+    10 unicast packets  0 multicast packets  0 broadcast packets
+    10 input packets  1111 bytes
+  TX
+    9 unicast packets  0 multicast packets  0 broadcast packets
+    9 output packets  2222 bytes
+
+mgmt0 is up
+  Hardware: GigabitEthernet, address: 0022.3344.0001
+  MTU 1500 bytes, BW 1000000 Kbit
+  RX
+    1 input packets  100 bytes
+  TX
+    1 output packets  100 bytes

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NST GUI Mock — Team Workbench</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@450;550;650;700&family=Source+Code+Pro:wght@450;600&display=swap');
+  :root {
+    --bg: #f3f5f8;
+    --surface: #ffffff;
+    --ink: #15202b;
+    --ink-2: #3d4a57;
+    --muted: #5c6b7a;
+    --line: #d7dee6;
+    --line-strong: #b8c3d0;
+    --accent: #0b6e4f;
+    --accent-soft: #e6f4ee;
+    --focus: #1a6cff;
+    --warn-bg: #fff6e5;
+    --warn-ink: #8a5a00;
+    --danger: #b42318;
+    --font: "Source Sans 3", "Segoe UI", sans-serif;
+    --mono: "Source Code Pro", ui-monospace, monospace;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: var(--font);
+    background:
+      linear-gradient(180deg, #e9eef4 0%, var(--bg) 28%, #ebeff4 100%);
+    color: var(--ink);
+    overflow: auto;
+  }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 18px 28px;
+    display: grid;
+    gap: 14px;
+  }
+  .audit {
+    background: var(--ink);
+    color: #e8eef5;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    animation: fade 0.4s ease both;
+  }
+  .audit .mark {
+    background: #2bb673;
+    color: #062417;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 7px 10px;
+    border-radius: 8px;
+    height: fit-content;
+  }
+  .audit h2 { margin: 0 0 4px; font-size: 15px; }
+  .audit p, .audit li { margin: 0; font-size: 13px; color: #b7c4d2; line-height: 1.45; }
+  .audit ul { margin: 6px 0 0; padding-left: 18px; }
+
+  .app {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(21, 32, 43, 0.06);
+    overflow: hidden;
+    animation: fade 0.5s 0.05s ease both;
+  }
+  .chrome {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    background: #15202b;
+    color: #f4f7fb;
+  }
+  .brand-block { display: flex; flex-direction: column; gap: 2px; }
+  .brand-block .product {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.03em;
+  }
+  .brand-block .sub { font-size: 12px; color: #9aabbc; }
+  .chrome-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chrome .btn {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.14);
+  }
+  .chrome .btn-primary {
+    background: #2bb673;
+    color: #062417;
+    border-color: transparent;
+  }
+
+  .ws-nav {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: #f8fafc;
+  }
+  .ws-nav button {
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 650;
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+  .ws-nav button[aria-current="page"] {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: #b7e0cc;
+  }
+  .ws-nav .kbd {
+    margin-left: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 450;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 560px;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+  .side {
+    border-right: 1px solid var(--line);
+    background: #fbfcfd;
+    padding: 16px;
+    display: grid;
+    gap: 16px;
+    align-content: start;
+  }
+  .field { display: grid; gap: 6px; }
+  .field label {
+    font-size: 13px; font-weight: 650; color: var(--ink);
+  }
+  .field .hint { font-size: 12px; color: var(--muted); margin: 0; }
+  input, select, textarea {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font: inherit;
+    background: #fff;
+    color: var(--ink);
+  }
+  textarea { min-height: 110px; resize: vertical; font-family: var(--mono); font-size: 12px; }
+  .callout {
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+    font-size: 13px;
+    line-height: 1.4;
+    border: 1px solid #f0d7a0;
+  }
+  .callout strong { display: block; margin-bottom: 4px; }
+
+  .main { padding: 18px 20px 22px; display: grid; gap: 16px; }
+  .main header h1 {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: -0.03em;
+  }
+  .main header p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 58ch;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  @media (max-width: 900px) {
+    .steps { grid-template-columns: 1fr 1fr; }
+  }
+  .step {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    background: #fff;
+  }
+  .step.done { border-color: #9fd5ba; background: var(--accent-soft); }
+  .step.active { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(11,110,79,0.12); }
+  .step .n {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .step .t { font-weight: 650; font-size: 14px; }
+
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .panel .bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--line);
+  }
+  .panel .bar h2 { margin: 0; font-size: 15px; }
+  .btn {
+    border: 1px solid var(--line-strong);
+    background: #fff;
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-family: inherit;
+    font-weight: 650;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .btn:hover { background: #f3f6f9; transform: translateY(-1px); }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover { background: #095c42; }
+  .btn-danger {
+    background: #fff;
+    color: var(--danger);
+    border-color: #f0b4ae;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    background: #f8fafc;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  tr:hover td { background: #f7fbf9; }
+  .mono { font-family: var(--mono); font-size: 12.5px; }
+  .ok { color: var(--accent); font-weight: 650; }
+  .fail { color: var(--danger); font-weight: 650; }
+
+  .help {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 900px) {
+    .help { grid-template-columns: 1fr; }
+  }
+  .help article {
+    border: 1px dashed var(--line-strong);
+    border-radius: 12px;
+    padding: 14px;
+    background: #fcfdff;
+  }
+  .help h3 { margin: 0 0 6px; font-size: 14px; }
+  .help p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+  .footer-strip {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid var(--line);
+    background: #f8fafc;
+    font-size: 13px;
+  }
+  .footer-strip .status { font-weight: 650; color: var(--accent); }
+
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <aside class="audit" aria-label="External audit">
+      <div class="mark">Team Workbench · Usability</div>
+      <div>
+        <h2>External GUI audit — thesis</h2>
+        <p>Optimize for clarity and mistake-proofing: large labels, visible keyboard shortcuts, guided steps, and plain-language warnings before change. Hi-tech without gloom — a daylight workbench operators can trust.</p>
+        <ul>
+          <li>Brand is the chrome title (hero), not a sidebar afterthought.</li>
+          <li>VLAN / change flows shown as numbered steps with explicit idle/pass/fail states.</li>
+          <li>Every control has a visible label + short hint; focus rings are intentional.</li>
+          <li>Help cards explain “what happens next” beside the action table.</li>
+        </ul>
+      </div>
+    </aside>
+
+    <div class="app">
+      <header class="chrome">
+        <div class="brand-block">
+          <div class="product">Network Swiss Tool Pro</div>
+          <div class="sub">Offline operator console · mock v7.4.23 · Team Workbench</div>
+        </div>
+        <div class="chrome-actions">
+          <button class="btn" type="button">Cancel</button>
+          <button class="btn" type="button">Stop</button>
+          <button class="btn btn-primary" type="button">Run validation</button>
+        </div>
+      </header>
+
+      <nav class="ws-nav" aria-label="Workspace">
+        <button type="button">Find <span class="kbd">1</span></button>
+        <button type="button" aria-current="page">Change <span class="kbd">2</span></button>
+        <button type="button">Maps <span class="kbd">3</span></button>
+        <button type="button">Evidence <span class="kbd">4</span></button>
+        <button type="button">Settings <span class="kbd">5</span></button>
+      </nav>
+
+      <div class="layout">
+        <aside class="side">
+          <div class="field">
+            <label for="cred">Primary credential</label>
+            <select id="cred">
+              <option>ops-primary (vault)</option>
+              <option>ops-fallback</option>
+            </select>
+            <p class="hint">Secrets stay in the vault — UI only sends credential IDs.</p>
+          </div>
+          <div class="field">
+            <label for="scope">Target scope</label>
+            <select id="scope">
+              <option>Group · Access</option>
+              <option selected>Group · Core</option>
+              <option>Single host</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="inv">Inventory preview</label>
+            <textarea id="inv" readonly>10.1.1.1,cisco_ios
+10.1.1.2,cisco_nxos
+10.1.1.3,juniper_junos</textarea>
+            <p class="hint">3 hosts in Core · unsaved box is off.</p>
+          </div>
+          <div class="callout">
+            <strong>Before you execute</strong>
+            Validation is dry-run only. Nothing is pushed until you confirm in the approval dialog.
+          </div>
+        </aside>
+
+        <main class="main">
+          <header>
+            <h1>VLAN change — guided</h1>
+            <p>One job at a time. Complete validation steps, review impact, then confirm. Keyboard: Tab through controls, Esc closes dialogs.</p>
+          </header>
+
+          <div class="steps" aria-label="Validation progress">
+            <div class="step done"><div class="n">STEP 1</div><div class="t">Dry-run · Passed</div></div>
+            <div class="step done"><div class="n">STEP 2</div><div class="t">Syntax · Passed</div></div>
+            <div class="step active"><div class="n">STEP 3</div><div class="t">Platform · Running</div></div>
+            <div class="step"><div class="n">STEP 4</div><div class="t">Conflict · Idle</div></div>
+          </div>
+
+          <section class="panel">
+            <div class="bar">
+              <h2>Proposed operation</h2>
+              <div style="display:flex; gap:8px;">
+                <button class="btn" type="button">Edit VLAN</button>
+                <button class="btn btn-primary" type="button">Continue</button>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Value</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Action</td>
+                  <td><strong>Add VLAN</strong></td>
+                  <td>Create VLAN on each host in scope</td>
+                </tr>
+                <tr>
+                  <td>VLAN ID</td>
+                  <td class="mono">240</td>
+                  <td>Must be unused on target platforms</td>
+                </tr>
+                <tr>
+                  <td>Name</td>
+                  <td class="mono">VOICE_FLOOR2</td>
+                  <td>Applied where naming is supported</td>
+                </tr>
+                <tr>
+                  <td>Save config</td>
+                  <td class="ok">Yes (after verify)</td>
+                  <td>Commit/copy only if verification passes</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <div class="help">
+            <article>
+              <h3>What “Platform” checks</h3>
+              <p>Confirms each device type can accept the VLAN command set (IOS / NX-OS / Junos) without inventing syntax.</p>
+            </article>
+            <article>
+              <h3>If something fails</h3>
+              <p>The step turns red with a short reason. Fix inventory or VLAN ID, then re-run validation — no partial deploy.</p>
+            </article>
+          </div>
+        </main>
+      </div>
+
+      <footer class="footer-strip">
+        <div><span class="status">Validation running</span> · Step 3 of 5 · Core · 3 hosts</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-danger" type="button">Cancel job</button>
+          <button class="btn" type="button">Open task log</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

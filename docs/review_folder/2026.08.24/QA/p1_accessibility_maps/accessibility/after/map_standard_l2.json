@@ -1,0 +1,21 @@
+{
+  "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.24/QA/p1_accessibility_maps/generated_outputs/maps/standard_l2_overlay_replay.html",
+  "violationCount": 0,
+  "incompleteCount": 2,
+  "violations": [],
+  "incomplete": [
+    {
+      "id": "aria-prohibited-attr",
+      "impact": "serious",
+      "description": "Ensure ARIA attributes are not prohibited for an element's role",
+      "nodes": 1
+    },
+    {
+      "id": "color-contrast",
+      "impact": null,
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "nodes": 0
+    }
+  ],
+  "label": "map_standard_l2"
+}

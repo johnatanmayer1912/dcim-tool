@@ -1,0 +1,15 @@
+{
+  "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.24/QA/p1_accessibility_maps/generated_outputs/maps/discovery_command_center.html",
+  "violationCount": 0,
+  "incompleteCount": 1,
+  "violations": [],
+  "incomplete": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "nodes": 2
+    }
+  ],
+  "label": "map_discovery"
+}

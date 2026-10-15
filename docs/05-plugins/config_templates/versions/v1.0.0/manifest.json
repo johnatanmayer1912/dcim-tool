@@ -1,0 +1,16 @@
+{
+  "plugin_id": "config_templates",
+  "version": "1.0.0",
+  "release_date": "2026-05-26",
+  "files": {
+    "plugin": "modules/plugins/config_templates.py",
+    "readme": "docs/plugins/config_templates/README.md",
+    "release_notes": "docs/plugins/config_templates/RELEASE_NOTES.md",
+    "changelog": "docs/plugins/config_templates/CHANGELOG.md",
+    "test_results": "docs/plugins/config_templates/TEST_RESULTS.md",
+    "compatibility": "docs/plugins/config_templates/COMPATIBILITY.md"
+  },
+  "compatibility": {
+    "min_platform_version": "6.9.21"
+  }
+}

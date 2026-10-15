@@ -1,0 +1,457 @@
+{
+  "phase": "after",
+  "timestamp": "2026-08-24T05:56:58.458Z",
+  "pages": 9,
+  "totalViolations": 16,
+  "results": [
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 0,
+      "incompleteCount": 2,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "inventory"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 1,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "help": "Heading levels should only increase by one",
+          "nodes": 1,
+          "targets": [
+            [
+              "div:nth-child(10) > h6"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "maps"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 1,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 8,
+          "targets": [
+            [
+              "#tab-discovery > .card-header > div:nth-child(1) > .card-subtitle > span"
+            ],
+            [
+              "#disc-run-btn"
+            ],
+            [
+              ".form-grid-3 > .form-group:nth-child(1) > .text-muted"
+            ],
+            [
+              ".text-muted > strong:nth-child(1)"
+            ],
+            [
+              ".text-muted > code:nth-child(2)"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 2
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 9
+        }
+      ],
+      "label": "maps_discovery"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 2,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 3,
+          "targets": [
+            [
+              ".tab-version"
+            ],
+            [
+              "#tab-diag > p"
+            ],
+            [
+              "button[onclick=\"runAction('mac_check')\"]"
+            ]
+          ]
+        },
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "help": "Heading levels should only increase by one",
+          "nodes": 1,
+          "targets": [
+            [
+              ".tab-view-title"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "find"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 2,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 5,
+          "targets": [
+            [
+              "#tab-vlan > p:nth-child(2)"
+            ],
+            [
+              "button[onclick=\"runAction('add_vlan')\"]"
+            ],
+            [
+              "button[onclick=\"runAction('delete_vlan')\"]"
+            ],
+            [
+              "p:nth-child(11)"
+            ],
+            [
+              "button[onclick=\"runAction('find_missing_vlan')\"]"
+            ]
+          ]
+        },
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "help": "Heading levels should only increase by one",
+          "nodes": 1,
+          "targets": [
+            [
+              "#tab-vlan > h5"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "change"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 1,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1,
+          "targets": [
+            [
+              "#nst-evidence-status"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "evidence"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 2,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1,
+          "targets": [
+            [
+              "#tab-credentials > .align-items-start.mb-4.justify-content-between > div:nth-child(1) > p"
+            ]
+          ]
+        },
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "help": "Heading levels should only increase by one",
+          "nodes": 1,
+          "targets": [
+            [
+              "#tab-credentials > div:nth-child(5) > h6"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "settings"
+    },
+    {
+      "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/maps/standard_l2_overlay_replay.html",
+      "violationCount": 4,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "html-has-lang",
+          "impact": "serious",
+          "description": "Ensure every HTML document has a lang attribute",
+          "help": "<html> element must have a lang attribute",
+          "nodes": 1,
+          "targets": [
+            [
+              "html"
+            ]
+          ]
+        },
+        {
+          "id": "landmark-one-main",
+          "impact": "moderate",
+          "description": "Ensure the document has a main landmark",
+          "help": "Document should have one main landmark",
+          "nodes": 1,
+          "targets": [
+            [
+              "html"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 13,
+          "targets": [
+            [
+              ".nst-top-row"
+            ],
+            [
+              "label[for=\"searchInput\"]"
+            ],
+            [
+              "#searchInput"
+            ],
+            [
+              "#nst-util-toggle-wrap"
+            ],
+            [
+              "#nst-util-mode-chip"
+            ]
+          ]
+        },
+        {
+          "id": "scrollable-region-focusable",
+          "impact": "serious",
+          "description": "Ensure elements that have scrollable content are accessible by keyboard",
+          "help": "Scrollable region must have keyboard access",
+          "nodes": 1,
+          "targets": [
+            [
+              ".nst-conn-table-wrap"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": null,
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 0
+        }
+      ],
+      "label": "map_standard_l2"
+    },
+    {
+      "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/maps/discovery_command_center.html",
+      "violationCount": 3,
+      "incompleteCount": 1,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 5,
+          "targets": [
+            [
+              "#nst-util-chrome > span:nth-child(3)"
+            ],
+            [
+              ".disc-ps-note:nth-child(6)"
+            ],
+            [
+              ".disc-ps-jumps > span"
+            ],
+            [
+              ".disc-ps-note:nth-child(8)"
+            ],
+            [
+              "#nst-freshness"
+            ]
+          ]
+        },
+        {
+          "id": "landmark-one-main",
+          "impact": "moderate",
+          "description": "Ensure the document has a main landmark",
+          "help": "Document should have one main landmark",
+          "nodes": 1,
+          "targets": [
+            [
+              "html"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 5,
+          "targets": [
+            [
+              ".disc-legend"
+            ],
+            [
+              "#nst-util-chrome"
+            ],
+            [
+              "#nst-util-banner"
+            ],
+            [
+              ".nst-layer-switch"
+            ],
+            [
+              "#disc-panel-overview"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 2
+        }
+      ],
+      "label": "map_discovery"
+    }
+  ]
+}

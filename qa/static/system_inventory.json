@@ -1,0 +1,44 @@
+{
+  "inventory_version": "1.0",
+  "generated_at": "2026-04-27",
+  "total_files": 150,
+  "categories": {
+    "entry_points": [
+      "vlan_checker_web.py",
+      "main.py",
+      "f5_manager_gui.py"
+    ],
+    "modules": {
+      "core": ["adapters.py", "cli_manager.py", "plugin_registry.py"],
+      "network": ["network_base.py", "connectivity.py", "interfaces.py", "mac_trace.py", "topology_mapper.py", "node_interface_topology.py"],
+      "vlan": ["vlan_audit.py", "vlan_compare.py", "vlan_mgmt_production.py"],
+      "node": ["node_analyze.py"],
+      "audit": ["network_audit.py"],
+      "backup": ["config_backup.py", "save_config.py"]
+    },
+    "utils": [
+      "report_formatter.py",
+      "config_backup_system.py",
+      "structured_logger.py",
+      "backup_util.py",
+      "debug_regex.py",
+      "full_system_backup.py"
+    ],
+    "plugins": 9,
+    "tests": [],
+    "build_scripts": 12,
+    "docs": 187
+  },
+  "large_files": [
+    {"path": "modules/adapters.py", "size_kb": 60},
+    {"path": "utils/report_formatter.py", "size_kb": 27},
+    {"path": "modules/vlan_mgmt_production.py", "size_kb": 24},
+    {"path": "modules/plugin_registry.py", "size_kb": 20},
+    {"path": "modules/topology_mapper.py", "size_kb": 21}
+  ],
+  "issues": {
+    "duplicate_logic": ["norm_int function in multiple files"],
+    "naming_inconsistencies": ["vlan_checker_web.py vs main.py"],
+    "misplaced_files": ["utils/ contains build scripts"]
+  }
+}

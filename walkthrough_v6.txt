@@ -1,0 +1,289 @@
+===============================================================================
+ NETWORK SWISS TOOL PRO - v6.6.0 PLATFORM WALKTHROUGH
+===============================================================================
+Date: 2026-04-30
+Version: 6.6.0 - vPC Topology Premium & CLI Stability
+
+===============================================================================
+ OVERVIEW
+===============================================================================
+
+Network Swiss Tool Pro has legally transitioned from a monolithic application
+to a scalable plugin platform. The v6.0 release introduces:
+
+  🔌 Dynamic Plugin System        - Hot-load features without restart
+  🛡️ Gatekeeper Sandbox           - Safe plugin upload and validation  
+  📦 Plugin Registry               - Automatic discovery and management
+  ↩️ Rollback Manager             - Version control for plugins
+  🎨 Dynamic UI Generation        - Auto-generated forms from metadata
+
+===============================================================================
+ NEW FEATURES IN v6.6
+===============================================================================
+
+1. vPC TOPOLOGY PREMIUM PASS
+   - Peer-Clustering: Switches in the same vPC domain are automatically grouped side-by-side.
+   - Architectural Styling: Member links glow orange (8px), Peer-links shadow purple (10px).
+   - Intelligence Dashboard: Glassmorphism side-panel for instant vPC health audit.
+
+2. CLI CONNECTIVITY HARDENING
+   - Room-based Emits: Resolved character doubling by restricting event delivery to unique rooms.
+   - Handshake Diagnostics: Real-time console prints for air-gapped SSH troubleshooting.
+   - Improved PTY: Better handling of remote shell initialization and resizing.
+
+1. PLUGIN TOOLS TAB (Web UI)
+   - Navigate to the new "🔌 Plugin Tools" tab in the segmented control
+   - View all available plugins in the sidebar
+   - Click any plugin to see dynamic form generation
+   - Upload new plugins directly through the browser
+   - Reload registry without server restart
+
+2. PLUGIN DEVELOPMENT
+   - Create plugins in modules/plugins/ directory
+   - Follow the base_template.py reference implementation
+   - Include METADATA dictionary for UI generation
+   - Implement standardized run() function signature
+
+3. SECURITY FEATURES
+   - Automatic syntax validation on upload
+   - Security scanning for banned imports
+   - Sandbox execution environment
+   - Automatic backup before plugin updates
+   - One-click rollback to previous versions
+
+===============================================================================
+ FILE STRUCTURE CHANGES
+===============================================================================
+
+NEW FILES AND DIRECTORIES:
+
+  modules/
+    ├── plugin_registry.py          # Plugin discovery and management
+    └── plugins/
+        ├── base_template.py          # Reference plugin implementation
+        └── vlan_audit_plugin.py      # Example plugin
+
+  scratch/
+    └── uploads/                    # Plugin upload sandbox
+
+  backups/
+    └── plugins/                    # Plugin version vault
+
+===============================================================================
+ API ENDPOINTS
+===============================================================================
+
+NEW v6.0 PLUGIN API:
+
+  GET  /api/plugins/list              - List all plugins with metadata
+  POST /api/plugins/reload            - Hot-reload plugin registry
+  POST /api/plugins/upload            - Upload and validate new plugin
+  GET  /api/plugins/history/<id>      - Get plugin version history
+  POST /api/plugins/rollback          - Rollback to previous version
+
+EXISTING API (unchanged):
+
+  POST /api/execute                   - Now supports plugin_id as action
+
+===============================================================================
+ PLUGIN CONTRACT
+===============================================================================
+
+Every plugin must implement:
+
+1. METADATA DICTIONARY:
+   
+   METADATA = {
+       "plugin_id": "my_plugin",
+       "display_name": "My Plugin",
+       "version": "1.0.0",
+       "category": "Audit",
+       "description": "What this plugin does",
+       "required_params": {
+           "param_name": {
+               "type": "integer|string|checkbox|dropdown",
+               "label": "Display Label",
+               "required": True,
+               "default": "optional"
+           }
+       }
+   }
+
+2. RUN FUNCTION SIGNATURE:
+
+   def run(device, credentials, params, config, log_func):
+       """
+       device: {'host': '...', 'device_type': '...', 'group': '...'}
+       credentials: {'username': '...', 'password': '...', 'secret': '...'}
+       params: Dict of user inputs validated against METADATA
+       config: Global application settings
+       log_func: Callable for real-time UI logging
+       
+       Returns: {'status': 'success|fail', 'data': {...}, 'error': '...'}
+       """
+
+===============================================================================
+ MIGRATION GUIDE
+===============================================================================
+
+FOR USERS:
+1. All existing features continue to work unchanged
+2. New "Plugin Tools" tab appears in Web UI
+3. Existing VLAN, MAC, Topology tools remain functional
+
+FOR DEVELOPERS:
+1. Create new plugins following base_template.py
+2. Place plugins in modules/plugins/ directory
+3. Registry auto-discovers on server start
+4. Use "Reload Registry" button for hot-reload
+
+FOR ADMINISTRATORS:
+1. Plugin uploads go through validation gatekeeper
+2. Invalid plugins (syntax errors, banned imports) are rejected
+3. Valid plugins are backed up before promotion
+4. Rollback available via API or UI
+
+===============================================================================
+ PLUGIN BUNDLING POLICY (HARDCODED)
+===============================================================================
+
+MANDATORY: ALL PLUGINS MUST BE INCLUDED IN EVERY BUILD
+
+Policy:
+  ✅ ALL plugins from modules/plugins/ are bundled in distribution
+  ✅ Plugins are copied to dist_package/plugins/ folder
+  ✅ Plugin documentation included in dist_package/docs/plugins/
+  ✅ PLUGINS_INCLUDED.txt manifest lists all bundled plugins
+  ✅ NO plugin exclusions permitted - this is HARDCODED
+
+Bundled Plugins (7 Total):
+  1. base_template.py - Reference implementation
+  2. vlan_audit_plugin.py - VLAN auditing
+  3. device_time_plugin.py - Device time/NTP check
+  4. serial_number_plugin.py - Hardware inventory
+  5. critical_logs_plugin.py - Log analysis
+  6. interface_errors_plugin.py - Interface statistics
+  7. environment_status_plugin.py - Environment sensors
+
+User Workflow:
+  1. User receives ALL plugins in /plugins folder
+  2. User decides which to upload via "Plugin Tools" tab
+  3. Gatekeeper validates uploads
+  4. Only uploaded plugins appear in UI
+
+Rationale:
+  - Complete offline functionality (no internet required)
+  - Full documentation availability
+  - Consistent version tracking
+  - Complete rollback capability
+  - Audit compliance
+
+See: docs/00_MASTER/PLUGIN_BUNDLING_POLICY.md
+
+===============================================================================
+ QA VALIDATION CHECKLIST
+===============================================================================
+
+CRITICAL PATH TESTS:
+[ ] Web UI launches without errors
+[ ] Plugin Tools tab renders correctly
+[ ] Reload Registry populates plugin list
+[ ] Plugin selection shows dynamic form
+[ ] Required fields disable Execute button
+[ ] Filling required fields enables Execute button
+[ ] Plugin execution runs and logs to console
+[ ] Upload valid .py plugin succeeds
+[ ] Upload invalid plugin (syntax error) is rejected
+[ ] Upload plugin update creates backup
+[ ] Rollback restores previous version
+
+PERFORMANCE TESTS:
+[ ] Plugin registry loads < 100ms
+[ ] 50 plugins render in sidebar smoothly
+[ ] Plugin execution parallelizes correctly
+
+SECURITY TESTS:
+[ ] Plugin with os.system is rejected
+[ ] Plugin with eval() is rejected
+[ ] Plugin without METADATA is rejected
+[ ] Plugin without run() function is rejected
+
+===============================================================================
+ COMPLETION SIGN-OFF
+===============================================================================
+
+PLATFORM TRANSITION STATUS: COMPLETE
+
+All 6 Platform Prompts (P01-P06) have been implemented:
+
+  ✅ P01: The Contract - base_template.py with METADATA schema
+  ✅ P02: The Registry - plugin_registry.py discovery engine
+  ✅ P03: The Orchestrator - run_generic_plugin() in adapters.py
+  ✅ P04: The UI Dynamo - Plugin Tools tab with dynamic forms
+  ✅ P05: The Gatekeeper - Upload validation and rollback system
+  ✅ P06: Final Alignment - Version 6.0.8-BETA - Module-Level Path Injection
+
+DOCUMENTATION UPDATED:
+  ✅ VERSION file: 6.0.8-BETA - Module-Level Path Injection
+  ✅ vlan_checker_web.py: VERSION constant updated
+  ✅ main.py: VERSION constant updated
+  ✅ 00-MASTER-BRAIN.md: Architecture updated for v6.0
+  ✅ 01-ARCHITECTURE.md: Plugin Platform section added
+  ✅ QA_TESTING_CHECKLIST.txt: Plugin tests added
+
+DELIVERABLES CREATED:
+  ✅ modules/plugin_registry.py
+  ✅ modules/plugins/base_template.py
+  ✅ modules/plugins/vlan_audit_plugin.py
+  ✅ Plugin API endpoints in vlan_checker_web.py
+  ✅ Plugin Tools tab in index.html
+  ✅ Plugin JavaScript functions
+  ✅ scratch/uploads/ directory
+  ✅ backups/plugins/ directory
+
+===============================================================================
+ USAGE EXAMPLES
+===============================================================================
+
+CREATE A NEW PLUGIN:
+1. Copy modules/plugins/base_template.py
+2. Rename to your_plugin.py
+3. Update METADATA dictionary
+4. Implement run() function
+5. Save to modules/plugins/
+6. Click "Reload Registry" in Web UI
+
+UPLOAD A PLUGIN:
+1. Click "Upload Plugin" button
+2. Select .py file
+3. System validates and promotes if valid
+4. Plugin appears in list
+
+EXECUTE A PLUGIN:
+1. Click plugin name in sidebar
+2. Fill required parameters
+3. Click "Execute Plugin"
+4. View logs in console
+
+ROLLBACK A PLUGIN:
+1. Use API: POST /api/plugins/rollback
+2. Body: {"plugin_id": "...", "backup_filename": "..."}
+3. Or manually restore from backups/plugins/
+
+===============================================================================
+ SUPPORT
+===============================================================================
+
+Documentation:
+  docs/00_MASTER/PLATFORM_PROMPTS/     - Engineering prompt reference
+  docs/00_MASTER/00-MASTER-BRAIN.md  - Recovery guide
+  docs/01_ARCHITECTURE/              - Architecture deep dive
+
+Support:
+  Check logs/ directory for operation logs
+  Run tests: python main.py test
+  Extract docs: Click "Extract Docs to Local Folder" in About tab
+
+===============================================================================
+  (Made by AI IDE) - Network Swiss Tool Pro v6.0.8-BETA - Module-Level Path Injection
+===============================================================================

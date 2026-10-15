@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>06 Settings / vault — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 06</strong>
+    <span>Static HTML — no Flask. Not the live console.</span>
+    <a href="index.html">All demos</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-locked" id="vault-pill" href="#unlock"><span class="ico" aria-hidden="true">●</span> Vault LOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select aria-label="Named credential set" disabled><option>Unlock vault first</option></select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope"><option selected>Group DIST — 12 devices</option></select>
+        </label>
+      </div>
+      <p class="freshness">Bind: 127.0.0.1:5051 · credential APIs 403 while locked</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html">Maps <span class="badge">3</span><span class="kbd">2</span></a>
+      <a href="03-find.html">Find <span class="kbd">3</span></a>
+      <a href="04-change.html">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html" aria-current="page">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Settings — vault</h1>
+          <p class="lede">Unlock secrets on this laptop. Chrome shows the named set, never the password. Session fields stay an advanced option — not four boxes in the left rail.</p>
+        </div>
+        <div class="title-actions">
+          <button type="button">Add SSH set</button>
+          <button type="button">Export vault…</button>
+        </div>
+      </div>
+      <div class="card" id="unlock">
+        <h2>Unlock</h2>
+        <label class="field">
+          <span>Master password</span>
+          <input type="password" id="master" autocomplete="off" aria-describedby="pw-hint">
+        </label>
+        <p id="pw-hint" class="muted">Demo accepts <code>demo</code>. Wrong password stays locked. Live vault is Fernet; <code>.credential_key</code> is machine-local.</p>
+        <div class="title-actions" style="margin-top:0.45rem">
+          <button type="button" class="primary" id="btn-unlock">Unlock</button>
+          <button type="button" id="btn-lock">Lock</button>
+        </div>
+        <p id="unlock-msg" class="banner warn" role="status">LOCKED. SSH jobs refuse with a modal, not a stack trace.</p>
+      </div>
+      <div class="card">
+        <h2>Credential sets (redacted)</h2>
+        <table>
+          <thead><tr><th>Label</th><th>Kind</th><th>Last used task</th><th>Secret</th></tr></thead>
+          <tbody>
+            <tr><td>lab-ops</td><td>ssh</td><td>inventory L2 11:14</td><td class="muted">•••• (never in GET/DOM)</td></tr>
+            <tr><td>core-ro</td><td>ssh</td><td>—</td><td class="muted">••••</td></tr>
+          </tbody>
+        </table>
+        <p class="muted">Live collection is SSH. SNMP credential kinds stay out of product law for this overlay.</p>
+      </div>
+      <div class="card">
+        <h2>Posture</h2>
+        <dl>
+          <dt>Bind</dt>
+          <dd><code>127.0.0.1:5051</code> — non-local bind is refused in this product story.</dd>
+          <dt>Plugin upload</dt>
+          <dd>Off in demo (high blast radius).</dd>
+          <dt>Golden YAML</dt>
+          <dd class="mono">policies/golden_gate.yaml</dd>
+          <dt>About</dt>
+          <dd>VERSION 7.0.87 · web only · Tk out of scope</dd>
+        </dl>
+      </div>
+      <script type="application/json" id="sample-data">
+{"sets":[{"label":"lab-ops","kind":"ssh"},{"label":"core-ro","kind":"ssh"}],"secrets_in_dom":false}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Trust</h2>
+      <p>Picker in chrome vs four password fields: the picker binds <code>credential_id</code> to the task. Export still requires the master password.</p>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span></footer>
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var pill = document.getElementById("vault-pill");
+      var msg = document.getElementById("unlock-msg");
+      var cred = document.querySelector('select[aria-label="Named credential set"]');
+      document.getElementById("btn-unlock").onclick = function () {
+        var pw = document.getElementById("master").value;
+        if (pw !== "demo") {
+          msg.className = "banner bad";
+          msg.textContent = "Wrong master password. Vault stays LOCKED. No hint of stored secrets.";
+          return;
+        }
+        pill.className = "pill is-on";
+        pill.innerHTML = '<span class="ico" aria-hidden="true">●</span> Vault UNLOCKED';
+        cred.disabled = false;
+        cred.innerHTML = '<option selected>lab-ops (ssh)</option><option>core-ro (ssh)</option>';
+        msg.className = "banner ok";
+        msg.textContent = "UNLOCKED. Named set lab-ops is in chrome. Password is not in the page.";
+      };
+      document.getElementById("btn-lock").onclick = function () {
+        pill.className = "pill is-locked";
+        pill.innerHTML = '<span class="ico" aria-hidden="true">●</span> Vault LOCKED';
+        cred.disabled = true;
+        msg.className = "banner warn";
+        msg.textContent = "LOCKED. SSH jobs refuse with a modal, not a stack trace.";
+      };
+    })();
+  </script>
+</body>
+</html>

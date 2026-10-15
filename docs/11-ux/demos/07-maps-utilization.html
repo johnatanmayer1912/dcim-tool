@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>07 Utilization overlay — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 07 · Phase 2</strong>
+    <span>SSH/replay paint on existing L2 edges only. Not SNMP. Colors must not mint links.</span>
+    <a href="index.html">All demos</a>
+    <a href="02-maps-hub.html">Same topology as Maps hub</a>
+    <a href="09-offline-8vendor-lab.html">8-vendor fixture lab</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-on" href="06-settings-vault.html"><span class="ico" aria-hidden="true">●</span> Vault UNLOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select aria-label="Named credential set"><option selected>lab-ops (ssh)</option></select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope"><option selected>Group DIST — 12 devices</option></select>
+        </label>
+      </div>
+      <p class="freshness" id="freshness">Last L2: 14m · Issues: 3 · Overlay: replay · SSH counters: 8m (3 edges sampled) · not SNMP</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html" aria-current="page">Maps <span class="badge">3</span><span class="kbd">2</span></a>
+      <a href="03-find.html">Find <span class="kbd">3</span></a>
+      <a href="04-change.html">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Maps — utilization overlay</h1>
+          <p class="lede">Same 8-node L2 as the Maps hub. Replay/SSH counters paint <strong>existing L2 edges</strong>. Unmapped ifNames are listed, not drawn. Not SNMP.</p>
+        </div>
+        <div class="title-actions">
+          <label class="field inline">
+            <input type="checkbox" id="util-on" checked>
+            <span>Utilization overlay</span>
+          </label>
+          <button type="button" data-poll="ok">Sampled</button>
+          <button type="button" data-poll="none">No sample</button>
+          <button type="button" data-poll="stale">Stale poll</button>
+        </div>
+      </div>
+      <div class="banner info">
+        <strong>Not topology.</strong> Gray dashed = no SSH/replay sample on that edge. Missing color does not mean down. Overlay never creates edges. Physical view is still not a cable cert. Not SNMP.
+      </div>
+      <div class="legend" aria-label="Utilization legend">
+        <span><i class="swatch gray" aria-hidden="true"></i> no SSH sample / no ifSpeed</span>
+        <span><i class="swatch green" aria-hidden="true"></i> &lt;70%</span>
+        <span><i class="swatch yellow" aria-hidden="true"></i> 70–90%</span>
+        <span><i class="swatch red" aria-hidden="true"></i> &gt;90%</span>
+      </div>
+      <div class="map-canvas" id="map" aria-label="L2 with utilization paint">
+        <svg viewBox="0 0 560 280" role="img" aria-labelledby="util-title">
+          <title id="util-title">Same L2 graph; three edges sampled</title>
+          <!-- sampled -->
+          <line id="e-hot" x1="180" y1="48" x2="360" y2="48" stroke="#ef4444" stroke-width="4"/>
+          <line id="e-ok" x1="180" y1="48" x2="120" y2="130" stroke="#22c55e" stroke-width="3"/>
+          <line id="e-mid" x1="120" y1="130" x2="50" y2="220" stroke="#eab308" stroke-width="3"/>
+          <!-- no sample: gray dashed — still present as L2 edges -->
+          <line x1="180" y1="48" x2="300" y2="130" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="360" y1="48" x2="300" y2="130" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="120" y1="130" x2="160" y2="220" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="300" y1="130" x2="280" y2="220" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="300" y1="130" x2="420" y2="220" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4"/>
+          <line x1="280" y1="220" x2="500" y2="220" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4"/>
+          <circle cx="180" cy="48" r="16" fill="#1e3a5f"/><text class="node-label" x="180" y="52" text-anchor="middle">CORE-01</text>
+          <circle cx="360" cy="48" r="16" fill="#1e3a5f"/><text class="node-label" x="360" y="52" text-anchor="middle">CORE-02</text>
+          <circle cx="120" cy="130" r="16" fill="#1e3a5f"/><text class="node-label" x="120" y="134" text-anchor="middle">DIST-01</text>
+          <circle cx="300" cy="130" r="16" fill="#1e3a5f"/><text class="node-label" x="300" y="134" text-anchor="middle">DIST-02</text>
+          <circle cx="50" cy="220" r="14" fill="#334155"/><text class="node-label" x="50" y="224" text-anchor="middle">ACC-01</text>
+          <circle cx="160" cy="220" r="14" fill="#334155"/><text class="node-label" x="160" y="224" text-anchor="middle">ACC-02</text>
+          <circle cx="280" cy="220" r="14" fill="#334155"/><text class="node-label" x="280" y="224" text-anchor="middle">ACC-03</text>
+          <circle cx="420" cy="220" r="14" fill="#334155"/><text class="node-label" x="420" y="224" text-anchor="middle">FW-01</text>
+          <circle cx="500" cy="220" r="12" fill="#78350f"/><text class="node-label" x="500" y="248" text-anchor="middle">AP-ghost</text>
+        </svg>
+      </div>
+      <div class="card">
+        <h2>Unmapped SSH ifNames (not drawn)</h2>
+        <table>
+          <thead><tr><th>Host</th><th>ifName</th><th>Why omitted</th></tr></thead>
+          <tbody>
+            <tr><td>CORE-01</td><td class="mono">Eth1/99</td><td>No matching L2 edge f_port/t_port after norm_int</td></tr>
+            <tr><td>DIST-02</td><td class="mono">mgmt0</td><td>No topology edge — must not appear as a new link</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <script type="application/json" id="sample-data">
+{"edges_l2":9,"sampled":[{"a":"CORE-01","b":"CORE-02","pct":94,"in_bps":9400000000,"out_bps":8100000000,"ifSpeed":10000000000},{"a":"CORE-01","b":"DIST-01","pct":22},{"a":"DIST-01","b":"ACC-01","pct":78}],"unmapped_ifNames":["CORE-01/Eth1/99","DIST-02/mgmt0"]}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Selected edge</h2>
+      <dl>
+        <dt>Link</dt>
+        <dd>CORE-01 Eth1/1 — CORE-02 Eth1/1</dd>
+        <dt>Utilization</dt>
+        <dd class="status fail">94% of ifSpeed — over 90%</dd>
+        <dt>in / out</dt>
+        <dd>9.4 Gbps / 8.1 Gbps of 10G</dd>
+        <dt>Poll</dt>
+        <dd>job <span class="mono">ssh_replay_20260819_1106</span> · sample ts 8m ago · not SNMP</dd>
+        <dt>Must not imply</dt>
+        <dd>Forwarding path, QoS class, or that gray edges are down.</dd>
+      </dl>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span></footer>
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var freshness = document.getElementById("freshness");
+      document.querySelectorAll("[data-poll]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var k = btn.getAttribute("data-poll");
+          var lines = document.querySelectorAll("#map line");
+          if (k === "none") {
+            lines.forEach(function (ln) {
+              ln.setAttribute("stroke", "#64748b");
+              ln.setAttribute("stroke-dasharray", "5 4");
+              ln.setAttribute("stroke-width", "2");
+            });
+            freshness.textContent = "Last L2: 14m · SSH: no sample — overlay gray, topology unchanged · not SNMP";
+          } else if (k === "stale") {
+            freshness.innerHTML = 'Last L2: 14m · SSH replay: <span class="stale">STALE 26h</span> — paint kept but labeled stale · not SNMP';
+          } else {
+            location.reload();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

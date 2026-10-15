@@ -1,0 +1,29 @@
+{
+  "mode": "live_ssh_not_executed",
+  "authorized": true,
+  "result_count": 0,
+  "failed_count": 0,
+  "results": [],
+  "live_ssh_executed": false,
+  "reachability": {
+    "reachable_hosts": [],
+    "unreachable_hosts": [
+      "10.1.1.1",
+      "10.1.1.2"
+    ],
+    "any_reachable": false
+  },
+  "contract": "incomplete observations must not be edge-eligible; no unknown/n/a ports",
+  "live_vendor_validated": false,
+  "execution_kind": "live_ssh_not_executed",
+  "honesty": "NOT live vendor validation \u2014 replay or not-executed only",
+  "claims_forbidden_unless_live_ssh": [
+    "live truncated CDP/LLDP vendor validation",
+    "live field discovery success"
+  ],
+  "result_authority": "process_exit_code_and_json_artifact",
+  "non_authoritative_signals": [
+    "IDE/agent shell timeout or background-job status",
+    "pipeline cancel after process already exited 0 with ok=true"
+  ]
+}

@@ -1,0 +1,6 @@
+*Oct 10 14:01:03.112: %LINK-3-UPDOWN: Interface GigabitEthernet1/0/24, changed state to down
+*Oct 10 14:01:03.115: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet1/0/24, changed state to down
+*Oct 10 14:01:04.001: %PM-4-ERR_DISABLE: link-flap error detected on Gi1/0/1, putting Gi1/0/1 in err-disable state
+*Oct 10 14:01:04.002: %ETHPORT-5-IF_DOWN_LINK_FAILURE: Interface GigabitEthernet1/0/1 is down (Link failure)
+*Oct 10 14:08:00.220: %SYS-5-CONFIG_I: Configured from console by lab-admin on vty0 (127.0.0.1)
+*Oct 10 14:09:11.500: %OSPF-5-ADJCHG: Process 1, Nbr 10.10.10.1 on Vlan10 from FULL to DOWN, Neighbor Down: Dead timer expired

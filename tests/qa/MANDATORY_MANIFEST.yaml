@@ -1,0 +1,361 @@
+# Network Swiss Tool Pro — Mandatory QA Manifest
+# Evolves with the product. Update on every feature, bugfix, or release prep.
+# Validated by: scripts/validate_mandatory_qa_manifest.py
+# Executed by: scripts/mandatory_release_qa.py (pre-release / on-change workflows)
+
+version: 3
+minimum_app_version: "7.4.33"
+last_reviewed: "2026-10-11"
+
+# When each suite runs (workflow triggers)
+triggers:
+  every_code_change:
+    description: Agent or developer finished code edits — fast gate, no EXE build
+    env_flag: NST_QA_ON_CHANGE
+  pre_release:
+    description: Before VERSION bump, CHANGELOG ship, or PyInstaller EXE
+    env_flag: NST_QA_PRE_RELEASE
+  post_feature:
+    description: After new operator-facing capability lands
+    env_flag: NST_QA_POST_FEATURE
+
+# Persona owners — each must sign off mentally before ship
+personas:
+  network_engineer_council:
+    skill: .cursor/skills/nst-network-engineer-council/SKILL.md
+    deep: .cursor/skills/topology-map-excellence/SKILL.md
+  product_architect:
+    skill: .cursor/skills/nst-product-architect/SKILL.md
+    deep: .cursor/skills/implementation-planner/SKILL.md
+  software_engineer:
+    skill: .cursor/skills/nst-python-backend/SKILL.md
+    deep: .cursor/skills/safe-refactor-and-fix/SKILL.md
+  noc_operator:
+    skill: .cursor/skills/nst-network-operations/SKILL.md
+    deep: .cursor/skills/product-ux-audit/SKILL.md
+  product_simplicity:
+    lens: "Steve Jobs / first principles — delete steps, one obvious path"
+    skill: .cursor/skills/nst-product-architect/SKILL.md
+    ally: .cursor/skills/nst-multi-advisor/SKILL.md
+  ui_ux_professional:
+    skill: .cursor/skills/product-ux-audit/SKILL.md
+    rule: .cursor/rules/02-nst-ui-ux.mdc
+
+# Mandatory suites — order matters within phase
+suites:
+  # ── Phase A: every code change ─────────────────────────────────────────────
+  - id: syntax_and_prebuild
+    phase: every_code_change
+    owner: software_engineer
+    command: [python, _prebuild.py]
+    blocking: true
+
+  - id: manifest_integrity
+    phase: every_code_change
+    owner: product_architect
+    command: [python, scripts/validate_mandatory_qa_manifest.py]
+    blocking: true
+
+  # ── Phase B: pre-release core (implemented tests — always run) ───────────
+  - id: pytest_core_contracts
+    phase: pre_release
+    owner: software_engineer
+    command: [python, -m, pytest, tests/test_description_search_progress.py, tests/test_session_cred_cache.py, tests/test_match_highlight.py, tests/test_mac_trace_formatter.py, tests/test_output_paths.py, tests/test_output_chrome.py, tests/test_release_7_0_60.py, tests/test_api_execute_mac_alias.py, tests/test_ui_execute_contract.py, tests/test_api_security_guards.py, tests/test_inventory_store.py, tests/test_inventory_api.py, tests/test_inventory_source.py, tests/test_job_index.py, tests/test_discovery_im_source.py, tests/test_host_job_source.py, tests/test_mandatory_qa_cmd.py, tests/test_run_cli_browser_qa.py, tests/test_phase0_cleanup.py, tests/test_phase1_shell.py, tests/test_p1_ux_navigation.py, tests/test_rb_zt_02_origin.py, tests/test_rb_zt_plugin_lifecycle.py, tests/test_rb_p1_credential_id.py, tests/test_rb_zt_credential_secret_exposure.py, tests/test_rb_zt_socketio_credential_id.py, tests/test_rb_zt_socketio_live_handshake.py, tests/test_cli_terminal_html_contract.py, tests/test_rb_zt_04_confirm_modals.py, tests/test_rb_zt_01_plugin_upload.py, tests/test_rb_zt_03_logs.py, tests/test_credential_manager.py, tests/test_dual_snmp_credentials.py, tests/test_lab_ssh_sim.py, tests/test_cisco_asset_warranty.py, tests/test_cisco_asset_warranty_execute.py, tests/test_asset_warranty_uuid_dedup.py, tests/test_asset_warranty_quad_export.py, tests/test_asset_warranty_multi_file_consolidator.py, -q]
+    blocking: true
+
+  - id: qa_implemented_mandatory
+    phase: pre_release
+    owner: network_engineer_council
+    path: tests/qa/test_00_implemented_mandatory.py
+    scaffold: false
+    blocking: true
+
+  - id: pytest_vendor_topology
+    phase: pre_release
+    owner: network_engineer_council
+    command: [python, -m, pytest, tests/test_vendor_matrix.py, tests/test_topology_trust.py, tests/test_nxos_vpc_parse.py, tests/test_vpc_map_html_contract.py, tests/test_advanced_mapping.py, tests/test_l3_map_html_contract.py, tests/test_l3_cartography_comprehensive.py, tests/routing_analyzer/test_multi_vendor.py, tests/routing_analyzer/test_graph_builder.py, tests/routing_analyzer/test_normalizer.py, -q]
+    blocking: true
+
+  - id: pytest_discovery_health
+    phase: pre_release
+    owner: product_architect
+    command: [python, -m, pytest, tests/test_discovery_platform_classifier.py, tests/test_discovery_graph_dedup.py, tests/test_health_check_runner.py, tests/test_cli_smoke.py, tests/test_network_discovery.py, tests/test_stp_swiss.py, tests/test_discovery_map_html_contract.py, tests/test_topo_map_shell.py, tests/test_discovery_profiles.py, tests/test_acceptance_artifacts.py, tests/test_map_acceptance.py, tests/test_discovery_acceptance.py, tests/test_pilot_package.py, tests/test_offline_verification.py, tests/test_godmode_product_increment.py, tests/test_flask_e2e_discovery.py, tests/test_flask_e2e_operator.py, tests/test_topology_matrix.py, tests/test_overlay_collector.py, tests/test_lacp_oper.py, tests/test_ssh_cancel_disconnect.py, tests/test_cable_witness.py, tests/test_optics_dom.py, tests/test_link_issues.py, tests/test_golden_config_gate.py, tests/test_path_trace.py, -q]
+    blocking: true
+
+  - id: pytest_phase3_telemetry_fixture
+    phase: pre_release
+    owner: software_engineer
+    command: [python, -m, pytest, tests/test_phase3_telemetry_api_freeze.py, tests/test_phase3_telemetry_regression_slice6.py, -q]
+    blocking: true
+    notes: "Fixture-only Phase 3 telemetry API freeze + slice-6 regression; no live collectors"
+
+  - id: pytest_phase4_telemetry_lab
+    phase: pre_release
+    owner: software_engineer
+    command: [python, -m, pytest, tests/test_phase4_telemetry_closeout.py, tests/test_phase4_telemetry_lab_facade.py, tests/test_phase4_telemetry_lab_audit.py, tests/test_phase4_telemetry_lab_ingest.py, tests/test_phase4_gate_d_operator_api_exposure.py, tests/test_phase4_gate_c_encrypted_at_rest.py, tests/test_phase4_telemetry_zero_trust_gate.py, tests/test_phase3_telemetry_api_freeze.py, -q]
+    blocking: true
+    notes: "Phase 4 lab closeout + Gates C/D/ZT + lab ingest/audit/facade; Phase 3 freeze; no listeners/persistence"
+
+  - id: pytest_phase5_parser_topology_resilience
+    phase: pre_release
+    owner: network_engineer_council
+    command: [python, -m, pytest, tests/test_phase5_parser_topology_resilience_slice1.py, tests/test_phase5_parser_topology_resilience_slice2.py, tests/test_phase5_parser_topology_resilience_slice3.py, tests/test_phase5_parser_topology_resilience_slice4.py, tests/test_phase5_parser_topology_resilience_slice5.py, tests/test_phase5_parser_topology_resilience_slice6.py, tests/test_phase5_parser_topology_resilience_slice7.py, tests/test_phase5_parser_topology_resilience_slice8.py, tests/test_phase5_parser_topology_resilience_slice9.py, tests/test_phase5_parser_topology_resilience_slice10.py, tests/test_phase5_parser_topology_resilience_slice11.py, -q]
+    blocking: true
+    notes: "Phase 5 fixture/replay; readiness hard-stop consumer; no vault read"
+
+  - id: phase5_discovery_readiness_gate
+    phase: pre_release
+    owner: network_engineer_council
+    command: [python, scripts/phase5_discovery_readiness_check.py]
+    blocking: true
+    notes: "Honesty gate: ok may be true while release_gate=BLOCKED; overclaim fails exit 1"
+
+  - id: phase5_discovery_release_consumer
+    phase: pre_release
+    owner: network_engineer_council
+    command: [python, scripts/phase5_discovery_release_consumer.py]
+    blocking: true
+    notes: "Normative consumer: BLOCKED => hard_stop; ok alone never clears enterprise claim"
+
+  - id: pytest_phase6_wave1_discovery_program_status
+    phase: pre_release
+    owner: noc_operator
+    command: [python, -m, pytest, tests/test_phase6_wave1_discovery_program_status.py, -q]
+    blocking: true
+    notes: "Phase 6 Wave 1 Discovery Program Status panel/API; readiness hard-stop preserved"
+
+  - id: pytest_phase6_wave2_map_shell_program_status
+    phase: pre_release
+    owner: noc_operator
+    command: [python, -m, pytest, tests/test_phase6_wave2_map_shell_program_status.py, -q]
+    blocking: true
+    notes: "Phase 6 Wave 2 Command Center/map shell embeds Program Status; no parallel readiness truth"
+
+  - id: pytest_phase6_wave3_inventory_l2_program_status
+    phase: pre_release
+    owner: noc_operator
+    command: [python, -m, pytest, tests/test_phase6_wave3_inventory_l2_program_status.py, -q]
+    blocking: true
+    notes: "Phase 6 Wave 3 inventory Standard L2 header Program Status; inventory≠crawl labeling"
+
+  - id: pytest_phase6_wave4_program_status_overview
+    phase: pre_release
+    owner: noc_operator
+    command: [python, -m, pytest, tests/test_phase6_wave4_program_status_overview.py, -q]
+    blocking: true
+    notes: "Phase 6 Wave 4 cross-surface Program Status overview; three surfaces one truth; hard-stop intact"
+
+  - id: pytest_phase6_wave5_related_surface_deeplinks
+    phase: pre_release
+    owner: noc_operator
+    command: [python, -m, pytest, tests/test_phase6_wave5_related_surface_deeplinks.py, -q]
+    blocking: true
+    notes: "Phase 6 Wave 5 related-surface deep-links; navigation only; Phase 6 UI freeze"
+
+  - id: frozen_plugin_sim
+    phase: pre_release
+    owner: software_engineer
+    command: [python, scripts/audit_frozen_plugin_sim.py]
+    blocking: true
+
+  # Node Playwright + mocked SSH — not Python Playwright (unsupported on some hosts)
+  - id: cli_browser_credential_id
+    phase: pre_release
+    owner: noc_operator
+    command: [python, scripts/run_cli_browser_qa.py]
+    blocking: true
+    notes: "Requires Node/npm + Chromium cache; no live vendor SSH"
+
+  - id: operator_browser_program_status
+    phase: pre_release
+    owner: noc_operator
+    command: [python, scripts/run_operator_browser_qa.py]
+    blocking: true
+    notes: "Operator console Playwright: Program Status, HARD STOP, Swiss Tools overlay honesty; mocked loopback"
+
+  - id: offline_map_html_browser
+    phase: pre_release
+    owner: noc_operator
+    command: [python, scripts/run_offline_map_html_qa.py]
+    blocking: true
+    notes: "file:// Standard L2 + Discovery overlay HTML; fixture maps; not live-vendor; not EXE E2E"
+
+  - id: ux_demo_8vendor_lab_browser
+    phase: pre_release
+    owner: noc_operator
+    command: [python, scripts/run_ux_demo_qa.py]
+    blocking: true
+    notes: "file:// docs/11-ux/demos/09-offline-8vendor-lab.html operator buttons; fixture lab; not live-vendor"
+
+  - id: pytest_enterprise_readiness_release_gate
+    phase: pre_release
+    owner: noc_operator
+    command: [python, -m, pytest, tests/test_enterprise_readiness_release_gate.py, -q]
+    blocking: true
+    notes: "Enterprise QA integration: checker/consumer/register/API; does not claim PASS"
+
+  - id: pytest_god_mode_enterprise_pass
+    phase: pre_release
+    owner: software_engineer
+    command: [python, -m, pytest, tests/test_god_mode_enterprise_pass.py, -q]
+    blocking: true
+    notes: "God-mode packaging alignment, surface truth labels, no Shumoku overclaim"
+
+  - id: pytest_reality_loop_device_fidelity
+    phase: pre_release
+    owner: network_engineer_council
+    command: [python, -m, pytest, tests/test_reality_loop_device_fidelity.py, tests/test_reality_loop_api_contracts.py, -q]
+    blocking: true
+    notes: "Device-like fixture/replay parsers + API honesty; not live vendor validation"
+
+  - id: pytest_utilization_overlay_replay
+    phase: pre_release
+    owner: network_engineer_council
+    command: [python, -m, pytest, tests/test_utilization_overlay_contract.py, tests/test_utilization_overlay_join.py, tests/test_utilization_overlay_standard_l2_html.py, tests/test_utilization_overlay_rates.py, tests/test_utilization_overlay_cli_parse.py, tests/test_utilization_overlay_live.py, tests/test_utilization_overlay_discovery_host.py, tests/test_unified_e2e_offline_lab.py, tests/test_ux_demo_8vendor.py, -q]
+    blocking: true
+    notes: "Standard L2 utilization overlay (replay + live SSH) plus Discovery Command Center viewer host; not SNMP; not topology cert; not release_gate"
+
+  - id: pytest_live_lab_evidence_attempt_honesty
+    phase: pre_release
+    owner: noc_operator
+    command: [python, -m, pytest, tests/test_live_lab_evidence_attempt_honesty.py, -q]
+    blocking: true
+    notes: "Live-lab attempt-only artifacts; register pointer null; wiring not-executed fails"
+
+  - id: docs_link_check
+    phase: pre_release
+    owner: ui_ux_professional
+    command: [python, scripts/validate_docs_links.py]
+    blocking: false
+
+  # ── Phase C: mandatory QA scaffold modules (implement over time) ─────────
+  # Run only when NST_MANDATORY_QA_FULL=1 — bodies are skipped by default
+  - id: qa_network_engineer_vendor_ops
+    phase: pre_release
+    owner: network_engineer_council
+    path: tests/qa/test_01_network_engineer_vendor_ops.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_product_architect_platform
+    phase: pre_release
+    owner: product_architect
+    path: tests/qa/test_02_product_architect_platform.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_backend_api_contracts
+    phase: pre_release
+    owner: software_engineer
+    path: tests/qa/test_03_backend_engineer_api.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_noc_operator_workflows
+    phase: pre_release
+    owner: noc_operator
+    path: tests/qa/test_04_noc_operator_workflows.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_product_simplicity_lens
+    phase: pre_release
+    owner: product_simplicity
+    path: tests/qa/test_05_product_simplicity_lens.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_ui_ux_clarity
+    phase: pre_release
+    owner: ui_ux_professional
+    path: tests/qa/test_06_ui_ux_clarity.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_security_credentials
+    phase: pre_release
+    owner: network_engineer_council
+    path: tests/qa/test_07_security_credentials.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_outputs_audit_trail
+    phase: pre_release
+    owner: noc_operator
+    path: tests/qa/test_08_outputs_audit_trail.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_search_it_suite
+    phase: pre_release
+    owner: noc_operator
+    path: tests/qa/test_09_search_it_regression.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_plugins_discovery
+    phase: pre_release
+    owner: product_architect
+    path: tests/qa/test_10_plugins_discovery.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_vlan_interface_mutations
+    phase: pre_release
+    owner: network_engineer_council
+    path: tests/qa/test_11_vlan_interface_mutations.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_topology_maps
+    phase: pre_release
+    owner: ui_ux_professional
+    path: tests/qa/test_12_topology_maps.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_release_offline_exe
+    phase: pre_release
+    owner: software_engineer
+    path: tests/qa/test_13_release_offline_exe.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_session_control_plane
+    phase: pre_release
+    owner: software_engineer
+    path: tests/qa/test_14_session_control_plane.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_interface_manager
+    phase: pre_release
+    owner: network_engineer_council
+    path: tests/qa/test_15_interface_manager.py
+    scaffold: false
+    blocking: false
+
+  - id: qa_standards_stp_plugins
+    phase: pre_release
+    owner: network_engineer_council
+    path: tests/qa/test_16_standards_stp_swiss.py
+    scaffold: false
+    blocking: false
+
+# Council questionnaire — code-only team validation (not pytest)
+council:
+  skill: .cursor/skills/nst-network-engineer-council/SKILL.md
+  questionnaire: .cursor/skills/nst-network-engineer-council/QUESTIONNAIRE.md
+  output_register: .cursor/audits/TEAM_VALIDATION_REGISTER_{date}.md
+  required_before_major_release: true
+
+# Evolution policy — agents MUST follow when changing product code
+evolution_policy:
+  doc: docs/09-qa/QA_EVOLUTION_POLICY.md
+  rules:
+    - "New feature → add ≥1 test in tests/qa/ + manifest entry + questionnaire row"
+    - "Bug fix → add regression test (implemented) or scaffold with bug ID"
+    - "Swiss Tools / runAction shortcut → tests/test_api_execute_mac_alias.py + tests/test_ui_execute_contract.py + EXECUTE_ACTION_CONTRACT.md"
+    - "UI tab navigation → use goTo*Tab() helpers; no [data-tab=…] querySelector; verify tests/test_ui_execute_contract.py::TestNoDeadDataTabSelectors"
+    - "New module → _prebuild.py syntax + .spec hiddenimports + manifest suite"
+    - "UI change → tests/qa/test_06_ui_ux_clarity.py scenario + council H-lens row"

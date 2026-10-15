@@ -1,0 +1,32 @@
+GigabitEthernet1/0/1 is up, line protocol is up (connected)
+  Hardware is Gigabit Ethernet, address is 0011.2233.4455 (bia 0011.2233.4455)
+  Description: uplink-to-dist
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive set (10 sec)
+  Full-duplex, 1000Mb/s, media type is 10/100/1000BaseTX
+  5 minute input rate 8000 bits/sec, 10 packets/sec
+  5 minute output rate 16000 bits/sec, 12 packets/sec
+     1000 packets input, 1000000 bytes, 0 no buffer
+     Received 10 broadcasts (0 multicasts)
+     0 runts, 0 giants, 0 throttles
+     2000 packets output, 2000000 bytes, 0 underruns
+
+GigabitEthernet1/0/2 is administratively down, line protocol is down
+  Hardware is Gigabit Ethernet, address is 0011.2233.4456 (bia 0011.2233.4456)
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec,
+     10 packets input, 800 bytes, 0 no buffer
+     20 packets output, 900 bytes, 0 underruns
+
+Port-channel10 is up, line protocol is up (connected)
+  Hardware is EtherChannel, address is 0011.2233.44aa
+  MTU 1500 bytes, BW 2000000 Kbit/sec, DLY 10 usec,
+     50000 packets input, 50000000 bytes, 0 no buffer
+     40000 packets output, 40000000 bytes, 0 underruns
+
+Vlan100 is up, line protocol is up
+  Hardware is EtherSVI, address is 0011.2233.44ff
+  MTU 1500 bytes, BW 1000000 Kbit/sec,
+     9 packets input, 900 bytes, 0 no buffer
+     8 packets output, 800 bytes, 0 underruns

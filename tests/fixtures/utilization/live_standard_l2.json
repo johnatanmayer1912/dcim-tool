@@ -1,0 +1,54 @@
+{
+  "schema": "nst.utilization_overlay.v1",
+  "mode": "live",
+  "evidence_class": "live_ssh",
+  "topology_job_id": "test-standard-l2-live",
+  "generated_at": "2026-08-22T12:00:00+00:00",
+  "stale_after_seconds": 900,
+  "degraded": false,
+  "collector": {
+    "kind": "ssh_cli",
+    "vendors": ["cisco_ios"],
+    "delta_seconds_planned": 10
+  },
+  "paints": [
+    {
+      "cable_key": "core-01|te1/0/1|dist-n1|te1/1/1|l2",
+      "paint_state": "ok",
+      "in_bps": 8000000,
+      "out_bps": 4000000,
+      "in_pct": 8,
+      "out_pct": 4,
+      "pct": 8,
+      "if_speed_bps": 100000000,
+      "join": { "status": "mapped", "sides": ["a", "b"] },
+      "provenance": {
+        "mode": "live",
+        "evidence_class": "live_ssh",
+        "job_id": "test-standard-l2-live",
+        "commands": ["show interfaces"]
+      },
+      "freshness": {
+        "sampled_at": "2026-08-22T11:59:50+00:00",
+        "age_seconds": 10,
+        "stale": false
+      }
+    }
+  ],
+  "unmapped": [
+    {
+      "device_id": "CORE-01",
+      "if_name_raw": "Vlan100",
+      "if_name_normalized": "Vlan100",
+      "reason": "mgmt_or_l3_svi",
+      "command": "show interfaces"
+    }
+  ],
+  "summary": {
+    "l2_edge_count": 1,
+    "painted_count": 1,
+    "unmapped_count": 1,
+    "partial_count": 0,
+    "stale_count": 0
+  }
+}

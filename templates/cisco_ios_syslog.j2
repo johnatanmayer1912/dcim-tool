@@ -1,0 +1,9 @@
+! Cisco IOS Logging Configuration Template
+! Target Device: {{ hostname }}
+!
+configure terminal
+logging source-interface {{ source_interface }}
+logging host {{ syslog_server }}
+logging trap {{ logging_level }}
+logging facility local7
+end

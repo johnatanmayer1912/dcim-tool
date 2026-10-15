@@ -1,0 +1,76 @@
+{
+  "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/maps/discovery_command_center.html",
+  "violationCount": 3,
+  "incompleteCount": 1,
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 5,
+      "targets": [
+        [
+          "#nst-util-chrome > span:nth-child(3)"
+        ],
+        [
+          ".disc-ps-note:nth-child(6)"
+        ],
+        [
+          ".disc-ps-jumps > span"
+        ],
+        [
+          ".disc-ps-note:nth-child(8)"
+        ],
+        [
+          "#nst-freshness"
+        ]
+      ]
+    },
+    {
+      "id": "landmark-one-main",
+      "impact": "moderate",
+      "description": "Ensure the document has a main landmark",
+      "help": "Document should have one main landmark",
+      "nodes": 1,
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "description": "Ensure all page content is contained by landmarks",
+      "help": "All page content should be contained by landmarks",
+      "nodes": 5,
+      "targets": [
+        [
+          ".disc-legend"
+        ],
+        [
+          "#nst-util-chrome"
+        ],
+        [
+          "#nst-util-banner"
+        ],
+        [
+          ".nst-layer-switch"
+        ],
+        [
+          "#disc-panel-overview"
+        ]
+      ]
+    }
+  ],
+  "incomplete": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "nodes": 2
+    }
+  ],
+  "label": "map_discovery"
+}

@@ -1,0 +1,8 @@
+{
+  "platform": "cisco_xe",
+  "hostname": "edge-xe-02",
+  "metric_path": "interfaces/interface/statistics/out-octets",
+  "interface": "GigabitEthernet1/0/2",
+  "value": 99,
+  "unit": "octets"
+}

@@ -1,0 +1,15 @@
+! Cisco IOS Port-Channel — preview only
+! Device: {{ hostname }} — {{ timestamp }}
+configure terminal
+interface Port-channel{{ po_id }}
+ description {{ description }}
+ switchport mode trunk
+ switchport trunk allowed vlan {{ allowed_vlans }}
+{% for m in members.split(',') %}
+interface {{ m.strip() }}
+ description Po{{ po_id }} member
+ switchport mode trunk
+ switchport trunk allowed vlan {{ allowed_vlans }}
+ channel-group {{ po_id }} mode active
+{% endfor %}
+end

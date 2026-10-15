@@ -1,0 +1,15 @@
+{
+  "url": "http://127.0.0.1:5051/",
+  "violationCount": 0,
+  "incompleteCount": 1,
+  "violations": [],
+  "incomplete": [
+    {
+      "id": "aria-prohibited-attr",
+      "impact": "serious",
+      "description": "Ensure ARIA attributes are not prohibited for an element's role",
+      "nodes": 1
+    }
+  ],
+  "label": "find"
+}

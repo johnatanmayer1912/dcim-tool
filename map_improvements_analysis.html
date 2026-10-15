@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Map UX Improvements — Analysis &amp; Before/After</title>
+<style>
+:root{--bg0:#060d1a;--bg1:#0f172a;--bg2:#1e293b;--bg3:#334155;--tx1:#f1f5f9;--tx2:#94a3b8;--tx3:#64748b;--acc:#3b82f6;--grn:#10b981;--ora:#f59e0b;--red:#ef4444;--pur:#8b5cf6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--tx1);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6;padding:32px 24px}
+h1{font-size:24px;font-weight:800;color:var(--tx1);margin-bottom:6px}
+.subtitle{color:var(--tx3);font-size:13px;margin-bottom:32px}
+h2{font-size:17px;font-weight:700;color:#c4b5fd;margin:36px 0 14px;border-bottom:1px solid var(--bg3);padding-bottom:8px}
+h3{font-size:14px;font-weight:700;color:var(--acc);margin:20px 0 8px}
+p{color:var(--tx2);font-size:13px;margin-bottom:10px}
+.severity{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.sev-high{background:#7f1d1d;color:#fca5a5;border:1px solid #b91c1c}
+.sev-med{background:#78350f;color:#fed7aa;border:1px solid #b45309}
+.sev-low{background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8}
+.sev-opp{background:#14532d;color:#86efac;border:1px solid #15803d}
+.improvement{background:var(--bg1);border:1px solid var(--bg3);border-radius:12px;padding:20px 22px;margin-bottom:18px;position:relative}
+.improvement-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.improvement-number{background:var(--pur);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.improvement-title{font-size:14px;font-weight:700;color:var(--tx1)}
+.applies-to{font-size:11px;color:var(--tx3);margin-left:auto;white-space:nowrap}
+.impact{font-size:12px;color:var(--tx2);background:var(--bg2);border-radius:6px;padding:6px 10px;margin-top:8px;border-left:3px solid var(--pur)}
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.ba-box{border-radius:8px;padding:12px;font-size:12px}
+.ba-before{background:#3d1214;border:1px solid #7f1d1d;color:#fca5a5}
+.ba-after{background:#052e16;border:1px solid #14532d;color:#86efac}
+.ba-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;opacity:.7}
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600;background:var(--bg3);color:var(--tx2);margin:2px}
+.tag.l2{background:#1e3a5f;color:#93c5fd}
+.tag.l3{background:#1e1b4b;color:#a5b4fc}
+.tag.combined{background:#14532d;color:#86efac}
+.tag.all{background:#292524;color:#d6d3d1}
+ul{color:var(--tx2);font-size:13px;padding-left:20px;margin-bottom:10px}
+li{margin-bottom:5px}
+.divider{border:none;border-top:1px solid var(--bg3);margin:32px 0}
+.summary-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:16px}
+.summary-table th{text-align:left;padding:8px 12px;background:var(--bg2);color:var(--tx2);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.summary-table td{padding:8px 12px;border-bottom:1px solid var(--bg3);color:var(--tx2)}
+.summary-table tr:hover td{background:rgba(59,130,246,.07)}
+.link-btn{display:inline-block;padding:8px 16px;border-radius:8px;background:var(--pur);color:#fff;font-size:12px;font-weight:700;text-decoration:none;margin:4px}
+.link-btn:hover{background:#7c3aed}
+.note{background:var(--bg2);border:1px solid var(--bg3);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--tx3);margin:16px 0}
+</style>
+</head>
+<body>
+<h1>Map UX Improvements — Analysis &amp; Before/After</h1>
+<p class="subtitle">Network Swiss Tool Pro v7.3.2 · Zero-trust UX audit · 2026-09-03 · Methodology: feature audit + NOC domain research + Cisco/Juniper/Netdisco patterns</p>
+
+<p>The following is a complete, honest, professional-grade UX/feature audit of all map outputs (L2, L3 standard, L3 enhanced, Combined L2+L3, Flow map). Each finding is labelled with severity and which map it affects. Before/after previews are included as separate linked files.</p>
+
+<h2>Map Files Audited</h2>
+<ul>
+  <li><strong>L3 standard</strong> — <code>utils/l3_map_shell.py</code> → <code>sample_map_l3.html</code></li>
+  <li><strong>L3 enhanced</strong> — <code>utils/l3_map_shell_enhanced.py</code> → <code>sample_map_l3_enhanced.html</code></li>
+  <li><strong>L3 flow</strong> — <code>utils/l3_map_shell.py</code> (map_kind=flow) → <code>sample_map_l3_flow.html</code></li>
+  <li><strong>Combined L2+L3</strong> — <code>utils/combined_l2l3_shell.py</code> → <code>sample_map_combined.html</code></li>
+  <li><strong>Standard L2</strong> — <code>utils/report_formatter.py</code> + <code>utils/standard_map_shell.py</code> → <code>sample_map_l2.html</code> (uses render_topology_page)</li>
+</ul>
+
+<a href="sample_map_l3.html" class="link-btn" target="_blank">Open L3 Map</a>
+<a href="sample_map_l3_enhanced.html" class="link-btn" target="_blank">Open L3 Enhanced</a>
+<a href="sample_map_l3_flow.html" class="link-btn" target="_blank">Open L3 Flow</a>
+<a href="sample_map_combined.html" class="link-btn" target="_blank">Open Combined L2+L3</a>
+<a href="sample_map_l2.html" class="link-btn" target="_blank">Open Standard L2</a>
+<a href="map_improvements_before_after.html" class="link-btn" style="background:#059669" target="_blank">View Before/After Mockups →</a>
+
+<hr class="divider">
+
+<h2>Critical Findings — What is Missing or Broken</h2>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">1</div>
+    <div class="improvement-title">No node health/status indicator — all nodes look "up" regardless of state</div>
+    <span class="applies-to"><span class="tag all">all maps</span></span>
+  </div>
+  <span class="severity sev-high">High</span>
+  <p style="margin-top:8px">Every node renders with the same border and fill color whether it was collected successfully, had SSH errors, timed out, or returned incomplete data. A NOC engineer cannot tell at a glance which devices have collection problems. In incident response this wastes critical minutes.</p>
+  <div class="impact">NOC impact: engineer must cross-reference failed_hosts list manually. Industry standard (Cisco Crosswork, Nautobot, Zabbix) is a colored status ring on the node — green=ok, orange=partial, red=failed/unreachable, grey=not scanned.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>All device nodes are identical blue/teal circles regardless of collection status. Failed hosts only appear in a text list in the sidebar.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Node outer ring color encodes status: green ring = fully collected, amber ring = partial/errors, red ring = SSH failed, grey dashed = not scanned. A small ⚠ badge appears on nodes with errors. Status is shown in tooltip on hover.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">2</div>
+    <div class="improvement-title">L3 standard shell has no path trace, no route table, no subnet table</div>
+    <span class="applies-to"><span class="tag l3">L3 standard</span></span>
+  </div>
+  <span class="severity sev-high">High</span>
+  <p style="margin-top:8px">The L3 standard shell (<code>l3_map_shell.py</code>) renders a map + a device sidebar but has no ability to: (a) trace a path between two devices, (b) view the full route table, (c) filter by VRF. The enhanced shell has all three. The standard shell is what most users will encounter first (it is the default render_l3_map_html function).</p>
+  <div class="impact">NOC teams spend up to 70% of L3 troubleshooting time navigating routing tables. Without a searchable route table inline, engineers must re-SSH to devices. The enhanced shell solves this but is not the default.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>Standard L3 map: canvas + sidebar only. No route table tab, no path trace, no VRF filter. To see routes, click a node and scroll the 30-route limit in the sidebar.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Promote enhanced shell as the default. Add a "Route Table" tab and "Subnet Table" tab (already in enhanced shell). Add path-trace button. OR: merge the enhanced shell's tab bar into the standard shell.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">3</div>
+    <div class="improvement-title">Protocol filter on L3 map is defined in PROTO_CLASS but never rendered as clickable buttons</div>
+    <span class="applies-to"><span class="tag l3">L3 standard</span></span>
+  </div>
+  <span class="severity sev-high">High</span>
+  <p style="margin-top:8px">The audit shows the standard L3 shell technically has PROTO_CLASS mapping but no actual protocol filter UI buttons. A network with OSPF + BGP + Static + Connected routes produces a cluttered map where routing protocol types are visually indistinguishable from each other (they all use the same edge color from the graph_builder, not from the JS). The engineer cannot hide "Connected" routes to focus only on OSPF topology.</p>
+  <div class="impact">On a production network with 50+ routes, the inability to filter by protocol makes the map a "hairball". Industry tools (Juniper NorthStar, Cisco WAE) all provide protocol-layer filtering.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>All edge types shown simultaneously. Edge colors come from graph_builder (OSPF=blue, BGP=red, Static=amber) but there are no buttons to toggle visibility by protocol.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Add protocol filter toggle buttons above the canvas: [OSPF ✓] [BGP ✓] [Static ✓] [Connected ✓]. Each click hides/shows edges and their isolated nodes. Already partially done in enhanced shell — port to standard.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">4</div>
+    <div class="improvement-title">No data-collection timestamp visible on the map canvas itself</div>
+    <span class="applies-to"><span class="tag all">all maps</span></span>
+  </div>
+  <span class="severity sev-med">Medium</span>
+  <p style="margin-top:8px">Maps contain a <code>generated_at</code> timestamp in the bundle JSON but it is not displayed prominently on the canvas. The subtitle line shows "Offline · v7.3.2" but not when the data was collected. In a NOC, a map from 4 hours ago looks identical to one collected 30 seconds ago. This causes engineers to act on stale data.</p>
+  <div class="impact">A 4-hour-old map during an incident can show links as "up" that have since failed. The freshness banner in the L2 discovery map is the right pattern — it needs to appear in L3 maps too.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>Header shows: "NOC L3 Routing Map · subtitle · Offline · v7.3.2". No collection time, no staleness indicator.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Header shows: "NOC L3 Routing Map · 7 devices · Collected: 2026-09-03 14:22:05 (2 hours ago) [STALE]" — the "STALE" badge appears in amber if age > NST_STALE_HOURS. Green "FRESH" if recent.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">5</div>
+    <div class="improvement-title">Combined L2+L3 map has no correlation indication — physical and logical edges look identical</div>
+    <span class="applies-to"><span class="tag combined">Combined</span></span>
+  </div>
+  <span class="severity sev-med">Medium</span>
+  <p style="margin-top:8px">The combined map renders L2 edges (solid green) and L3 edges (dashed blue) together but there is no visual indication when an L3 route is correlated with a specific L2 physical link. The sidebar says "X correlated with physical links" as a number but doesn't highlight the correlation visually on the canvas.</p>
+  <div class="impact">The core value proposition of a combined map is showing "this OSPF adjacency runs over this physical cable." Without the visual correlation, the map is just two overlapping separate graphs.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>Physical edges = green solid. Routing edges = blue dashed. Correlated pairs show no visual relationship — you cannot tell that the OSPF adjacency between core-rtr-01 and dist-sw-01 runs over the Gi0/1 ↔ Eth1/1 cable.</div>
+    <div class="ba-after"><div class="ba-label">After</div>When an L3 edge has a matching physical_link: (1) both edges glow together on hover, (2) clicking either edge shows "Physical: Gi0/1 ↔ Eth1/1 | Logical: OSPF area 0" in a correlation panel. A small chain-link icon ⛓ appears on correlated edge pairs.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">6</div>
+    <div class="improvement-title">Flow animation in L3 standard shell fires on "Toggle Flow" but moves random edges — not traffic-aware</div>
+    <span class="applies-to"><span class="tag l3">L3 standard</span> <span class="tag">Flow map</span></span>
+  </div>
+  <span class="severity sev-med">Medium</span>
+  <p style="margin-top:8px">The "Toggle Flow" button in the standard L3 shell randomly flickers edge widths (1px → 3px) via a 200ms interval. This is cosmetic noise with zero informational value. Per the steering rules: "Auto-play animations on the map" must not happen. The animation should only exist if there is actual traffic rate data, and it should animate along the edge direction.</p>
+  <div class="impact">Random flickering is distracting in a NOC context and gives a false impression of live data. It should be removed unless actual utilization data is present.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>"Toggle Flow" button randomly wiggles random edge widths at 200ms intervals. No relationship to actual traffic. No direction. Creates noise.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Remove random flow animation. Replace "Toggle Flow" button with "Traffic Overlay" that only activates when utilization data is loaded (same pattern as L2 map). If no data: button shows "(no data)" and is disabled.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">7</div>
+    <div class="improvement-title">showDetail() in L3 standard shell builds innerHTML from unsanitized DEVICES_META data</div>
+    <span class="applies-to"><span class="tag l3">L3 standard</span></span>
+  </div>
+  <span class="severity sev-med">Medium</span>
+  <p style="margin-top:8px">The detail panel JS in <code>l3_map_shell.py</code> uses template literals directly into <code>detailContent.innerHTML</code> with data from <code>DEVICES_META[nid]</code>. While <code>script_safe_json</code> escapes for script-breakout, it does NOT HTML-escape for DOM injection. A device with platform = <code>"Cisco &lt;b&gt;evil&lt;/b&gt;"</code> renders raw HTML in the panel. The enhanced shell uses a <code>topoEsc()</code> function — the standard shell does not.</p>
+  <div class="impact">XSS risk: exploitable if device data contains HTML, though localhost-only deployment lowers exploitation probability. Still a correctness issue per steering rule 05.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>showDetail: <code>html += `&lt;tr&gt;&lt;td&gt;Platform&lt;/td&gt;&lt;td&gt;${m.platform}&lt;/td&gt;&lt;/tr&gt;`</code> — raw device string in innerHTML.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Add <code>function topoEsc(s){return String(s||'').replace(/&amp;/g,'&amp;amp;').replace(/&lt;/g,'&amp;lt;').replace(/&gt;/g,'&amp;gt;')}</code> and wrap all data interpolations: <code>${topoEsc(m.platform)}</code>.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">8</div>
+    <div class="improvement-title">No "copy to clipboard" or CSV export for route table / connection index</div>
+    <span class="applies-to"><span class="tag all">all maps</span></span>
+  </div>
+  <span class="severity sev-low">Low</span>
+  <p style="margin-top:8px">Network engineers routinely need to share route tables and connection indexes in tickets, Slack, and change-management systems. None of the map shells provide a copy-to-CSV or copy-table function. The L2 map has a Print media query but no CSV export.</p>
+  <div class="impact">Engineers manually copy-paste table data into spreadsheets. A single "Export CSV" button on route/connection tables would save 5-10 min per incident.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>No export. Connection index and route explorer tables are view-only. Print CSS exists in L2 map but produces multi-page output.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Add "⬇ CSV" button above each table. JS serializes visible (post-filter) rows to CSV and triggers a browser download. One function, ~20 lines of JS.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">9</div>
+    <div class="improvement-title">Node shapes do not distinguish device roles visually — all devices are rectangles</div>
+    <span class="applies-to"><span class="tag l3">L3 standard</span> <span class="tag l2">L2</span></span>
+  </div>
+  <span class="severity sev-low">Low</span>
+  <p style="margin-top:8px">All device nodes use <code>shape: 'box'</code>. In the L3 map, subnets use ellipses and gateways use dots — this is good. But core routers, distribution switches, and access switches all look identical. Network engineers are trained to read role hierarchy visually (core = cylinder, router = hexagon, switch = square).</p>
+  <div class="impact">On a complex topology, role identification requires reading labels. Role-based shapes (already partially done via color) would allow faster pattern recognition — especially at scale.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>All devices: box shape. Differentiation only by color (cisco=teal, juniper=orange, nxos=indigo). Role (core/dist/access) not encoded in shape.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Core routers: hexagon. Distribution switches: diamond. Access switches: box. Edge/WAN routers: triangle. Colors remain the same. Shape + color = two independent channels for richer encoding.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">10</div>
+    <div class="improvement-title">L2 map "map looks the same as before" — because render_topology_page in topo_map_shell.py has its own legacy CSS not updated by standard_map_shell.py redesign</div>
+    <span class="applies-to"><span class="tag l2">L2</span></span>
+  </div>
+  <span class="severity sev-high">High</span>
+  <p style="margin-top:8px">The standard L2 map sample uses <code>render_topology_page()</code> from <code>topo_map_shell.py</code>, which has its own hardcoded HTML template with the legacy GitHub dark theme. The <code>standard_map_shell.py</code> redesign only affects the <code>embed_standard_map_top_chrome()</code> fragment used by <code>report_formatter.py</code>. The actual production L2 map HTML (generated by <code>report_formatter.py</code>) IS using the new CSS — but the <code>render_topology_page</code> standalone path (used by tests and the demo generator) still has the old look.</p>
+  <div class="impact">The standalone L2 map HTML files opened directly will show the old design. The production report path via report_formatter uses the new design. Both code paths need the same visual treatment.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>render_topology_page CSS: dark GitHub #0d1117 background, rounded card, 12px padding offset, old body layout. Does not use CSS variables or the new enterprise theme.</div>
+    <div class="ba-after"><div class="ba-label">After</div>render_topology_page should inject standard_map_shell_css() for consistent styling. The body/layout/colors should match the production report_formatter path.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">11</div>
+    <div class="improvement-title">Hover tooltips show raw HTML strings — not formatted device info cards</div>
+    <span class="applies-to"><span class="tag all">all maps</span></span>
+  </div>
+  <span class="severity sev-low">Low</span>
+  <p style="margin-top:8px">vis.js node <code>title</code> attributes contain HTML (e.g., <code>"&lt;b&gt;core-rtr-01&lt;/b&gt;&lt;br&gt;Vendor: IOS..."</code>) but the rendering quality depends on the browser's vis.js tooltip renderer. In Chrome standalone HTML mode the tooltips appear as plain text boxes with no styling. The L3 shells build elaborate title HTML but it often doesn't render as intended because vis.js tooltips do not apply the page's CSS.</p>
+  <div class="impact">Rich hover tooltips are the primary way NOC engineers get device context without clicking. Broken/ugly tooltips reduce map utility.</div>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>Hover → small vis.js default tooltip box, plain text, no styling, content runs off-screen if long. HTML tags sometimes rendered raw.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Implement custom tooltip div: on <code>network.on('hoverNode')</code>, show a styled div absolutely positioned near the cursor with the formatted device card (platform badge, IP, route count, protocols). Remove from <code>title</code> attribute — use the JS handler instead.</div>
+  </div>
+</div>
+
+<div class="improvement">
+  <div class="improvement-header">
+    <div class="improvement-number">12</div>
+    <div class="improvement-title">Subnet nodes show no gateway/routing information on hover</div>
+    <span class="applies-to"><span class="tag l3">L3</span></span>
+  </div>
+  <span class="severity sev-low">Low</span>
+  <p style="margin-top:8px">Subnet nodes (purple ellipses) carry <code>SN_META</code> data including gateway IPs, advertising devices, prefix length, is_private, route_count. This data is only visible in the sidebar detail panel after clicking. For fast scanning, engineers need to see "this is 192.168.10.0/24, /24, private, GW=172.16.1.1, 3 devices" without clicking.</p>
+  <div class="before-after">
+    <div class="ba-box ba-before"><div class="ba-label">Before</div>Subnet ellipse hover: tooltip shows "Subnet 192.168.10.0/24" — just the ID repeated.</div>
+    <div class="ba-after"><div class="ba-label">After</div>Custom tooltip card: Subnet | /24 | 256 hosts | Private | GW: 172.16.1.1 | 3 devices advertising. Appears on hover without clicking.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<h2>Summary Table</h2>
+<table class="summary-table">
+<thead><tr><th>#</th><th>Finding</th><th>Severity</th><th>Maps</th><th>Effort</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>No node health/status indicator</td><td><span class="severity sev-high">High</span></td><td><span class="tag all">all</span></td><td>Medium</td></tr>
+<tr><td>2</td><td>L3 standard: no path trace / route table / VRF filter</td><td><span class="severity sev-high">High</span></td><td><span class="tag l3">L3 std</span></td><td>Low (use enhanced shell)</td></tr>
+<tr><td>3</td><td>Protocol filter buttons missing in standard L3</td><td><span class="severity sev-high">High</span></td><td><span class="tag l3">L3 std</span></td><td>Low</td></tr>
+<tr><td>4</td><td>No collection timestamp / staleness badge on canvas</td><td><span class="severity sev-med">Medium</span></td><td><span class="tag all">all</span></td><td>Low</td></tr>
+<tr><td>5</td><td>Combined map: correlation not visualized on canvas</td><td><span class="severity sev-med">Medium</span></td><td><span class="tag combined">Combined</span></td><td>Medium</td></tr>
+<tr><td>6</td><td>Flow animation is random noise, not data-driven</td><td><span class="severity sev-med">Medium</span></td><td><span class="tag l3">L3 std</span></td><td>Low (remove it)</td></tr>
+<tr><td>7</td><td>showDetail() innerHTML not sanitized with topoEsc()</td><td><span class="severity sev-med">Medium</span></td><td><span class="tag l3">L3 std</span></td><td>Low</td></tr>
+<tr><td>8</td><td>No CSV export for route/connection tables</td><td><span class="severity sev-low">Low</span></td><td><span class="tag all">all</span></td><td>Low</td></tr>
+<tr><td>9</td><td>Node shapes don't encode device role</td><td><span class="severity sev-low">Low</span></td><td><span class="tag l3">L3</span> <span class="tag l2">L2</span></td><td>Low</td></tr>
+<tr><td>10</td><td>render_topology_page still uses legacy CSS</td><td><span class="severity sev-high">High</span></td><td><span class="tag l2">L2</span></td><td>Low</td></tr>
+<tr><td>11</td><td>Hover tooltips lose styling (vis.js tooltip limitation)</td><td><span class="severity sev-low">Low</span></td><td><span class="tag all">all</span></td><td>Medium</td></tr>
+<tr><td>12</td><td>Subnet hover shows no useful metadata</td><td><span class="severity sev-low">Low</span></td><td><span class="tag l3">L3</span></td><td>Low</td></tr>
+</tbody>
+</table>
+
+<hr class="divider">
+
+<h2>Priority Recommendation</h2>
+<p><strong>Implement in this order for maximum NOC value per effort:</strong></p>
+<ol style="color:var(--tx2);font-size:13px;padding-left:24px;margin-bottom:16px">
+  <li style="margin-bottom:8px"><strong>Finding #10</strong> — Fix render_topology_page CSS (30 min, makes L2 sample maps actually reflect the redesign)</li>
+  <li style="margin-bottom:8px"><strong>Finding #3</strong> — Add protocol filter buttons to L3 standard shell (30 min, high NOC value)</li>
+  <li style="margin-bottom:8px"><strong>Finding #4</strong> — Add collection timestamp + staleness badge to all map headers (20 min)</li>
+  <li style="margin-bottom:8px"><strong>Finding #7</strong> — Add topoEsc() to showDetail() in L3 standard shell (15 min, security)</li>
+  <li style="margin-bottom:8px"><strong>Finding #6</strong> — Remove random flow animation, disable button when no data (10 min)</li>
+  <li style="margin-bottom:8px"><strong>Finding #1</strong> — Node health ring encoding (1 hour, highest NOC impact)</li>
+  <li style="margin-bottom:8px"><strong>Finding #2</strong> — Make enhanced shell the default L3 map (route table + path trace) (1 hour)</li>
+  <li style="margin-bottom:8px"><strong>Finding #8</strong> — CSV export (30 min)</li>
+  <li style="margin-bottom:8px"><strong>Finding #5</strong> — Combined map correlation highlighting (2 hours)</li>
+  <li style="margin-bottom:8px"><strong>Finding #9, #11, #12</strong> — Node shapes, tooltip polish (ongoing)</li>
+</ol>
+
+<div class="note">
+  <strong>Note on findings #2 and the "enhanced vs standard" split:</strong> The current design has two parallel L3 shell implementations — the standard shell (<code>l3_map_shell.py</code>) and the enhanced shell (<code>l3_map_shell_enhanced.py</code>). The enhanced shell already has path trace, route table, VRF filter, and layout algorithms. The fastest path to parity is to update the web API endpoint (<code>vlan_checker_web.py</code>) to use the enhanced shell as the default for all L3 map renders, keeping the standard shell as a fallback. No feature duplication needed.
+</div>
+
+<p style="margin-top:32px;color:var(--tx3);font-size:11px">
+  → Open <a href="map_improvements_before_after.html" style="color:#a5b4fc">map_improvements_before_after.html</a> for visual before/after mockups of the top 6 improvements.
+</p>
+</body>
+</html>

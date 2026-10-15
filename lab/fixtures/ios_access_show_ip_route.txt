@@ -1,0 +1,15 @@
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       * - candidate default
+
+Gateway of last resort is 10.10.10.1 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 10.10.10.1
+      10.10.10.0/24 is variably subnetted, 2 subnets, 2 masks
+C        10.10.10.0/24 is directly connected, Vlan10
+L        10.10.10.24/32 is directly connected, Vlan10
+      10.20.20.0/24 is subnetted, 1 subnets
+O        10.20.20.0/24 [110/20] via 10.10.10.1, 00:15:22, Vlan10
+      10.255.0.0/30 is subnetted, 1 subnets
+O        10.255.0.0/30 [110/10] via 10.10.10.1, 00:15:22, Vlan10

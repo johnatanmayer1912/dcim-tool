@@ -1,0 +1,4 @@
+Interface Peer-IP          State LearnType Uptime   Router-Mac
+--------- ---------------  ----- --------- -------- -----------------
+nve1      10.0.0.5         Up    CP        1d02h    5254.0001.0005
+nve1      10.0.0.6         Up    CP        5d11h    5254.0001.0006

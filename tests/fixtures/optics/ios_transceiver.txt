@@ -1,0 +1,4 @@
+If        Temperature  Tx Power  Rx Power
+          (Celsius)    (dBm)     (dBm)
+Gi1/0/1   35.1         -2.10     -3.45
+Te1/1/1   36.0         -1.80     -18.20

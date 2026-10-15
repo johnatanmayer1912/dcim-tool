@@ -1,0 +1,15 @@
+Local Interface    : xe-0/0/48.0
+Parent Interface   : xe-0/0/48
+Local Port ID      : 548
+Chassis ID         : 5c:5e:ab:12:34:56
+System name        : spine-nxos-01
+System description : Cisco Nexus Operating System (NX-OS) Software
+Management address : 10.0.0.11
+
+Local Interface    : xe-0/0/47.0
+Parent Interface   : xe-0/0/47
+Local Port ID      : 547
+Chassis ID         : 6c:8b:d3:78:90:12
+System name        : leaf-qfx-02
+System description : Juniper Networks, Inc. qfx5100-48s-4q internet router, kernel JUNOS 14.1X53-D42.3
+Management address : 10.0.0.12

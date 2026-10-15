@@ -1,0 +1,42 @@
+=== Interface Search Diagnostic Report ===
+Timestamp: 2026-10-11 00:24:09
+Device: 1.1.1.1
+Device Type: cisco_ios
+Search Term: core
+==================================================
+[INFO] Connecting to device...
+[INFO] Connected successfully. True hostname: sw1
+[INFO] Device type: IOS/Other - command priority list: ['show interfaces description', 'show interface description', 'show interface brief']
+[INFO] Executing description commands with fallback...
+[INFO] Description command attempts summary:
+[INFO] Successful description command: show interfaces description
+[INFO] Parsing interface descriptions...
+[DEBUG] Parsed 3 interfaces from description output
+[INFO] Total interfaces scanned: 3
+[DEBUG] Sample parsed entries (first 5):
+  [0] Interface: Gi1/0/1, Status: up, Desc: core uplink
+  [1] Interface: Gi1/0/2, Status: up, Desc: access port
+  [2] Interface: Gi1/0/3, Status: up, Desc: CORE switch
+[INFO] Using regex pattern matching: core
+[INFO] Search method: regex
+[INFO] Search matches found: 2
+[INFO] Matches ranked by relevance (exact > prefix > partial)
+[DEBUG] Matched interfaces:
+  [0] Interface: Gi1/0/1
+      Full Description: core uplink
+      Status: up
+      Source: t
+  [1] Interface: Gi1/0/3
+      Full Description: CORE switch
+      Status: up
+      Source: t
+
+=== COMMAND ATTEMPTS LOG ===
+Description Commands:
+
+
+=== RAW COMMAND OUTPUT ===
+Successful Command: show interfaces description
+Gi1/0/1 up up core uplink
+Gi1/0/2 up up access
+Gi1/0/3 up up CORE switch

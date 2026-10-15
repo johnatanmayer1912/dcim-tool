@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NST Apex Fusion — Northglass × OpsRail</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@450;550;650;750&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+  :root {
+    --void: #070b14;
+    --ink: #0b1220;
+    --glass: rgba(255,255,255,0.62);
+    --glass-2: rgba(255,255,255,0.82);
+    --cyan: #00c2d7;
+    --teal: #14b8a6;
+    --signal: #38bdf8;
+    --ok: #10b981;
+    --warn: #f59e0b;
+    --danger: #f43f5e;
+    --muted: #64748b;
+    --line: rgba(15,23,42,0.08);
+    --font: "Outfit", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background:
+      radial-gradient(1000px 560px at 0% -10%, rgba(0,194,215,0.28), transparent 55%),
+      radial-gradient(900px 520px at 100% 0%, rgba(20,184,166,0.18), transparent 50%),
+      radial-gradient(700px 400px at 50% 100%, rgba(56,189,248,0.12), transparent 45%),
+      linear-gradient(160deg, #e8eef7 0%, #d5e0ee 45%, #c9d6e6 100%);
+    overflow: hidden;
+  }
+  .fx-orb {
+    position: fixed; pointer-events: none; border-radius: 50%;
+    filter: blur(40px); opacity: 0.55; z-index: 0;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+  .fx-orb.a { width: 280px; height: 280px; left: -40px; top: 20%; background: rgba(0,194,215,0.35); }
+  .fx-orb.b { width: 220px; height: 220px; right: 8%; bottom: 10%; background: rgba(20,184,166,0.3); animation-delay: -4s; }
+
+  .wrap {
+    position: relative; z-index: 1;
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 14px 16px 12px;
+    gap: 10px;
+  }
+
+  .council {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: rgba(7,11,20,0.92);
+    color: #dbe7f5;
+    font-size: 12px;
+    animation: rise 0.5s ease both;
+  }
+  .council .seal {
+    font-weight: 750; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 6px 10px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--cyan), var(--teal));
+    color: #04202a;
+  }
+  .council b { color: var(--cyan); }
+  .teams { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+  .teams span {
+    padding: 4px 8px; border-radius: 999px; font-size: 10px; font-weight: 650;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #9fb2c9;
+  }
+
+  .hud {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(4, 1fr);
+    gap: 10px;
+    animation: rise 0.55s 0.05s ease both;
+  }
+  @media (max-width: 1100px) {
+    .hud { grid-template-columns: 1fr 1fr; }
+    .hud .hero { grid-column: 1 / -1; }
+  }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.75);
+  }
+  .hud .hero {
+    padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .hud .hero::after {
+    content: ""; position: absolute; right: -30px; top: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,194,215,0.35), transparent 70%);
+    animation: pulse 3.5s ease-in-out infinite;
+  }
+  .hud .hero .eyebrow {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 650; color: #0e7490;
+  }
+  .hud .hero h1 {
+    margin: 4px 0 6px; font-size: 26px; letter-spacing: -0.045em; font-weight: 750; line-height: 1.1;
+  }
+  .hud .hero p { margin: 0; color: var(--muted); font-size: 13px; max-width: 42ch; }
+  .metric {
+    padding: 14px 16px; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .metric:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(15,23,42,0.12); }
+  .metric .k { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 650; }
+  .metric .v { margin-top: 6px; font-size: 28px; font-weight: 750; letter-spacing: -0.04em; }
+  .metric .s { margin-top: 4px; font-family: var(--mono); font-size: 11px; color: var(--teal); }
+
+  .stage {
+    display: grid;
+    grid-template-columns: 72px 268px 1fr 300px;
+    gap: 10px;
+    min-height: 0;
+    animation: rise 0.6s 0.1s ease both;
+  }
+  @media (max-width: 1200px) {
+    .stage { grid-template-columns: 72px 1fr; }
+    .drawer, .console { display: none; }
+  }
+
+  .rail {
+    background: linear-gradient(180deg, #0c1422, #0a101c);
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.06);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 14px 0; gap: 8px;
+    color: #9fb2c9;
+  }
+  .rail .mark {
+    width: 42px; height: 42px; border-radius: 14px;
+    display: grid; place-items: center; font-weight: 750; font-size: 13px;
+    background: linear-gradient(145deg, rgba(0,194,215,0.25), rgba(20,184,166,0.15));
+    color: var(--cyan); border: 1px solid rgba(0,194,215,0.35);
+    margin-bottom: 8px;
+    box-shadow: 0 0 24px rgba(0,194,215,0.25);
+  }
+  .rail button {
+    width: 46px; height: 46px; border: 0; border-radius: 14px;
+    background: transparent; color: inherit; cursor: pointer;
+    font-family: inherit; font-size: 10px; font-weight: 650; letter-spacing: 0.04em;
+    transition: background 0.15s, color 0.15s, transform 0.15s;
+  }
+  .rail button:hover { background: rgba(255,255,255,0.05); color: #fff; transform: scale(1.05); }
+  .rail button.active {
+    background: rgba(0,194,215,0.14); color: var(--cyan);
+    box-shadow: inset 0 0 0 1px rgba(0,194,215,0.4);
+  }
+
+  .drawer {
+    display: flex; flex-direction: column; min-height: 0; padding: 16px;
+  }
+  .drawer .brand-name {
+    font-size: 20px; font-weight: 750; letter-spacing: -0.04em; line-height: 1.1;
+  }
+  .drawer .brand-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .drawer .ver {
+    display: inline-flex; margin-top: 10px; margin-bottom: 16px;
+    font-family: var(--mono); font-size: 10px; padding: 4px 9px; border-radius: 999px;
+    background: rgba(0,194,215,0.12); color: #0e7490; font-weight: 600;
+  }
+  .lbl {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 650; margin: 12px 0 8px;
+  }
+  select, input {
+    width: 100%; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--glass-2); padding: 10px 12px; font: inherit; font-size: 13px;
+  }
+  .cred {
+    margin-top: auto; padding: 12px; border-radius: 14px;
+    background: var(--glass-2); border: 1px solid var(--line);
+  }
+  .cred .who { font-weight: 650; }
+  .cred .meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .live {
+    margin-top: 8px; display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 650; color: var(--ok);
+  }
+  .live i {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--ok);
+    box-shadow: 0 0 0 4px rgba(16,185,129,0.2);
+    animation: blink 1.6s ease-in-out infinite;
+  }
+
+  .main {
+    display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  }
+  .top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; padding: 16px 18px 8px; flex-wrap: wrap;
+  }
+  .top h2 { margin: 0; font-size: 24px; letter-spacing: -0.04em; font-weight: 750; }
+  .top p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    border: 0; cursor: pointer; font-family: inherit; font-weight: 650; font-size: 13px;
+    padding: 10px 16px; border-radius: 999px; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--cyan), var(--teal));
+    color: #04202a; box-shadow: 0 12px 28px rgba(0,194,215,0.28);
+  }
+  .btn-ghost { background: var(--glass-2); border: 1px solid var(--line); color: var(--ink); }
+  .btn-danger { background: rgba(244,63,94,0.1); color: var(--danger); border: 1px solid rgba(244,63,94,0.25); }
+
+  .job {
+    margin: 0 18px 12px; padding: 16px 18px; border-radius: 16px;
+    background: linear-gradient(120deg, rgba(0,194,215,0.14), rgba(20,184,166,0.08), var(--glass-2));
+    border: 1px solid rgba(0,194,215,0.25);
+    position: relative; overflow: hidden;
+  }
+  .job .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .chip {
+    font-family: var(--mono); font-size: 11px; padding: 5px 9px; border-radius: 8px;
+    background: rgba(15,23,42,0.05); color: #334155;
+  }
+  .chip.run { background: rgba(16,185,129,0.12); color: var(--ok); font-weight: 650; }
+  .progress {
+    margin-top: 12px; height: 7px; border-radius: 999px; background: rgba(15,23,42,0.08); overflow: hidden;
+  }
+  .progress > span {
+    display: block; height: 100%; width: 67%;
+    background: linear-gradient(90deg, var(--cyan), var(--teal), var(--signal));
+    background-size: 200% 100%;
+    animation: shimmer 1.8s linear infinite, grow 1.2s ease both;
+    border-radius: inherit;
+  }
+
+  .split {
+    flex: 1; min-height: 0; display: grid; grid-template-columns: 1.35fr 0.9fr;
+    gap: 12px; padding: 0 18px 16px;
+  }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--glass-2); border: 1px solid var(--line); border-radius: 16px;
+    min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .card header {
+    padding: 12px 14px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; font-size: 13px; font-weight: 650;
+  }
+  .card header span { font-family: var(--mono); font-size: 11px; color: var(--muted); font-weight: 500; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left; padding: 10px 12px; font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); background: rgba(248,250,252,0.9);
+    position: sticky; top: 0;
+  }
+  td { padding: 11px 12px; border-top: 1px solid var(--line); }
+  tr:hover td { background: rgba(0,194,215,0.04); }
+  .mono { font-family: var(--mono); font-size: 11.5px; }
+  .tag {
+    display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 650;
+  }
+  .tag.up { background: rgba(16,185,129,0.12); color: var(--ok); }
+  .tag.warn { background: rgba(245,158,11,0.12); color: var(--warn); }
+  .scroll { overflow: auto; flex: 1; }
+
+  .timeline {
+    padding: 12px 14px; font-family: var(--mono); font-size: 11.5px; line-height: 1.65; color: #475569;
+  }
+  .timeline .ok { color: var(--teal); }
+  .timeline .t { color: #94a3b8; }
+
+  .console {
+    background: linear-gradient(180deg, #0c1524, #080e18);
+    color: #d5e2f2; border: 1px solid rgba(255,255,255,0.06);
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .console header {
+    padding: 14px 16px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 650; color: var(--cyan); border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; justify-content: space-between;
+  }
+  .log {
+    flex: 1; overflow: auto; padding: 14px 16px;
+    font-family: var(--mono); font-size: 11.5px; line-height: 1.55;
+  }
+  .log .ok { color: #5eead4; }
+  .log .warn { color: #fbbf24; }
+  .log .dim { color: #64748b; }
+
+  .command {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 11px 16px; border-radius: 16px;
+    background: linear-gradient(90deg, rgba(7,11,20,0.94), rgba(12,20,34,0.94));
+    color: #e8eef8; border: 1px solid rgba(0,194,215,0.25);
+    box-shadow: 0 12px 40px rgba(0,194,215,0.12);
+    animation: rise 0.55s 0.12s ease both;
+  }
+  .command .state {
+    font-weight: 750; color: var(--cyan); letter-spacing: 0.06em; font-size: 12px;
+  }
+  .command .bar {
+    flex: 1; min-width: 120px; height: 6px; border-radius: 999px;
+    background: rgba(255,255,255,0.08); overflow: hidden;
+  }
+  .command .bar > i {
+    display: block; height: 100%; width: 67%;
+    background: linear-gradient(90deg, var(--cyan), var(--teal));
+    animation: grow 1.2s ease both;
+  }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(12px);} to { opacity: 1; transform: none; } }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.7;} 50% { transform: scale(1.2); opacity: 1;} }
+  @keyframes blink { 0%,100% { opacity: 1;} 50% { opacity: 0.35;} }
+  @keyframes grow { from { width: 0;} to { width: 67%;} }
+  @keyframes shimmer { to { background-position: 200% 0; } }
+  @keyframes drift { from { transform: translateY(0);} to { transform: translateY(24px);} }
+</style>
+</head>
+<body>
+  <div class="fx-orb a" aria-hidden="true"></div>
+  <div class="fx-orb b" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <aside class="council" aria-label="Design council">
+      <span class="seal">Apex Fusion · Option 4</span>
+      <div><b>Northglass × OpsRail</b> — glass premium emotion + NOC command discipline. Built by Product Design, NOC UX, Motion, Brand, and Enterprise Architecture councils.</div>
+      <div class="teams">
+        <span>Product Design</span><span>NOC UX</span><span>Motion</span><span>Brand</span><span>Arch</span>
+      </div>
+    </aside>
+
+    <section class="hud" aria-label="Executive HUD">
+      <article class="glass hero">
+        <div class="eyebrow">Network Swiss Tool Pro</div>
+        <h1>Command clarity.<br/>Boardroom presence.</h1>
+        <p>Operators get zero-hunt Cancel and live evidence. Managers see fleet health in one glance — without fake metrics.</p>
+      </article>
+      <article class="glass metric"><div class="k">Devices in scope</div><div class="v">48</div><div class="s">group · Core</div></article>
+      <article class="glass metric"><div class="k">Job progress</div><div class="v">67%</div><div class="s">mac_check · 00:41</div></article>
+      <article class="glass metric"><div class="k">Vault</div><div class="v" style="font-size:22px;">Open</div><div class="s">ops-primary · P→S</div></article>
+      <article class="glass metric"><div class="k">L2 trust edges</div><div class="v">86</div><div class="s">path reconstruct ready</div></article>
+    </section>
+
+    <div class="stage">
+      <nav class="rail" aria-label="Primary rail">
+        <div class="mark">NS</div>
+        <button class="active" type="button">FIND</button>
+        <button type="button">CHG</button>
+        <button type="button">MAP</button>
+        <button type="button">EVD</button>
+        <button type="button">SET</button>
+      </nav>
+
+      <aside class="glass drawer">
+        <div class="brand-name">Network Swiss<br/>Tool Pro</div>
+        <div class="brand-sub">Offline network visibility</div>
+        <span class="ver">v7.4.24 · APEX FUSION</span>
+        <div class="lbl">Target</div>
+        <select aria-label="Scope"><option selected>Group · Core</option><option>Bulk · All</option><option>Single host</option></select>
+        <div class="lbl">Workspace</div>
+        <select aria-label="Workspace"><option selected>Find · MAC / Path</option><option>Change · VLAN / IM</option><option>Maps</option></select>
+        <div class="cred">
+          <div class="who">ops-primary</div>
+          <div class="meta">Fallback chain armed · Secondary ready</div>
+          <div class="live"><i></i> SSH ready</div>
+        </div>
+      </aside>
+
+      <main class="glass main">
+        <div class="top">
+          <div>
+            <h2>Find</h2>
+            <p>MAC search with live path evidence — premium calm, ops-grade control.</p>
+          </div>
+          <div class="actions">
+            <button class="btn btn-ghost" type="button">Open last report</button>
+            <button class="btn btn-danger" type="button">Cancel</button>
+            <button class="btn btn-primary" type="button">Start MAC search</button>
+          </div>
+        </div>
+
+        <section class="job" aria-live="polite">
+          <div class="row">
+            <span class="chip run">RUNNING</span>
+            <strong style="font-size:15px;">MAC · aa:bb:cc:11:22:33</strong>
+            <span class="chip">48 hosts</span>
+            <span class="chip">hits 12</span>
+            <span class="chip">auth P</span>
+          </div>
+          <div class="progress" aria-hidden="true"><span></span></div>
+        </section>
+
+        <div class="split">
+          <section class="card">
+            <header>Evidence table <span>honest hops only</span></header>
+            <div class="scroll">
+              <table>
+                <thead><tr><th>Host</th><th>Port</th><th>VLAN</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>dist-01</strong></td><td class="mono">Gi1/0/24</td><td>120</td><td><span class="tag up">Found</span></td></tr>
+                  <tr><td><strong>access-07</strong></td><td class="mono">Gi1/0/11</td><td>120</td><td><span class="tag up">Found</span></td></tr>
+                  <tr><td><strong>access-12</strong></td><td class="mono">—</td><td>—</td><td><span class="tag warn">No hit</span></td></tr>
+                  <tr><td><strong>core-nx-01</strong></td><td class="mono">Eth1/1</td><td>120</td><td><span class="tag up">Found</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="card">
+            <header>Live timeline <span>control plane</span></header>
+            <div class="scroll timeline">
+              <div><span class="t">00:00</span> job queued · mac_check</div>
+              <div class="ok"><span class="t">00:01</span> vault resolve · ops-primary</div>
+              <div><span class="t">00:08</span> dist-01 · mac table</div>
+              <div class="ok"><span class="t">00:09</span> hit · Gi1/0/24 vlan 120</div>
+              <div><span class="t">00:22</span> access-07 · mac table</div>
+              <div class="ok"><span class="t">00:23</span> hit · Gi1/0/11 vlan 120</div>
+              <div><span class="t">00:35</span> edges loaded · 86</div>
+              <div class="ok"><span class="t">00:41</span> path reconstruct gated · ready</div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <aside class="glass console">
+        <header><span>Instrument log</span><span style="color:#64748b; letter-spacing:0; text-transform:none; font-weight:500;">Online</span></header>
+        <div class="log">
+          <div class="dim">[SYS] Apex Fusion shell online</div>
+          <div class="ok">[VAULT] unlocked · credential_id bound</div>
+          <div>[JOB] mac_check · scope=Core</div>
+          <div class="ok">[SSH] dist-01 primary OK</div>
+          <div class="warn">[SSH] access-12 retry secondary</div>
+          <div class="ok">[EDGE] L2 trust 86 · invent=false</div>
+          <div class="dim">[OUT] report pack available</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="command" aria-label="Command strip">
+      <span class="state">RUNNING</span>
+      <span>MAC search · 32/48 · Cancel always visible</span>
+      <div class="bar" aria-hidden="true"><i></i></div>
+      <span class="mono" style="font-size:11px; color:#7dd3fc;">67%</span>
+      <button class="btn btn-danger" type="button" style="padding:8px 14px;">Cancel job</button>
+    </footer>
+  </div>
+</body>
+</html>

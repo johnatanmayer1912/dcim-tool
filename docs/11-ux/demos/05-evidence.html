@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>05 Evidence — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 05</strong>
+    <span>Static HTML — no Flask. Not the live console.</span>
+    <a href="index.html">All demos</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-on" href="06-settings-vault.html"><span class="ico" aria-hidden="true">●</span> Vault UNLOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select aria-label="Named credential set"><option selected>lab-ops (ssh)</option></select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope"><option selected>Group DIST — 12 devices</option></select>
+        </label>
+      </div>
+      <p class="freshness">Job index (proposed SQLite) · artifacts stay files under data root</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html">Maps <span class="badge">3</span><span class="kbd">2</span></a>
+      <a href="03-find.html">Find <span class="kbd">3</span></a>
+      <a href="04-change.html">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html" aria-current="page">Evidence <span class="badge fail" title="last job failed">1 fail</span><span class="kbd">5</span></a>
+      <a href="06-settings-vault.html">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Evidence</h1>
+          <p class="lede">Find the run you just did. HTML maps are the same offline files as today. Passwords never appear in artifacts.</p>
+        </div>
+        <div class="title-actions">
+          <button type="button" id="btn-empty">Show empty</button>
+          <button type="button" class="primary" id="btn-list">Show 3 runs</button>
+          <button type="button">Zip selected run</button>
+        </div>
+      </div>
+      <div id="empty" class="banner info hidden">
+        <strong>No runs yet.</strong> Inventory L2, MAC trace, and VLAN apply write folders here. Index is proposed SQLite; files remain the source of truth.
+      </div>
+      <div class="card" id="jobs">
+        <h2>Jobs</h2>
+        <table>
+          <thead>
+            <tr><th>Time</th><th>Type</th><th>Scope</th><th>Status</th><th>Duration</th></tr>
+          </thead>
+          <tbody>
+            <tr data-job="l2" class="is-sel">
+              <td>2026-08-19 11:14</td><td>inventory L2 map</td><td>DIST / 12</td>
+              <td class="status accept">success</td><td>00:41</td>
+            </tr>
+            <tr data-job="mac">
+              <td>2026-08-19 11:22</td><td>MAC trace</td><td>DIST / 12</td>
+              <td class="status accept">success</td><td>00:18</td>
+            </tr>
+            <tr data-job="vlan">
+              <td>2026-08-19 11:31</td><td>VLAN apply</td><td>DIST / 5</td>
+              <td class="status fail">fail — verification_failed</td><td>00:09</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" id="arts">
+        <h2>Artifacts — inventory L2 map</h2>
+        <ul>
+          <li><a href="#">topo_l2_DIST.html</a> — vis.js map (open offline)</li>
+          <li><span class="mono">link_issues.json</span></li>
+          <li><span class="mono">diag/collected_at.json</span></li>
+        </ul>
+        <div class="title-actions">
+          <button type="button">Open HTML</button>
+          <button type="button">Reveal folder</button>
+          <button type="button">Copy path</button>
+        </div>
+      </div>
+      <script type="application/json" id="sample-data">
+{"jobs":[{"id":"j1","type":"l2","status":"success"},{"id":"j2","type":"mac","status":"success"},{"id":"j3","type":"vlan_apply","status":"fail"}]}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Run</h2>
+      <dl id="insp">
+        <dt>Folder</dt>
+        <dd class="mono">reports/20260819_1114_l2_DIST/</dd>
+        <dt>Outcome</dt>
+        <dd>success — 8 nodes, 1 one-sided</dd>
+        <dt>Secrets</dt>
+        <dd>None in HTML/JSON (policy).</dd>
+      </dl>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span></footer>
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var empty = document.getElementById("empty");
+      var jobs = document.getElementById("jobs");
+      var arts = document.getElementById("arts");
+      var insp = document.getElementById("insp");
+      document.getElementById("btn-empty").onclick = function () {
+        empty.classList.remove("hidden");
+        jobs.classList.add("hidden");
+        arts.classList.add("hidden");
+      };
+      document.getElementById("btn-list").onclick = function () {
+        empty.classList.add("hidden");
+        jobs.classList.remove("hidden");
+        arts.classList.remove("hidden");
+      };
+      var detail = {
+        l2: { title: "Artifacts — inventory L2 map", folder: "reports/20260819_1114_l2_DIST/", outcome: "success — 8 nodes, 1 one-sided" },
+        mac: { title: "Artifacts — MAC trace", folder: "reports/20260819_1122_mac/", outcome: "success — 3 hits, path_note present" },
+        vlan: { title: "Artifacts — VLAN apply", folder: "reports/20260819_1131_vlan20/", outcome: "fail — verification_failed on ACC-03 (bucket in JSON)" }
+      };
+      document.querySelectorAll("[data-job]").forEach(function (row) {
+        row.addEventListener("click", function () {
+          var d = detail[row.getAttribute("data-job")];
+          document.getElementById("arts").querySelector("h2").textContent = d.title;
+          insp.innerHTML = "<dt>Folder</dt><dd class='mono'>" + d.folder + "</dd><dt>Outcome</dt><dd>" + d.outcome + "</dd><dt>Secrets</dt><dd>None in HTML/JSON (policy).</dd>";
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

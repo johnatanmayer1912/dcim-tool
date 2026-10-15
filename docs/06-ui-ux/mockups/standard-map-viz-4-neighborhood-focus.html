@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viz 4 — Neighborhood Focus Map</title>
+  <style>
+    :root { --bg:#0d1117; --surface:#161b22; --elevated:#21262d; --border:#30363d; --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --center:#d29922; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:12px; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+    .banner { background:#d2992222; border-bottom:1px solid var(--border); padding:0.4rem 1rem; font-size:0.7rem; color:var(--muted); text-align:center; }
+    .banner strong { color:var(--center); }
+    .toolbar { display:flex; padding:0.6rem 1rem; border-bottom:1px solid var(--border); align-items:center; gap:0.75rem; flex-wrap:wrap; }
+    .focus-select { background:var(--surface); border:1px solid var(--border); color:var(--text); padding:0.35rem 0.6rem; border-radius:5px; font-size:0.8rem; }
+    .hop-toggle { display:flex; gap:0.25rem; }
+    .hop-toggle button { background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:0.3rem 0.6rem; border-radius:5px; font-size:0.65rem; cursor:pointer; }
+    .hop-toggle button.on { border-color:var(--accent); color:var(--accent); }
+    .map-switch { margin-left:auto; display:flex; gap:0.2rem; }
+    .map-switch span { padding:0.3rem 0.55rem; border:1px solid var(--border); border-radius:5px; font-size:0.65rem; color:var(--muted); }
+    .map-switch span.on { border-color:var(--center); color:var(--center); background:rgba(210,153,34,0.1); }
+    .split { flex:1; display:grid; grid-template-columns:1fr 320px; min-height:0; }
+    .map-pane { border-right:1px solid var(--border); display:flex; flex-direction:column; }
+    .map-head { padding:0.5rem 1rem; font-size:0.65rem; text-transform:uppercase; font-weight:700; color:var(--muted); border-bottom:1px solid var(--border); }
+    .focus-canvas { flex:1; display:flex; align-items:center; justify-content:center; padding:2rem; position:relative; }
+    .focus-graph { position:relative; width:100%; max-width:480px; height:320px; }
+    .f-node {
+      position:absolute; background:var(--surface); border:2px solid var(--border);
+      border-radius:8px; padding:0.5rem 0.75rem; font-size:0.75rem; font-weight:600;
+      transform:translate(-50%,-50%); cursor:pointer; text-align:center; min-width:90px;
+    }
+    .f-node.center { border-color:var(--center); background:rgba(210,153,34,0.15); box-shadow:0 0 0 4px rgba(210,153,34,0.2); z-index:3; }
+    .f-node.n1 { border-color:var(--accent); }
+    .f-node.n2 { border-color:var(--muted); font-size:0.65rem; opacity:0.85; }
+    .f-node .port { display:block; font-size:0.6rem; color:var(--muted); font-weight:400; margin-top:0.15rem; }
+    .faded { opacity:0.25; pointer-events:none; }
+    .right-pane { background:var(--surface); display:flex; flex-direction:column; min-height:0; }
+    .brief { padding:0.65rem; border-bottom:1px solid var(--border); font-size:0.72rem; }
+    .table-wrap { flex:1; overflow:auto; }
+    table { width:100%; font-size:0.72rem; border-collapse:collapse; }
+    th, td { padding:0.4rem 0.5rem; border-bottom:1px solid var(--border); }
+    th { color:var(--muted); font-size:0.6rem; text-transform:uppercase; }
+    tr.sel td { background:rgba(210,153,34,0.15); }
+    .detail { padding:0.65rem; border-top:1px solid var(--border); font-size:0.72rem; background:var(--elevated); }
+    .hint { position:absolute; bottom:1rem; left:1rem; font-size:0.65rem; color:var(--muted); max-width:280px; }
+  </style>
+</head>
+<body>
+  <div class="banner"><strong>Viz 4 — Neighborhood Focus</strong> · NOC troubleshooting · 1–2 hop view · no full-site hairball</div>
+  <div class="toolbar">
+    <label style="font-size:0.75rem;color:var(--muted)">Focus device</label>
+    <select class="focus-select"><option>DIST-N1</option><option>CORE-01</option><option>SW-ACC-01</option></select>
+    <div class="hop-toggle"><button class="on">1 hop</button><button>2 hops</button></div>
+    <div class="map-switch"><span>Tier</span><span>Radial</span><span>Schematic</span><span class="on">Focus</span><span>Matrix</span></div>
+  </div>
+  <div class="split">
+    <div class="map-pane">
+      <div class="map-head">Showing DIST-N1 + 5 neighbors (12 links) · 35 other devices hidden</div>
+      <div class="focus-canvas">
+        <div class="focus-graph">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
+            <line x1="240" y1="160" x2="240" y2="50" stroke="#58a6ff" stroke-width="2"/>
+            <line x1="240" y1="160" x2="400" y2="100" stroke="#484f58" stroke-width="1.5"/>
+            <line x1="240" y1="160" x2="80" y2="100" stroke="#484f58" stroke-width="1.5"/>
+            <line x1="240" y1="160" x2="400" y2="220" stroke="#d29922" stroke-width="2.5"/>
+            <line x1="240" y1="160" x2="80" y2="220" stroke="#484f58" stroke-width="1.5"/>
+            <line x1="240" y1="160" x2="240" y2="270" stroke="#484f58" stroke-width="1.5"/>
+          </svg>
+          <div class="f-node n1" style="left:50%;top:16%"><span>CORE-01</span><span class="port">Te1/0/1</span></div>
+          <div class="f-node center" style="left:50%;top:50%"><span>DIST-N1</span><span class="port">Gi1/0/48 selected</span></div>
+          <div class="f-node n1" style="left:83%;top:31%"><span>CORE-02</span><span class="port">Te1/1/2</span></div>
+          <div class="f-node n1 sel" style="left:83%;top:69%"><span>SW-ACC-01</span><span class="port">Gi1/0/1</span></div>
+          <div class="f-node n2" style="left:17%;top:31%"><span>DIST-N2</span><span class="port">Po1 peer</span></div>
+          <div class="f-node n2" style="left:17%;top:69%"><span>SW-ACC-02</span></div>
+          <div class="f-node n2" style="left:50%;top:84%"><span>SW-ACC-03</span></div>
+        </div>
+        <div class="hint">Click table row → map highlights that link. Double-click neighbor → re-center focus. Full map available via Tier/Radial toggle.</div>
+      </div>
+    </div>
+    <div class="right-pane">
+      <div class="brief"><strong>DIST-N1</strong> · 8 links in focus · C9300 · 10.2.1.11</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Local port</th><th>Remote</th><th>Remote port</th><th>VLAN</th></tr></thead>
+          <tbody>
+            <tr><td>Te1/1/1</td><td>CORE-01</td><td>Te1/0/1</td><td>trunk</td></tr>
+            <tr class="sel"><td>Gi1/0/48</td><td>SW-ACC-01</td><td>Gi1/0/1</td><td>110</td></tr>
+            <tr><td>Gi1/0/47</td><td>SW-ACC-02</td><td>Gi1/0/1</td><td>110</td></tr>
+            <tr><td>Po1</td><td>DIST-N2</td><td>Po1</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="detail"><strong>Gi1/0/48 → SW-ACC-01 Gi1/0/1</strong><br>CDP · access VLAN 110 · 12 MACs · desc: ACCESS-SW-01</div>
+    </div>
+  </div>
+</body>
+</html>

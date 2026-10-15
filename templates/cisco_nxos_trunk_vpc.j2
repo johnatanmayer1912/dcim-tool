@@ -1,0 +1,11 @@
+! Cisco NX-OS trunk + vPC — preview only
+! Device: {{ hostname }} — {{ timestamp }}
+configure terminal
+interface {{ interface }}
+  description {{ description }}
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan {{ allowed_vlans }}
+  switchport trunk native vlan {{ native_vlan }}
+  vpc {{ vpc_id }}
+end

@@ -1,0 +1,20 @@
+PASS  Standard L2 HTML has no vault secret field
+PASS  overlay checkbox present
+PASS  replay overlay available on Standard L2
+PASS  overlay checkbox enabled when document present
+PASS  overlay on: banner visible
+PASS  overlay on: replay not a live poll
+PASS  overlay on: not topology claim
+PASS  gray dashed copy present
+PASS  file:// Live SSH button stays disabled
+PASS  file:// Live SSH title mentions file:// or operator console
+PASS  file:// Live SSH title says not SNMP
+PASS  unmapped table lists leftover interfaces, not new cables
+PASS  Discovery overlay host is discovery
+PASS  Discovery does not offer Live SSH start (no button or disabled viewer)
+PASS  Discovery omits Live SSH button (viewer host)
+PASS  Discovery map has EVPN/non-cable vis edges
+PASS  Discovery overlay-on does not gray EVPN as unsampled cable
+PASS  Discovery overlay-on does not gray STP-blocked as unsampled cable
+
+All offline map HTML overlay scenarios passed.

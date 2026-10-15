@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Swiss Tool Pro - 1:1 Reconstruction Roadmap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .phase {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .phase h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .prompt-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .prompt {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .prompt:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .prompt a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .prompt a:hover {
+            text-decoration: underline;
+        }
+
+        .prompt .status {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .feature-section {
+            margin-bottom: 30px;
+        }
+
+        .feature-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .flow-diagram {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
+        .flow-step::after {
+            content: '↓';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #667eea;
+            font-size: 1.5em;
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        .role-command {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .role-command h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .role-command .command {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        .role-command .description {
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .role-command .output {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .role-command .output h5 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+
+        .task-card {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .task-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .task-card .task-id {
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .task-card .frequency {
+            color: #666;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .task-card .description {
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .metric {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric .value {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .metric .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s;
+        }
+
+        .link-section {
+            margin: 20px 0;
+        }
+
+        .link-section a {
+            color: #667eea;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .link-section a:hover {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Network Swiss Tool Pro</h1>
+            <p class="subtitle">1:1 Reconstruction Roadmap & Documentation Hub</p>
+            <span class="status-badge">COMPLETE</span>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="value">42</div>
+                    <div class="label">Total Prompts</div>
+                </div>
+                <div class="metric">
+                    <div class="value">13</div>
+                    <div class="label">Phases</div>
+                </div>
+                <div class="metric">
+                    <div class="value">100%</div>
+                    <div class="label">Reconstruction Capability</div>
+                </div>
+                <div class="metric">
+                    <div class="value">7</div>
+                    <div class="label">Ongoing Tasks</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%">100% Complete</div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('roadmap')">🗺️ Reconstruction Roadmap</button>
+            <button class="tab" onclick="showTab('features')">📋 Features & Usage</button>
+            <button class="tab" onclick="showTab('flows')">🔄 Application Flows</button>
+            <button class="tab" onclick="showTab('roles')">👥 Roles by Command</button>
+            <button class="tab" onclick="showTab('tasks')">⚙️ Ongoing Tasks</button>
+        </div>
+
+        <!-- Roadmap Tab -->
+        <div id="roadmap" class="content active">
+            <h2>1:1 Reconstruction Roadmap</h2>
+            <p>This roadmap provides 42 prompts across 13 phases to recreate Network Swiss Tool Pro from scratch with 100% fidelity.</p>
+            
+            <div class="link-section">
+                <a href="../15-rebuild-roadmap/00-RECONSTRUCTION_INDEX.md">📄 Master Reconstruction Index</a>
+                <a href="../15-rebuild-roadmap/">📁 Rebuild Roadmap Folder</a>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 1: Foundation (P01-P04)</h3>
+                <p>Environment setup, dependencies, project structure, and initial configuration.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/01-foundation/P01-ENVIRONMENT-SETUP.md">P01: Environment Setup</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/01-foundation/P02-DEPENDENCY-INSTALLATION.md">P02: Dependency Installation</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/01-foundation/P03-PROJECT-STRUCTURE.md">P03: Project Structure</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/01-foundation/P04-INITIAL-CONFIGURATION.md">P04: Initial Configuration</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 2: Core Modules (P05-P08)</h3>
+                <p>Network base, adapters, connectivity, and interfaces modules.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/02-core-modules/P05-NETWORK-BASE.md">P05: Network Base</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/02-core-modules/P06-ADAPTERS.md">P06: Adapters</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/02-core-modules/P07-CONNECTIVITY.md">P07: Connectivity</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/02-core-modules/P08-INTERFACES.md">P08: Interfaces</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 3: Plugin System (P09-P11)</h3>
+                <p>Plugin registry, templates, and implementations.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/03-plugins/P09-PLUGIN-REGISTRY.md">P09: Plugin Registry</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/03-plugins/P10-PLUGIN-TEMPLATES.md">P10: Plugin Templates</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/03-plugins/P11-PLUGIN-IMPLEMENTATIONS.md">P11: Plugin Implementations</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 4: Web Interface (P12-P15)</h3>
+                <p>Flask application, web templates, WebSocket handling, and CLI terminal.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/04-web-interface/P12-FLASK-APPLICATION.md">P12: Flask Application</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/04-web-interface/P13-WEB-TEMPLATES.md">P13: Web Templates</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/04-web-interface/P14-WEBSOCKET-HANDLING.md">P14: WebSocket Handling</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/04-web-interface/P15-CLI-TERMINAL.md">P15: CLI Terminal</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 5: Utilities (P16-P18)</h3>
+                <p>Parsing, validation, and logging utilities.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/05-utilities/P16-PARSING-UTILITIES.md">P16: Parsing Utilities</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/05-utilities/P17-VALIDATION-UTILITIES.md">P17: Validation Utilities</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/05-utilities/P18-LOGGING-UTILITIES.md">P18: Logging Utilities</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 6: Integration (P19-P21)</h3>
+                <p>Module integration, API integration, and database integration.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/06-integration/P19-MODULE-INTEGRATION.md">P19: Module Integration</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/06-integration/P20-API-INTEGRATION.md">P20: API Integration</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/06-integration/P21-DATABASE-INTEGRATION.md">P21: Database Integration</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 7: Testing (P22-P24)</h3>
+                <p>Unit tests, integration tests, and test execution.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/07-testing/P22-UNIT-TESTS.md">P22: Unit Tests</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/07-testing/P23-INTEGRATION-TESTS.md">P23: Integration Tests</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/07-testing/P24-TEST-EXECUTION.md">P24: Test Execution</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 8: Deployment (P25-P27)</h3>
+                <p>Build process, packaging, and deployment.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/08-deployment/P25-BUILD-PROCESS.md">P25: Build Process</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/08-deployment/P26-PACKAGING.md">P26: Packaging</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/08-deployment/P27-DEPLOYMENT.md">P27: Deployment</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 9: Validation (P28-P30)</h3>
+                <p>Functional, performance, and security validation.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/09-validation/P28-FUNCTIONAL-VALIDATION.md">P28: Functional Validation</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/09-validation/P29-PERFORMANCE-VALIDATION.md">P29: Performance Validation</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/09-validation/P30-SECURITY-VALIDATION.md">P30: Security Validation</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 10: Documentation (P31-P33)</h3>
+                <p>Documentation structure, content, and validation.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/10-documentation/P31-DOCUMENTATION-STRUCTURE.md">P31: Documentation Structure</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/10-documentation/P32-DOCUMENTATION-CONTENT.md">P32: Documentation Content</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/10-documentation/P33-DOCUMENTATION-VALIDATION.md">P33: Documentation Validation</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 11: Optimization (P34-P36)</h3>
+                <p>Performance, concurrency, and platform optimization.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/11-optimization/P34-PERFORMANCE-OPTIMIZATION.md">P34: Performance Optimization</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/11-optimization/P35-CONCURRENCY-OPTIMIZATION.md">P35: Concurrency Optimization</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/11-optimization/P36-PLATFORM-OPTIMIZATION.md">P36: Platform Optimization</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 12: Troubleshooting (P37-P39)</h3>
+                <p>Debugging procedures, troubleshooting scenarios, and recovery procedures.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/12-troubleshooting/P37-DEBUGGING-PROCEDURES.md">P37: Debugging Procedures</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/12-troubleshooting/P38-TROUBLESHOOTING-SCENARIOS.md">P38: Troubleshooting Scenarios</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/12-troubleshooting/P39-RECOVERY-PROCEDURES.md">P39: Recovery Procedures</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+
+            <div class="phase">
+                <h3>Phase 13: Finalization (P40-P42)</h3>
+                <p>Final validation, completion report, and documentation update.</p>
+                <div class="prompt-list">
+                    <div class="prompt"><a href="../15-rebuild-roadmap/13-finalization/P40-FINAL-VALIDATION.md">P40: Final Validation</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/13-finalization/P41-COMPLETION-REPORT.md">P41: Completion Report</a><div class="status">✓ Complete</div></div>
+                    <div class="prompt"><a href="../15-rebuild-roadmap/13-finalization/P42-DOCUMENTATION-UPDATE.md">P42: Documentation Update</a><div class="status">✓ Complete</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Tab -->
+        <div id="features" class="content">
+            <h2>Features & Usage</h2>
+            <p>Comprehensive guide to Network Swiss Tool Pro features and how to use them.</p>
+            
+            <div class="link-section">
+                <a href="../02-codebase/">📁 Codebase Documentation</a>
+                <a href="../01-architecture/">📁 Architecture Documentation</a>
+                <a href="../05-plugins/">📁 Plugin Documentation</a>
+            </div>
+
+            <div class="feature-section">
+                <h3>Core Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🔌 Plugin System</h4>
+                        <p>Extensible plugin architecture with 12 built-in plugins for network discovery, validation, and automation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🌐 Multi-Platform Support</h4>
+                        <p>Supports Cisco IOS, NX-OS, and Juniper JunOS with platform-specific adapters.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🖥️ Web Interface</h4>
+                        <p>Modern web interface with real-time WebSocket communication and CLI terminal emulation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔍 Network Discovery</h4>
+                        <p>Automated network discovery with device inventory and topology mapping.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>✅ Standards Validation</h4>
+                        <p>Validate network configurations against industry standards and best practices.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 VLAN Management</h4>
+                        <p>Comprehensive VLAN auditing, management, and reporting capabilities.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-section">
+                <h3>Getting Started</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <strong>1. Install Dependencies</strong>
+                        <p>Run: pip install -r requirements.txt</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>2. Configure Application</strong>
+                        <p>Edit config.yaml with your settings</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>3. Start Application</strong>
+                        <p>Run: python vlan_checker_web.py</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>4. Access Web Interface</strong>
+                        <p>Open: http://localhost:5000</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>5. Add Devices</strong>
+                        <p>Configure device credentials and connect</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>6. Execute Plugins</strong>
+                        <p>Run plugins on devices for automation</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-section">
+                <h3>Plugin Usage</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Network Discovery</h4>
+                        <p>Automatically discover devices and build network inventory.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Standards Validator</h4>
+                        <p>Validate configurations against network standards.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>STP Topology Visualizer</h4>
+                        <p>Visualize spanning tree topology and identify loops.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>VPC Domain Manager</h4>
+                        <p>Manage and validate VPC domain configurations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>VLAN Auditor</h4>
+                        <p>Audit VLAN configurations for consistency and compliance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Unused Trunk Pruner</h4>
+                        <p>Identify and remove unused trunk ports.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flows Tab -->
+        <div id="flows" class="content">
+            <h2>Application Flows</h2>
+            <p>Detailed flow diagrams for key application processes.</p>
+            
+            <div class="link-section">
+                <a href="../01-architecture/MODULE_ARCHITECTURE.md">📄 Module Architecture</a>
+                <a href="../02-codebase/API_DOCUMENTATION.md">📄 API Documentation</a>
+            </div>
+
+            <div class="feature-section">
+                <h3>Device Connection Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <strong>1. User Initiates Connection</strong>
+                        <p>User adds device with IP, credentials, and device type</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>2. Validation</strong>
+                        <p>Validate IP address, credentials format, and device type</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>3. Adapter Selection</strong>
+                        <p>Select appropriate adapter based on device type</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>4. Connection Attempt</strong>
+                        <p>Establish SSH connection using Netmiko</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>5. Authentication</strong>
+                        <p>Authenticate with username, password, and enable secret</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>6. Device Detection</strong>
+                        <p>Detect hostname and confirm device type</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>7. Connection Pooling</strong>
+                        <p>Add connection to pool for reuse</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>8. Success Response</strong>
+                        <p>Return success status to user</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-section">
+                <h3>Plugin Execution Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <strong>1. User Selects Plugin</strong>
+                        <p>User selects plugin and target devices</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>2. Parameter Validation</strong>
+                        <p>Validate plugin parameters and device list</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>3. Job Creation</strong>
+                        <p>Create job record in database</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>4. Device Connection</strong>
+                        <p>Connect to each device in the list</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>5. Command Execution</strong>
+                        <p>Execute plugin commands on each device</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>6. Output Parsing</strong>
+                        <p>Parse CLI output using TextFSM templates</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>7. Result Processing</strong>
+                        <p>Process and format results</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>8. Job Completion</strong>
+                        <p>Update job status and return results</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-section">
+                <h3>WebSocket Communication Flow</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <strong>1. Client Connects</strong>
+                        <p>Browser establishes WebSocket connection</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>2. Session Creation</strong>
+                        <p>Create CLI session with PTY</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>3. Device Connection</strong>
+                        <p>Connect to device via SSH</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>4. Bidirectional Communication</strong>
+                        <p>Forward commands to device, stream output to client</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>5. Real-time Updates</strong>
+                        <p>Emit output events in real-time</p>
+                    </div>
+                    <div class="flow-step">
+                        <strong>6. Session Cleanup</strong>
+                        <p>Cleanup resources on disconnect</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roles Tab -->
+        <div id="roles" class="content">
+            <h2>Roles by Command</h2>
+            <p>Reference guide for role-based commands and their expected outputs.</p>
+            
+            <div class="link-section">
+                <a href="../13-master-prompts/roles/combined/">📁 Role Prompts</a>
+                <a href="../13-master-prompts/roles/combined/README.md">📄 Role Index</a>
+            </div>
+
+            <div class="role-command">
+                <h4>Check System Bugs</h4>
+                <span class="command">/check-system-bugs</span>
+                <p class="description">Initiates team meeting prompt to review and triage system bugs. Engages all team members to assess impact and prioritize fixes.</p>
+                <div class="output">
+                    <h5>Expected Output:</h5>
+                    <ul>
+                        <li>Team meeting prompt loaded</li>
+                        <li>Bug triage checklist generated</li>
+                        <li>Impact assessment framework provided</li>
+                        <li>Fix prioritization recommendations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="role-command">
+                <h4>System Audit</h4>
+                <span class="command">/system-audit</span>
+                <p class="description">Triggers R-TASK to execute comprehensive system audit. Reviews code, documentation, and processes for gaps.</p>
+                <div class="output">
+                    <h5>Expected Output:</h5>
+                    <ul>
+                        <li>Audit execution initiated</li>
+                        <li>Gap identification report</li>
+                        <li>Fix prompts for identified gaps</li>
+                        <li>Team member review assignments</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="role-command">
+                <h4>Code Review</h4>
+                <span class="command">/code-review [PR_ID]</span>
+                <p class="description">Initiates R-ENG led code review with holistic team input. Ensures all team members review from their perspective.</p>
+                <div class="output">
+                    <h5>Expected Output:</h5>
+                    <ul>
+                        <li>Code review checklist generated</li>
+                        <li>Team member review assignments</li>
+                        <li>Impact assessment across features</li>
+                        <li>Approval/rejection recommendations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="role-command">
+                <h4>Documentation Audit</h4>
+                <span class="command">/doc-audit</span>
+                <p class="description">Triggers R-LIB to audit documentation for completeness, accuracy, and governance compliance.</p>
+                <div class="output">
+                    <h5>Expected Output:</h5>
+                    <ul>
+                        <li>Documentation completeness report</li>
+                        <li>Cross-reference validation results</li>
+                        <li>Governance compliance assessment</li>
+                        <li>Update recommendations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="role-command">
+                <h4>UI/UX Overview</h4>
+                <span class="command">/ui-ux-review</span>
+                <p class="description">Initiates comprehensive UI/UX review focusing on usability, accessibility, and design consistency.</p>
+                <div class="output">
+                    <h5>Expected Output:</h5>
+                    <ul>
+                        <li>UI/UX assessment report</li>
+                        <li>Usability issues identified</li>
+                        <li>Design consistency review</li>
+                        <li>Improvement recommendations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="role-command">
+                <h4>Security Audit</h4>
+                <span class="command">/security-audit</span>
+                <p class="description">Triggers security review to identify vulnerabilities and ensure security best practices.</p>
+                <div class="output">
+                    <h5>Expected Output:</h5>
+                    <ul>
+                        <li>Security vulnerability report</li>
+                        <li>Risk assessment</li>
+                        <li>Remediation recommendations</li>
+                        <li>Security best practices validation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="role-command">
+                <h4>Performance Review</h4>
+                <span class="command">/performance-review</span>
+                <p class="description">Triggers performance analysis to identify bottlenecks and optimization opportunities.</p>
+                <div class="output">
+                    <h5>Expected Output:</h5>
+                    <ul>
+                        <li>Performance metrics report</li>
+                        <li>Bottleneck identification</li>
+                        <li>Optimization recommendations</li>
+                        <li>Performance improvement plan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks Tab -->
+        <div id="tasks" class="content">
+            <h2>Ongoing Tasks</h2>
+            <p>Systematic ongoing tasks executed by R-TASK to maintain code quality, documentation, and system health.</p>
+            
+            <div class="link-section">
+                <a href="../13-master-prompts/roles/combined/ROLE_ONGOING_TASK_EXECUTOR_USAGE_PROMPT.md">📄 R-TASK Role Prompt</a>
+                <a href="../13-master-prompts/CODE_CHANGE_DOCUMENTATION_UPDATE_PROCEDURES.md">📄 Code Change Procedures</a>
+            </div>
+
+            <div class="task-card">
+                <h4>System Audit <span class="task-id">T-001</span></h4>
+                <p class="frequency">Frequency: Weekly</p>
+                <p class="owner">Owner: R-ENG</p>
+                <p class="description">Comprehensive audit of code, documentation, and processes. Identifies gaps, issues, and improvement opportunities. Generates fix prompts with holistic approach requiring team member review.</p>
+            </div>
+
+            <div class="task-card">
+                <h4>Code Review <span class="task-id">T-002</span></h4>
+                <p class="frequency">Frequency: Per Pull Request</p>
+                <p class="owner">Owner: R-ENG</p>
+                <p class="description">Holistic code review requiring all team members to review from their perspective. Ensures no other features are affected. Generates comprehensive fix prompts for identified issues.</p>
+            </div>
+
+            <div class="task-card">
+                <h4>Documentation Audit <span class="task-id">T-003</span></h4>
+                <p class="frequency">Frequency: Weekly</p>
+                <p class="owner">Owner: R-LIB</p>
+                <p class="description">Audit documentation for completeness, accuracy, and governance compliance. Validates cross-references and links. Generates update prompts for identified gaps.</p>
+            </div>
+
+            <div class="task-card">
+                <h4>UI/UX Overview <span class="task-id">T-004</span></h4>
+                <p class="frequency">Frequency: Monthly</p>
+                <p class="owner">Owner: R-UX</p>
+                <p class="description">Comprehensive UI/UX assessment focusing on usability, accessibility, and design consistency. Generates improvement prompts with team member review requirements.</p>
+            </div>
+
+            <div class="task-card">
+                <h4>Security Audit <span class="task-id">T-005</span></h4>
+                <p class="frequency">Frequency: Monthly</p>
+                <p class="owner">Owner: R-SEC</p>
+                <p class="description">Security vulnerability assessment and best practices validation. Generates remediation prompts with holistic impact assessment.</p>
+            </div>
+
+            <div class="task-card">
+                <h4>Performance Review <span class="task-id">T-006</span></h4>
+                <p class="frequency">Frequency: Monthly</p>
+                <p class="owner">Owner: R-ENG</p>
+                <p class="description">Performance analysis to identify bottlenecks and optimization opportunities. Generates optimization prompts with team member validation requirements.</p>
+            </div>
+
+            <div class="feature-section">
+                <h3>Holistic Approach Requirements</h3>
+                <p>All ongoing tasks follow a holistic approach:</p>
+                <ul>
+                    <li><strong>Cross-Feature Validation:</strong> Every change examined for impact on other features</li>
+                    <li><strong>Team Member Review:</strong> All team members must review from their perspective</li>
+                    <li><strong>Dependency Mapping:</strong> Map all dependencies before making changes</li>
+                    <li><strong>Documentation Synchronization:</strong> All code changes have corresponding documentation updates</li>
+                    <li><strong>Rebuild Roadmap Updates:</strong> Changes affecting reconstruction update relevant prompts</li>
+                    <li><strong>Approval Process:</strong> No change proceeds without team approval</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all content
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

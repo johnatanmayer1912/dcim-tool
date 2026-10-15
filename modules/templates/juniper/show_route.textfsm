@@ -1,0 +1,12 @@
+Value Filldown NETWORK (\S+)
+Value Filldown PROTOCOL (\w+)
+Value Filldown METRIC (\d+)
+Value Filldown UPTIME (\S+(?:\s+\S+)?)
+Value NEXT_HOP (\S+)
+Value INTERFACE (\S+)
+
+Start
+  ^${NETWORK}\s+\*\[${PROTOCOL}/${METRIC}\]\s+${UPTIME} -> Continue
+  ^\s+>\s+to\s+${NEXT_HOP}\s+via\s+${INTERFACE} -> Record
+  ^${NETWORK}\s+\*\[${PROTOCOL}/${METRIC}\] -> Record
+  ^.* -> Next

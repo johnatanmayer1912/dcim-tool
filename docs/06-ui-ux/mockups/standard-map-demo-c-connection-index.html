@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo C — Connection Index First</title>
+  <style>
+    :root {
+      --bg: #0d1117; --surface: #161b22; --elevated: #21262d;
+      --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+      --accent: #58a6ff; --green: #3fb950;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 13px; }
+    .demo-banner {
+      background: #23863622;
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem; font-size: 0.75rem; color: var(--muted); text-align: center;
+    }
+    .demo-banner strong { color: var(--green); }
+    .layout { display: grid; grid-template-columns: 1fr 280px; min-height: 100vh; }
+    @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
+    .primary { padding: 1rem 1.25rem; }
+    .sidebar { background: var(--surface); border-left: 1px solid var(--border); padding: 1rem; }
+    h1 { font-size: 1.2rem; margin-bottom: 0.25rem; }
+    .sub { color: var(--muted); font-size: 0.8rem; margin-bottom: 1rem; }
+    .path-finder {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .path-finder label { font-size: 0.75rem; color: var(--muted); }
+    .path-finder input, .path-finder select {
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+    }
+    .path-finder button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .path-result {
+      font-size: 0.8rem;
+      padding: 0.5rem 0;
+      color: var(--green);
+    }
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .filters input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+    }
+    .filters select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem;
+      border-radius: 6px;
+    }
+    .stats { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    th {
+      text-align: left;
+      padding: 0.5rem;
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+      color: var(--muted);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      user-select: none;
+    }
+    th:hover { color: var(--accent); }
+    td { padding: 0.45rem 0.5rem; border-bottom: 1px solid var(--border); }
+    tr:hover td { background: rgba(88,166,255,0.05); }
+    .who { font-weight: 600; }
+    .how { font-family: Consolas, monospace; font-size: 0.72rem; color: var(--accent); }
+    .what { color: var(--muted); font-size: 0.72rem; }
+    .mini-graph {
+      height: 180px;
+      background: var(--elevated);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .export-btns { display: flex; flex-direction: column; gap: 0.5rem; }
+    .export-btns button {
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-align: left;
+    }
+    .export-btns button:hover { border-color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="demo-banner"><strong>Demo C</strong> — Connection Index First · Table answers WHAT / HOW / WHO in seconds; graph is secondary</div>
+
+  <div class="layout">
+    <div class="primary">
+      <h1>Connection Index — CAMPUS-HQ</h1>
+      <p class="sub">89 adjacencies · sorted by local device · click column headers to sort</p>
+
+      <div class="path-finder">
+        <label>Path trace</label>
+        <select><option>SW-ACC-01</option></select>
+        <span style="color:var(--muted)">→</span>
+        <select><option>CORE-01</option></select>
+        <button>Trace</button>
+        <div class="path-result">SW-ACC-01 Gi1/0/1 → DIST-N1 Gi1/0/48 → CORE-01 Te1/0/1 (3 hops)</div>
+      </div>
+
+      <div class="filters">
+        <input type="search" placeholder="Search device, port, VLAN, remote hostname…" value="">
+        <select><option>All protocols</option><option>CDP only</option><option>LLDP only</option></select>
+        <select><option>All roles</option><option>Core</option><option>Dist</option><option>Access</option></select>
+      </div>
+      <div class="stats">Showing 89 of 89 · Export CSV · Copy filtered rows</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>WHO (local)</th>
+            <th>HOW (local port)</th>
+            <th>WHO (remote)</th>
+            <th>HOW (remote port)</th>
+            <th>WHAT (VLAN/speed)</th>
+            <th>Proto</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="who">CORE-01</td>
+            <td class="how">Te1/0/1</td>
+            <td class="who">DIST-N1</td>
+            <td class="how">Te1/1/1</td>
+            <td class="what">trunk · 10G · VLANs 1,110,120</td>
+            <td>CDP</td>
+            <td>Core→Dist</td>
+          </tr>
+          <tr>
+            <td class="who">CORE-01</td>
+            <td class="how">Te1/0/2</td>
+            <td class="who">DIST-N2</td>
+            <td class="how">Te1/1/1</td>
+            <td class="what">trunk · 10G</td>
+            <td>CDP</td>
+            <td>Core→Dist</td>
+          </tr>
+          <tr>
+            <td class="who">CORE-01</td>
+            <td class="how">Po1</td>
+            <td class="who">CORE-02</td>
+            <td class="how">Po1</td>
+            <td class="what">bundle · 20G · 2 members</td>
+            <td>LLDP</td>
+            <td>Core↔Core</td>
+          </tr>
+          <tr>
+            <td class="who">DIST-N1</td>
+            <td class="how">Gi1/0/48</td>
+            <td class="who">SW-ACC-01</td>
+            <td class="how">Gi1/0/1</td>
+            <td class="what">access · VLAN 110 · 1G · 12 MACs</td>
+            <td>CDP</td>
+            <td>Dist→Access</td>
+          </tr>
+          <tr>
+            <td class="who">DIST-N1</td>
+            <td class="how">Gi1/0/47</td>
+            <td class="who">SW-ACC-02</td>
+            <td class="how">Gi1/0/1</td>
+            <td class="what">access · VLAN 110 · 1G</td>
+            <td>CDP</td>
+            <td>Dist→Access</td>
+          </tr>
+          <tr>
+            <td class="who">SW-ACC-01</td>
+            <td class="how">Gi1/0/24</td>
+            <td class="who">AP-FLOOR2-03</td>
+            <td class="how">eth0</td>
+            <td class="what">access · VLAN 120 · PoE 15.4W</td>
+            <td>LLDP</td>
+            <td>Access→AP</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sidebar">
+      <div class="section-title" style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;margin-bottom:0.5rem">Mini topology</div>
+      <div class="mini-graph">Filtered subgraph · 12 nodes</div>
+      <div class="section-title" style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;margin:1rem 0 0.5rem">Export</div>
+      <div class="export-btns">
+        <button>📋 Copy table (TSV)</button>
+        <button>📄 CSV — all connections</button>
+        <button>📦 ZIP — HTML + manifest</button>
+        <button>🖨 Print filtered view</button>
+      </div>
+      <p style="font-size:0.7rem;color:var(--muted);margin-top:1rem">NetEng workflow: filter → copy row → paste into ticket. No graph hunting.</p>
+    </div>
+  </div>
+</body>
+</html>

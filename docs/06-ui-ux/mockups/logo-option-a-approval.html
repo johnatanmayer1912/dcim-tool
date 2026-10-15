@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APPROVAL — Option A (sidebar brand + header trim)</title>
+    <link rel="icon" href="../../favicon_program.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0f172a;
+            --color-accent: #3b82f6;
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --bg-console: #0f172a;
+            --border-light: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #cbd5e1;
+            color: var(--text-primary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .approval-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            color: #fff;
+            padding: 24px 32px;
+        }
+
+        .approval-banner h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .approval-banner p {
+            font-size: 14px;
+            opacity: 0.9;
+            max-width: 800px;
+        }
+
+        .approval-banner .status {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 16px;
+            background: rgba(245, 158, 11, 0.25);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fde68a;
+        }
+
+        .content {
+            padding: 28px 32px 48px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .compare-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1000px) {
+            .compare-row { grid-template-columns: 1fr; }
+        }
+
+        .panel-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-label.before { color: #b91c1c; }
+        .panel-label.after { color: #059669; }
+
+        .panel-label span {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+        }
+
+        .panel-label.before span { background: #fee2e2; color: #b91c1c; }
+        .panel-label.after span { background: #d1fae5; color: #047857; }
+
+        .mini-app {
+            background: var(--bg-main);
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border-light);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .mini-app.proposed {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), var(--shadow-md);
+        }
+
+        .mini-header {
+            height: 48px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 10px;
+        }
+
+        .traffic { display: flex; gap: 6px; flex-shrink: 0; }
+        .traffic span { width: 10px; height: 10px; border-radius: 50%; }
+        .traffic .r { background: #ff5f56; }
+        .traffic .y { background: #ffbd2e; }
+        .traffic .g { background: #27c93f; }
+
+        .mini-title {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            flex-wrap: wrap;
+            min-height: 24px;
+        }
+
+        .mini-title.empty-title {
+            color: var(--text-muted);
+            font-size: 11px;
+            font-style: italic;
+        }
+
+        .badge-ver {
+            background: rgba(0, 122, 255, 0.1);
+            color: #007aff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-date {
+            color: #a0aec0;
+            font-size: 11px;
+        }
+
+        .badge-removed {
+            background: rgba(233, 69, 96, 0.1);
+            color: #e94560;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: line-through;
+            opacity: 0.55;
+        }
+
+        .mini-body {
+            display: flex;
+            height: 480px;
+        }
+
+        .mini-sidebar {
+            width: 248px;
+            flex-shrink: 0;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-light);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* —— Option A proposed brand block —— */
+        .sidebar-brand-a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sidebar-brand-a .logo-wrap {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+        }
+
+        .sidebar-brand-a .logo-wrap img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .sidebar-brand-a .text-block {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sidebar-brand-a .product-name {
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.25;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-brand-a .version-line {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .sidebar-brand-a .made-by {
+            display: inline-block;
+            margin-top: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(233, 69, 96, 0.1);
+            color: #e94560;
+        }
+
+        /* Current (bad) mid-sidebar logo — for BEFORE panel only */
+        .brand-current-outer {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            margin: 6px 0;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            background: linear-gradient(160deg, #fff 0%, #f1f5f9 55%, #e8eef9 100%);
+        }
+
+        .brand-current-inner {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-current-inner img {
+            width: 54px;
+            height: 54px;
+            object-fit: contain;
+        }
+
+        .mini-group {
+            background: var(--bg-main);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 12px;
+        }
+
+        .mini-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .fake-input {
+            height: 28px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .fake-btn-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .fake-btn {
+            flex: 1;
+            height: 28px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .fake-textarea {
+            height: 52px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            margin-top: 6px;
+        }
+
+        .scope-flex {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fake-exit {
+            margin-top: auto;
+            height: 36px;
+            background: #ef4444;
+            border-radius: 8px;
+            opacity: 0.85;
+        }
+
+        .mini-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .mini-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 12px 12px 0;
+            flex-wrap: wrap;
+        }
+
+        .mini-tab {
+            padding: 6px 10px;
+            font-size: 11px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 8px 8px 0 0;
+            color: var(--text-secondary);
+        }
+
+        .mini-tab.on {
+            border-bottom-color: #fff;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .mini-workspace {
+            flex: 1;
+            margin: 0 12px 12px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 0 8px 8px 8px;
+            padding: 14px;
+        }
+
+        .mini-card {
+            height: 64px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            opacity: 0.45;
+        }
+        .mini-card.y { background: #fef9c3; border: 1px solid #fde047; }
+        .mini-card.p { background: #f3e8ff; border: 1px solid #d8b4fe; }
+        .mini-card.g { background: #dcfce7; border: 1px solid #86efac; }
+
+        .mini-console {
+            width: 190px;
+            flex-shrink: 0;
+            background: var(--bg-console);
+            padding: 10px;
+            font-size: 10px;
+            color: #94a3b8;
+            font-family: ui-monospace, monospace;
+            line-height: 1.6;
+        }
+
+        .spec-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .spec-card h2 {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .spec-card table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .spec-card th,
+        .spec-card td {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+        }
+
+        .spec-card th {
+            background: var(--bg-main);
+            font-weight: 600;
+            width: 28%;
+        }
+
+        .tag-remove { color: #dc2626; font-weight: 600; }
+        .tag-add { color: #059669; font-weight: 600; }
+        .tag-move { color: #2563eb; font-weight: 600; }
+
+        .full-width-section {
+            margin-top: 8px;
+        }
+
+        .full-width-section h2 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .approve-box {
+            background: #ecfdf5;
+            border: 2px solid #10b981;
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            margin-top: 8px;
+        }
+
+        .approve-box p {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .approve-box code {
+            background: #d1fae5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .callout-new {
+            outline: 2px solid rgba(59, 130, 246, 0.5);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <header class="approval-banner">
+        <h1>Validation mockup — Option A (revised)</h1>
+        <p>
+            <strong>Sidebar:</strong> Logo + “Network Swiss Tool” + version line + <strong>“Made by AI IDE”</strong> at the top (above Credentials).<br>
+            <strong>Header:</strong> Remove product title “Network Swiss Tool” and remove “Made by AI IDE” — keep version + updated date only.
+        </p>
+        <span class="status">⏳ Awaiting your approval — no app code changed yet</span>
+    </header>
+
+    <div class="content">
+        <div class="compare-row">
+            <!-- BEFORE -->
+            <div>
+                <div class="panel-label before">
+                    Before <span>v7.0.8 today</span>
+                </div>
+                <div class="mini-app" id="mock-before"></div>
+            </div>
+
+            <!-- AFTER (PROPOSED) -->
+            <div>
+                <div class="panel-label after">
+                    Proposed <span>Option A — your request</span>
+                </div>
+                <div class="mini-app proposed" id="mock-after"></div>
+            </div>
+        </div>
+
+        <div class="spec-card">
+            <h2>Change checklist (what will be implemented after you approve)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Area</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Top header</td>
+                        <td><span class="tag-remove">Remove</span> text <code>Network Swiss Tool</code></td>
+                    </tr>
+                    <tr>
+                        <td>Top header</td>
+                        <td><span class="tag-remove">Remove</span> badge <code>Made by AI IDE</code></td>
+                    </tr>
+                    <tr>
+                        <td>Top header</td>
+                        <td><span class="tag-add">Keep</span> version badge (e.g. 7.0.8) and “Updated: …” date</td>
+                    </tr>
+                    <tr>
+                        <td>Sidebar top</td>
+                        <td><span class="tag-add">Add</span> Option A brand strip: 48px logo on dark plate + product name</td>
+                    </tr>
+                    <tr>
+                        <td>Sidebar top</td>
+                        <td><span class="tag-move">Move</span> <code>Made by AI IDE</code> here (pink badge under product name)</td>
+                    </tr>
+                    <tr>
+                        <td>Sidebar mid</td>
+                        <td><span class="tag-remove">Remove</span> current large logo between filters and Import</td>
+                    </tr>
+                    <tr>
+                        <td>Target Scope</td>
+                        <td>Uninterrupted flow: mode → filter → Import/Browse → inventory</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="full-width-section">
+            <h2>Proposed only — enlarged brand block</h2>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                Close-up of the new sidebar header element (exact styling to be applied in <code>index.html</code>).
+            </p>
+            <div style="max-width: 280px; background: #fff; padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                <div class="sidebar-brand-a callout-new" id="brand-closeup"></div>
+            </div>
+        </div>
+
+        <div class="approve-box">
+            <p><strong>To approve,</strong> reply in chat with:</p>
+            <p><code>Approved — apply Option A approval mockup</code></p>
+            <p style="margin-bottom: 0; color: var(--text-secondary); font-size: 12px;">
+                Or request tweaks (e.g. smaller logo, move version to header only, different badge color).
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const LOGO = '../../favicon_program.png';
+        const VER = '7.0.8';
+        const DATE = '2026-05-24';
+
+        function img(size) {
+            return `<img src="${LOGO}" alt="" width="${size}" height="${size}" onerror="this.style.opacity='0.25'">`;
+        }
+
+        function brandBlockA() {
+            return `
+                <div class="sidebar-brand-a callout-new">
+                    <div class="logo-wrap">${img(40)}</div>
+                    <div class="text-block">
+                        <div class="product-name">Network Swiss Tool</div>
+                        <div class="version-line">v${VER} · Offline</div>
+                        <span class="made-by">Made by AI IDE</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function headerBefore() {
+            return `
+                <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                <div class="mini-title">
+                    <span>Network Swiss Tool</span>
+                    <span class="badge-ver">${VER}</span>
+                    <span class="badge-date">Updated: ${DATE}</span>
+                    <span class="badge-removed">Made by AI IDE</span>
+                </div>
+            `;
+        }
+
+        function headerAfter() {
+            return `
+                <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+                <div class="mini-title">
+                    <span class="badge-ver">${VER}</span>
+                    <span class="badge-date">Updated: ${DATE}</span>
+                </div>
+            `;
+        }
+
+        function sidebarMidCurrent() {
+            return `
+                <div class="brand-current-outer">
+                    <div class="brand-current-inner">${img(54)}</div>
+                </div>
+            `;
+        }
+
+        function sidebarRest(midLogo) {
+            return `
+                <div class="mini-group">
+                    <span class="mini-label">🔐 Credentials</span>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                </div>
+                <div class="mini-group scope-flex">
+                    <span class="mini-label">🎯 Target Scope</span>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                    ${midLogo}
+                    <div class="fake-btn-row">
+                        <div class="fake-btn">📥 Import</div>
+                        <div class="fake-btn" style="flex:0 0 68px">📁 Browse</div>
+                    </div>
+                    <div class="fake-textarea"></div>
+                </div>
+                <div class="fake-exit"></div>
+            `;
+        }
+
+        function mainArea() {
+            return `
+                <div class="mini-main">
+                    <div class="mini-tabs">
+                        <span class="mini-tab on">search_it</span>
+                        <span class="mini-tab">Interfaces & Compare</span>
+                        <span class="mini-tab">VLAN Provisioning</span>
+                        <span class="mini-tab">Swiss Tools</span>
+                    </div>
+                    <div class="mini-workspace">
+                        <div class="mini-card y"></div>
+                        <div class="mini-card p"></div>
+                        <div class="mini-card g"></div>
+                    </div>
+                </div>
+                <div class="mini-console">&gt; System ready…<br>&gt; 13 plugins loaded</div>
+            `;
+        }
+
+        function buildApp(headerHtml, sidebarTop, midLogo) {
+            return `
+                <div class="mini-header">${headerHtml}</div>
+                <div class="mini-body">
+                    <div class="mini-sidebar">
+                        ${sidebarTop}
+                        ${sidebarRest(midLogo)}
+                    </div>
+                    ${mainArea()}
+                </div>
+            `;
+        }
+
+        document.getElementById('mock-before').innerHTML = buildApp(
+            headerBefore(),
+            '',
+            sidebarMidCurrent()
+        );
+
+        document.getElementById('mock-after').innerHTML = buildApp(
+            headerAfter(),
+            brandBlockA(),
+            ''
+        );
+
+        document.getElementById('brand-closeup').outerHTML = brandBlockA();
+    </script>
+</body>
+</html>

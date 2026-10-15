@@ -1,0 +1,189 @@
+===============================================================================
+ NETWORK SWISS TOOL PRO - MANUAL QA TESTING CHECKLIST
+ Version: 6.6.0 (Production) | Date: 2026-04-30
+ vPC Topology Premium, CLI Handshake Hardening
+===============================================================================
+
+PREREQUISITES
+-------------
+[ ] inventory.txt exists in working directory with format:
+    IP,device_type[,group]  (e.g. 10.1.1.1,cisco_ios,CoreSwitches)
+[ ] At least 2 devices are reachable via SSH
+[ ] Valid credentials are available
+[ ] Python environment has netmiko, flask, pyinstaller installed
+
+===============================================================================
+ SECTION A: WEB VERSION (vlan_checker_web.py)
+===============================================================================
+
+A1. APPLICATION LAUNCH & HANDSHAKE
+  [ ] launches without console errors
+  [ ] Browser opens automatically to http://127.0.0.1:5051
+  [ ] Handshake success: UI shows "Online" (green dot) without delay
+  [ ] Handshake Log: Collapsible tech log shows successful WebSocket/API ping
+  [ ] Session log file created: app_session_log_YYYYMMDD_HHMMSS.txt
+
+A2. INVENTORY & FILTERING
+  [ ] Click "Import Local inventory.txt" button
+  [ ] Inventory textarea populates correctly
+  [ ] "Single Device" dropdown populates with all device IPs
+  [ ] "All Groups" dropdown populates unique groups
+  [ ] Console shows "[System] Loaded local inventory list into web interface."
+
+A3. TARGET SCOPE
+  [ ] "Bulk (All / Filter)" mode runs on all matching devices
+  [ ] "Single Device" mode runs on exactly 1 selected device
+  [ ] Filter text narrows scope by IP or group match
+
+A4. DIAGNOSTICS & AUDIT
+  [ ] "Ping & Connectivity Check" runs: [PASS] Ping + [PASS] SSH Auth
+  [ ] "Audit VLAN Databases" runs: Correct VLAN counts + reports generated
+  [ ] MAC Trace: searching for a known MAC finds correct VLAN + Interface
+
+A5. INTERFACES & COMPARISON
+  [ ] "Check Interfaces" runs and shows correct up/down status
+  [ ] Interface filter field narrows results (| include filter)
+  [ ] "VLAN Compare" creates report listing discrepancies vs environment baseline
+
+A6. PRODUCTION VLAN MANAGEMENT (v5.5.0)
+  [ ] Add VLAN: verifies existence FIRST (SKIP if already present)
+  [ ] Add VLAN: performs pre-change backup in backups/devices/
+  [ ] Rename VLAN: performs verification and logs success/fail
+  [ ] Delete VLAN: requires second confirmation, provides rollback backup path
+  [ ] Junos ELS Detection: verifies correct syntax used for EX2300/4300 models
+
+A7. SWISS TOOLS & TOPOLOGY
+  [ ] Interactive Topology Map generates HTML file
+  [ ] vPC Topology Check: links between Nexus switches show "vPC" badge in tooltip
+  [ ] vPC Clustering: Peer-pairs align side-by-side automatically (verify via Groups)
+  [ ] vPC Peer-Link: Deep purple (10px) with shadow styling
+  [ ] vPC Member Link: Vibrant orange (8px) with glow/shadow
+  [ ] Inventory OS Audit: CSV contains actual hostname (not IP) + Serial Number
+  [ ] Config Backup: creates timestamped folder with sanitized configurations
+
+A8. UI / UX LOGGING
+  [ ] Actions stream to browser console area in real-time
+  [ ] [SUCCESS] messages show in green
+  [ ] [ERROR] messages show in red
+  [ ] [SKIP] messages show for idempotent operations
+  [ ] Tech Log displays HTTP 200 for /health and /debug_status
+
+A9. INTERACTIVE CLI TERMINAL
+  [ ] "Open Terminal" button from Top-Nav or Single-Device loads `cli_terminal.html`
+  [ ] Terminal Handshake: Shows "SERVER: OK" in top status bar
+  [ ] Device Authentication: Successfully opens raw SSH shell to target IP
+  [ ] Keyboard streaming: Characters typed in terminal reach device (verify via `conf t`)
+  [ ] PTY Resize: Maximizing window correctly adjusts remote PTY rows/cols
+  [ ] Disconnect: Gracefully closes Paramiko channel and reader thread
+
+===============================================================================
+ SECTION B: DESKTOP GUI VERSION (vlan_checker_gui.py)
+===============================================================================
+
+B1. APPLICATION LAUNCH
+  [ ] Window opens: "Network Device VLAN Checker (Enhanced)"
+  [ ] Session log file created on startup
+  [ ] UI remains responsive (does not freeze) during multi-device operations
+
+B2. CORE TABS
+  [ ] Connectivity Tab: Auth check passes for Cisco/Juniper
+  [ ] VLAN Check Tab: Raw/Parsed reports saved to root
+  [ ] MAC Check Tab: MAC normalization (aa:bb:cc -> aabb.ccdde)
+  [ ] Interfaces Tab: Up/Down filter presets work
+
+===============================================================================
+ SECTION C: REGRESSION CHECKS (CRITICAL v5.5.0)
+===============================================================================
+
+C1. LOCALHOST RESOLUTION
+  [ ] Connectivity issues avoided by explicit 127.0.0.1 binding?
+  [ ] WebSocket connection established within 2 seconds?
+
+C2. ADAPTER COMPLIANCE
+  [ ] All actions use modules/adapters.py? (No business logic in UI files)
+  [ ] All modules return standardized JSON: {"status": "...", "data": {}, "error": "..."}
+
+A10. STANDARDS VALIDATOR v2.0 (v6.5.8)
+  [ ] Navigate to "Standards Validator" tab - UI loads without errors
+  [ ] Policy file dropdown populates with available .yaml/.json files
+  [ ] Select a policy file - preview shows correct policy count
+  [ ] Category checkboxes appear dynamically from policy file
+  [ ] All categories checked by default
+  [ ] Click "None" - all categories unchecked
+  [ ] Click "All" - all categories checked again
+  [ ] Run validation on single device - results table renders
+  [ ] Run validation on multiple devices - shows progress per device
+  [ ] Consolidated report button appears after bulk validation
+  [ ] Click "⬇ Full Report (TXT)" - single file downloads with all results
+  [ ] Consolidated report shows summary (compliant/non-compliant counts)
+  [ ] Non-compliant devices listed first in consolidated report
+  [ ] Report includes all violations with severity, category, remediation
+  [ ] CSV export works - opens in Excel correctly
+
+A11. CLI TERMINAL ENHANCEMENTS (v6.5.8)
+  [ ] Navigate to "CLI Terminal" tab - UI loads without errors
+  [ ] Device type dropdown includes "Linux Server (Generic)" option
+  [ ] Device type dropdown includes "Linux Server (SSH Shell)" option
+  [ ] Helper text explains Linux compatibility
+  [ ] Enter Linux server IP, username, password
+  [ ] Click Connect - shows immediate ACK: "[BACKEND] Connection request ACK..."
+  [ ] Progress messages appear: [1/3] TCP probe, [2/3] SSH handshake, [3/3] Connected
+  [ ] Connection completes successfully within 5 seconds for Linux
+  [ ] Full interactive shell works (ls, pwd, whoami commands)
+  [ ] Connection timeout works (30s) for unreachable devices
+  [ ] Timeout shows clear error message with possible causes
+  [ ] Disconnect button works - session closed gracefully
+  [ ] Character Doubling Check: Keystrokes appear exactly once (even in high latency)
+  [ ] Backend Logs: Verify "[SocketIO] cli_connect received" appears in console
+
+A12. MAPS ENHANCEMENTS (v6.5.8)
+  [ ] Generate topology map (Standard or vPC mode)
+  [ ] Click on vPC-enabled device - node panel shows vPC domain info
+  [ ] vPC domain header displays with 🔶 icon
+  [ ] vPC configuration shows member ports and peer links
+  [ ] Click on vPC link - edge panel shows purple color coding for peer-link
+  [ ] Orange color coding shown for vPC member ports
+  [ ] Link descriptions appear prominently in popup
+  [ ] Interface descriptions searchable via search box
+  [ ] Search by description finds correct interface
+  [ ] vPC member ports table shows local port, remote port, status, description
+
+A13. PLUGIN MANAGEMENT (v6.0.0+)
+  [ ] Navigate to "Plugin Tools" tab - UI loads without errors
+  [ ] Click "Reload Registry" - plugins populate in sidebar
+  [ ] Click on a plugin - details appear with dynamic form
+  [ ] Required parameter fields disable Execute button until filled
+  [ ] Execute button enables when all required fields have values
+  [ ] Plugin execution logs appear in main console
+  [ ] Upload a valid .py plugin - succeeds with "uploaded" message
+  [ ] Upload a file with syntax error - rejected with error message
+  [ ] Upload new version of existing plugin - old version backed up
+  [ ] Check plugin history via API - shows backup versions
+  [ ] Rollback to previous version - plugin restored and reloads correctly
+
+C3. BACKUP RECOVERY
+  [ ] Pre-change backups created in backups/devices/{hostname}/ ?
+  [ ] Backup manifest updated with new entries?
+
+C4. PLUGIN CONTRACT COMPLIANCE
+  [ ] All plugins have METADATA dictionary with required keys?
+  [ ] All plugins implement run() with correct signature?
+  [ ] All plugins return standardized JSON: {"status": "...", "data": {}, "error": "..."}
+  [ ] No banned imports (os.system, subprocess, eval, exec) in plugins?
+
+===============================================================================
+ SIGN-OFF
+===============================================================================
+
+Tested by: ___________________    Date: ___________
+Build version tested: 6.6.0 (Production)
+Result: [ ] PASS  [ ] FAIL (ref issue #_____)
+
+Notes:
+- All v6.5.8 features must pass before release
+- CLI Terminal Linux support tested on at least one Linux distro
+- Standards Validator must load all policies from test file (not just 5)
+- MAPS vPC visualization verified with vPC-enabled devices
+- Consolidated report must include all devices in bulk run
+
+===============================================================================

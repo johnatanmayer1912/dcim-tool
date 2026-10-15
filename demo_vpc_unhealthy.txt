@@ -1,0 +1,80 @@
+======================================================================
+vPC DOMAIN ANALYSIS REPORT
+======================================================================
+
+Device Hostname:    NEXUS-03
+Device IP:          192.168.1.12
+Report Generated:   2026-05-25 12:00:00
+
+----------------------------------------------------------------------
+vPC CONFIGURATION STATUS
+----------------------------------------------------------------------
+✅ vPC Domain: CONFIGURED AND ACTIVE
+
+----------------------------------------------------------------------
+vPC DOMAIN DETAILS
+----------------------------------------------------------------------
+Domain ID:          200
+Role:               PRIMARY
+Peer-Link Status:   DOWN
+Keepalive Status:   SUSPENDED
+
+----------------------------------------------------------------------
+ROLE INTERPRETATION
+----------------------------------------------------------------------
+🌟 This device is the PRIMARY vPC peer.
+   - It controls the vPC domain and makes forwarding decisions
+   - The secondary peer follows the primary's decisions
+   - Ensure peer-link and keepalive are healthy for redundancy
+
+----------------------------------------------------------------------
+vPC HEALTH CHECK
+----------------------------------------------------------------------
+❌ Peer-Link: UNHEALTHY - CHECK PHYSICAL CONNECTIVITY
+❌ Keepalive: UNHEALTHY - CHECK KEEPALIVE CONFIGURATION
+
+----------------------------------------------------------------------
+vPC MEMBER PORTS
+----------------------------------------------------------------------
+vPC ID:            1
+  Port-Channel:    Po1
+  Status:          DOWN
+  Consistency:     FAILED
+
+vPC ID:            10
+  Port-Channel:    Po10
+  Status:          DOWN
+  Consistency:     FAILED
+
+----------------------------------------------------------------------
+PORT-CHANNEL DETAILS
+----------------------------------------------------------------------
+Port-Channel:      Po1
+  Status:          DOWN
+  VLANs:           10, 20, 30, 40
+  Members:         Eth1/1, Eth1/2
+
+Port-Channel:      Po10
+  Status:          DOWN
+  VLANs:           100, 200, 300
+  Members:         Eth1/10, Eth1/11
+
+----------------------------------------------------------------------
+CDP NEIGHBOR VALIDATION
+----------------------------------------------------------------------
+No CDP neighbors detected.
+
+----------------------------------------------------------------------
+RECOMMENDATIONS
+----------------------------------------------------------------------
+1. Verify peer-link is UP and passing traffic
+2. Verify keepalive is UP and reachable
+3. Check consistency parameter matches between peers
+4. Verify VLANs allowed on peer-link match on both peers
+5. Monitor vPC consistency using 'show vpc consistency-parameters'
+6. Validate CDP neighbors match expected peer switches
+7. Ensure port-channel member interfaces are UP
+
+======================================================================
+END OF REPORT
+======================================================================

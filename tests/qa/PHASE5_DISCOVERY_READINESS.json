@@ -1,0 +1,69 @@
+{
+  "schema": "nst.phase5.discovery_readiness.v1",
+  "phase": 5,
+  "title": "Discovery truncated CDP/LLDP resilience readiness",
+  "as_of": "2026-08-21",
+  "enterprise_operational_ready": false,
+  "live_vendor_truncated_cdp_lldp_validated": false,
+  "release_gate_when_not_ready": "BLOCKED",
+  "verdict": "contract_proven_fixture_replay — not enterprise operational ready — not live vendor validated",
+  "operator_summary": "Phase 5 truncated discovery: incomplete-observation contract proven (fixture/replay). Enterprise operational ready: NO. Live truncated CDP/LLDP: NOT VALIDATED. Release gate: BLOCKED (HARD STOP — not advisory) until live_ssh evidence.",
+  "traceability_refs": [
+    ".cursor/docs/READINESS_TRACEABILITY.md",
+    "B-LIVE-01"
+  ],
+  "blocker_ids": [
+    "P5-LIVE-TRUNCATED",
+    "B-LIVE-01"
+  ],
+  "proven": [
+    {
+      "capability": "incomplete_observation_contract",
+      "evidence_class": "fixture-only",
+      "status": "proven",
+      "slices": [1, 2]
+    },
+    {
+      "capability": "operator_api_ui_map_incomplete_surface",
+      "evidence_class": "simulation-only",
+      "status": "proven",
+      "slices": [3, 4]
+    },
+    {
+      "capability": "gated_live_lab_harness_and_replay",
+      "evidence_class": "fixture-only",
+      "status": "proven",
+      "slices": [5, 6]
+    },
+    {
+      "capability": "result_authority_stdout_and_json",
+      "evidence_class": "local-only",
+      "status": "proven",
+      "slices": [7, 8]
+    }
+  ],
+  "unproven": [
+    {
+      "capability": "live_truncated_cdp_lldp_ssh",
+      "evidence_class": "live-lab-backed",
+      "status": "not_executed",
+      "clears_when": "Authorized harness run with mode=live_ssh, live_vendor_validated=true, retained --json-out artifact (no passwords)"
+    },
+    {
+      "capability": "enterprise_operational_ready_for_truncated_discovery",
+      "evidence_class": "live-lab-backed",
+      "status": "blocked",
+      "clears_when": "P5-LIVE-TRUNCATED cleared plus release-readiness review acceptance"
+    }
+  ],
+  "forbidden_claims_until_live": [
+    "enterprise operational ready for truncated CDP/LLDP field validation",
+    "live vendor truncated CDP/LLDP validated",
+    "live field discovery success from Phase 5 alone"
+  ],
+  "evidence_paths": {
+    "replay_pack": "tests/fixtures/discovery/phase5_live_lab_capture_replay.json",
+    "harness": "scripts/phase5_live_lab_truncated_discovery.py",
+    "live_evidence_artifact": null
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "device_count": 8,
+  "l2_cable_count": 7,
+  "evpn_non_cable_count": 1,
+  "stp_blocked_count": 1,
+  "one_sided_l2_count": 1,
+  "incomplete_observation_count": 1,
+  "overlay_paints": 1,
+  "overlay_unmapped": 3
+}

@@ -1,0 +1,161 @@
+{
+  "phase": "after",
+  "timestamp": "2026-08-24T09:04:48.585Z",
+  "pages": 9,
+  "totalViolations": 0,
+  "results": [
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 0,
+      "incompleteCount": 2,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "label": "inventory"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 0,
+      "incompleteCount": 1,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        }
+      ],
+      "label": "maps"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 0,
+      "incompleteCount": 2,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 2
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "label": "maps_discovery"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 0,
+      "incompleteCount": 1,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        }
+      ],
+      "label": "find"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 0,
+      "incompleteCount": 1,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        }
+      ],
+      "label": "change"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 0,
+      "incompleteCount": 1,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        }
+      ],
+      "label": "evidence"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 0,
+      "incompleteCount": 1,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        }
+      ],
+      "label": "settings"
+    },
+    {
+      "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.24/QA/p1_accessibility_maps/generated_outputs/maps/standard_l2_overlay_replay.html",
+      "violationCount": 0,
+      "incompleteCount": 2,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": null,
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 0
+        }
+      ],
+      "label": "map_standard_l2"
+    },
+    {
+      "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.24/QA/p1_accessibility_maps/generated_outputs/maps/discovery_command_center.html",
+      "violationCount": 0,
+      "incompleteCount": 1,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 2
+        }
+      ],
+      "label": "map_discovery"
+    }
+  ]
+}

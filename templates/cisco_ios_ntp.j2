@@ -1,0 +1,11 @@
+! Cisco IOS NTP Configuration Template
+! Generated on {{ timestamp }}
+!
+configure terminal
+ntp server {{ ntp_server_1 }} prefer
+{% if ntp_server_2 %}
+ntp server {{ ntp_server_2 }}
+{% endif %}
+clock timezone {{ timezone_name }} {{ timezone_offset }}
+end
+write memory

@@ -1,0 +1,11 @@
+{
+  "platform": "cisco_xe",
+  "vendor": "cisco",
+  "hostname": "edge-xe-01",
+  "sensor_path": "Cisco-IOS-XE-interfaces-oper:interfaces/interface/statistics/in-octets",
+  "interface": "GigabitEthernet1/0/1",
+  "value": 1048576,
+  "unit": "octets",
+  "timestamp": "2026-08-20T18:00:00Z",
+  "sequence": 42
+}

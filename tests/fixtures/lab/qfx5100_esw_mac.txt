@@ -1,0 +1,7 @@
+MAC flags (S - static, D - dynamic, L - locally learned, C - control M - management, Se - statistics enabled, NM - non configured MAC, R - remote PE MAC, O - ovsdb MAC, P - pinned MAC)
+
+Routing instance : default-switch
+ Vlan                MAC                 MAC      Logical          NH        RTR
+ name                address             flags    interface        Index     ID
+ DATA                00:11:22:33:44:55   D        xe-0/0/0.0       0         0
+ VOICE               aa:bb:cc:dd:ee:ff   D        ge-0/0/1.0       0         0

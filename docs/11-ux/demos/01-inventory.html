@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>01 Inventory — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 01</strong>
+    <span>Static HTML — no Flask. Not the live console.</span>
+    <a href="index.html">All demos</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-on" href="06-settings-vault.html"><span class="ico" aria-hidden="true">●</span> Vault UNLOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select aria-label="Named credential set"><option selected>lab-ops (ssh)</option></select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope"><option selected>Group DIST — preview 20 rows</option></select>
+        </label>
+      </div>
+      <p class="freshness">Committed inventory: 12 devices · last bak 2h ago</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html" aria-current="page">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html">Maps <span class="badge">3</span><span class="kbd">2</span></a>
+      <a href="03-find.html">Find <span class="kbd">3</span></a>
+      <a href="04-change.html">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Inventory</h1>
+          <p class="lede">Commit a trustworthy device list before any SSH. Preview never silently drops rejects.</p>
+        </div>
+        <div class="title-actions">
+          <button type="button" id="btn-empty">Show empty</button>
+          <button type="button" class="primary" id="btn-preview">Preview</button>
+          <button type="button" id="btn-commit">Commit replace…</button>
+          <button type="button" id="btn-restore">Restore bak…</button>
+        </div>
+      </div>
+      <div id="state-empty" class="banner info hidden">
+        <strong>Empty.</strong> Import <code>inventory.txt</code> first (IP,device_type[,group]). Maps stay disabled until at least one accepted row is committed.
+      </div>
+      <div id="state-ok" class="banner warn">
+        <strong>Preview:</strong> 20 rows · 17 accept · 1 warn (unknown type) · 2 reject · 1 duplicate host+port. Rejected rows will be omitted on replace.
+      </div>
+      <div class="card">
+        <h2>Source</h2>
+        <label class="field">
+          <span>Paste or load <code>inventory.txt</code> v1</span>
+          <textarea id="inv-paste" rows="4" aria-describedby="inv-hint">10.10.1.1,cisco_nxos,DIST
+10.10.1.2,cisco_nxos,DIST
+10.10.2.1,cisco_ios,DIST
+10.10.2.1,cisco_ios,DIST
+10.10.9.9,not_a_vendor,DIST
+badline-no-comma
+10.10.3.1,juniper_junos,DIST</textarea>
+        </label>
+        <p id="inv-hint" class="muted">Allow-list: cisco_ios, cisco_xe, cisco_nxos, juniper_junos. Duplicate is (host, port).</p>
+      </div>
+      <div class="card" id="preview-card">
+        <h2>Preview table</h2>
+        <table>
+          <thead>
+            <tr><th>Line</th><th>Host</th><th>Type</th><th>Port</th><th>Group</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>10.10.1.1</td><td>cisco_nxos</td><td>22</td><td>DIST</td><td class="status accept">accept</td></tr>
+            <tr><td>2</td><td>10.10.1.2</td><td>cisco_nxos</td><td>22</td><td>DIST</td><td class="status accept">accept</td></tr>
+            <tr><td>3</td><td>10.10.2.1</td><td>cisco_ios</td><td>22</td><td>DIST</td><td class="status accept">accept</td></tr>
+            <tr><td>4</td><td>10.10.2.1</td><td>cisco_ios</td><td>22</td><td>DIST</td><td class="status warn">warn — duplicate of line 3</td></tr>
+            <tr><td>5</td><td>10.10.9.9</td><td>not_a_vendor</td><td>22</td><td>DIST</td><td class="status reject">reject — unknown device_type</td></tr>
+            <tr><td>6</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="status reject">reject — parse error</td></tr>
+            <tr><td>7</td><td>10.10.3.1</td><td>juniper_junos</td><td>22</td><td>DIST</td><td class="status accept">accept</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <script type="application/json" id="sample-data">
+{"rows":20,"accept":17,"warn":1,"reject":2,"duplicate":1,"bak":"inventory.txt.bak.20260819-1112"}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Inspector</h2>
+      <p id="insp-line">Select a preview row. Line 4 is a duplicate (host, port).</p>
+      <dl>
+        <dt>Raw line 4</dt>
+        <dd class="mono">10.10.2.1,cisco_ios,DIST</dd>
+        <dt>Error</dt>
+        <dd>Duplicate of line 3 — second copy omitted on commit replace.</dd>
+      </dl>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span></footer>
+  <dialog id="commit-modal" aria-labelledby="commit-title">
+    <h2 id="commit-title">Commit replace</h2>
+    <p>17 accepted will be written to <code>inventory.txt</code>. <strong>2 rejected will be omitted.</strong> 1 duplicate omitted. Current file saved as bak (keep last 10).</p>
+    <p class="muted">This demo does not write disk.</p>
+    <form method="dialog">
+      <button value="cancel">Back</button>
+      <button class="primary" value="ok" id="commit-ok">Commit</button>
+    </form>
+  </dialog>
+  <dialog id="restore-modal" aria-labelledby="restore-title">
+    <h2 id="restore-title">Restore previous bak</h2>
+    <p>Replace committed inventory with <code>inventory.txt.bak.20260819-1112</code> (12 devices). Current file becomes a new bak.</p>
+    <form method="dialog">
+      <button value="cancel">Back</button>
+      <button class="primary" value="ok">Restore</button>
+    </form>
+  </dialog>
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var empty = document.getElementById("state-empty");
+      var ok = document.getElementById("state-ok");
+      var table = document.getElementById("preview-card");
+      document.getElementById("btn-empty").onclick = function () {
+        empty.classList.remove("hidden");
+        ok.classList.add("hidden");
+        table.classList.add("hidden");
+      };
+      document.getElementById("btn-preview").onclick = function () {
+        empty.classList.add("hidden");
+        ok.classList.remove("hidden");
+        table.classList.remove("hidden");
+      };
+      document.getElementById("btn-commit").onclick = function () {
+        document.getElementById("commit-modal").showModal();
+      };
+      document.getElementById("btn-restore").onclick = function () {
+        document.getElementById("restore-modal").showModal();
+      };
+      document.getElementById("commit-ok").addEventListener("click", function () {
+        ok.className = "banner ok";
+        ok.innerHTML = "<strong>Committed.</strong> 17 hosts written. bak kept. Maps can use this list.";
+      });
+    })();
+  </script>
+</body>
+</html>

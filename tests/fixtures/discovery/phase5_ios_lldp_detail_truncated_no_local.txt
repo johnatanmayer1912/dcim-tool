@@ -1,0 +1,5 @@
+Chassis id: aabb.ccdd.ee01
+System Name: TRUNC-LLDP-PEER
+System Description: Cisco IOS Software
+Management Address: 10.0.0.55
+Port id: GigabitEthernet1/0/99

@@ -1,0 +1,4 @@
+# Lab Inventory for Testing
+127.0.0.1,cisco_ios
+127.0.0.1,cisco_nxos
+127.0.0.1,cisco_nxos

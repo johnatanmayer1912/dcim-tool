@@ -1,0 +1,16 @@
+{
+  "name": "nst-cli-browser-qa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:cli-credential-id": "node cli_credential_id.spec.mjs",
+    "test:operator-program-status": "node operator_program_status.spec.mjs",
+    "test:operator-overlay": "node operator_swiss_tools_overlay.spec.mjs",
+    "test:offline-map-html": "node offline_map_html.spec.mjs",
+    "test:ux-demo-09": "node ux_demo_09_8vendor.spec.mjs"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "playwright": "1.49.1"
+  }
+}

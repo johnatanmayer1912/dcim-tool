@@ -1,0 +1,50 @@
+{
+  "schema": "nst.utilization_overlay.v1",
+  "mode": "replay",
+  "evidence_class": "fixture",
+  "topology_job_id": "example-not-a-real-job",
+  "generated_at": "2026-08-22T12:00:00+00:00",
+  "stale_after_seconds": null,
+  "degraded": false,
+  "collector": { "kind": "none" },
+  "paints": [
+    {
+      "cable_key": "core-01|eth1/1|core-02|eth1/1|l2",
+      "paint_state": "hot",
+      "in_bps": 9400000000,
+      "out_bps": 8100000000,
+      "in_pct": 94,
+      "out_pct": 81,
+      "pct": 94,
+      "if_speed_bps": 10000000000,
+      "join": { "status": "mapped", "sides": ["a", "b"] },
+      "provenance": {
+        "mode": "replay",
+        "evidence_class": "fixture",
+        "job_id": null,
+        "commands": []
+      },
+      "freshness": {
+        "sampled_at": "2026-08-22T11:52:00+00:00",
+        "age_seconds": 480,
+        "stale": false
+      }
+    }
+  ],
+  "unmapped": [
+    {
+      "device_id": "core-01",
+      "if_name_raw": "Eth1/99",
+      "if_name_normalized": "Eth1/99",
+      "reason": "no_matching_edge",
+      "command": null
+    }
+  ],
+  "summary": {
+    "l2_edge_count": 9,
+    "painted_count": 1,
+    "unmapped_count": 1,
+    "partial_count": 0,
+    "stale_count": 0
+  }
+}

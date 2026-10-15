@@ -1,0 +1,5 @@
+# Mock asset/warranty lab inventory (enable NST_MOCK_ASSET_LAB=1)
+10.99.1.1,cisco_ios
+10.99.1.2,cisco_nxos
+10.99.1.3,cisco_aci
+10.99.1.4,cisco_ios

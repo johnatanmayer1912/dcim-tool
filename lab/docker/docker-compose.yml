@@ -1,0 +1,15 @@
+# NST Docker lab — 1× IOS C9300 + 2× NX-OS N9K-C93180YC-EX (SSH CLI sim)
+name: nst-ssh-lab
+
+services:
+  ssh-sim:
+    build:
+      context: ../..
+      dockerfile: lab/docker/Dockerfile.ssh-sim
+    image: nst-ssh-sim:local
+    container_name: nst-ssh-sim
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:2201:2201"   # LAB-IOS-ACCESS1   C9300-24P
+      - "127.0.0.1:2202:2202"   # LAB-NXOS-LEAF1    N9K-C93180YC-EX
+      - "127.0.0.1:2203:2203"   # LAB-NXOS-LEAF2    N9K-C93180YC-EX

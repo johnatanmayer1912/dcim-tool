@@ -1,0 +1,37 @@
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       + - replicated route, % - next hop override, & - LSP path
+
+Gateway of last resort is 10.0.0.1 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 10.0.0.1
+      10.0.0.0/8 is variably subnetted, 4 subnets, 2 masks
+C        10.0.0.0/30 is directly connected, GigabitEthernet0/0
+L        10.0.0.2/32 is directly connected, GigabitEthernet0/0
+C        10.0.0.4/30 is directly connected, GigabitEthernet0/1
+L        10.0.0.6/32 is directly connected, GigabitEthernet0/1
+      172.16.0.0/16 is variably subnetted, 6 subnets, 3 masks
+O IA     172.16.1.0/24 [110/20] via 10.0.0.1, 01:23:45, GigabitEthernet0/0
+O IA     172.16.2.0/24 [110/30] via 10.0.0.1, 01:23:45, GigabitEthernet0/0
+O E2     172.16.3.0/24 [110/20] via 10.0.0.1, 00:45:12, GigabitEthernet0/0
+O N1     172.16.4.0/24 [110/20] via 10.0.0.5, 00:12:33, GigabitEthernet0/1
+O N2     172.16.5.0/24 [110/20] via 10.0.0.5, 00:12:33, GigabitEthernet0/1
+O        172.16.6.0/24 [110/2] via 10.0.0.1, 00:05:11, GigabitEthernet0/0
+                                via 10.0.0.5, 00:05:11, GigabitEthernet0/1
+      192.168.1.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.1.0/24 is directly connected, Vlan10
+L        192.168.1.1/32 is directly connected, Vlan10
+      192.168.2.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.2.0/24 is directly connected, Vlan20
+L        192.168.2.1/32 is directly connected, Vlan20
+B        203.0.113.0/24 [20/0] via 198.51.100.1, 2d03h
+D        10.100.0.0/16 [90/2560] via 10.0.0.1, 3w5d, GigabitEthernet0/0
+D EX     10.200.0.0/16 [170/2560] via 10.0.0.5, 3w5d, GigabitEthernet0/1
+i L1     10.50.0.0/16 [115/20] via 10.0.0.1, 00:30:00, GigabitEthernet0/0
+i L2     10.60.0.0/16 [115/30] via 10.0.0.5, 00:30:00, GigabitEthernet0/1
+R        10.99.0.0/16 [120/1] via 10.0.0.1, 00:00:29, GigabitEthernet0/0

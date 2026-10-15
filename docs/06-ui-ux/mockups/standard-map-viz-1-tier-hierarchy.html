@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viz 1 — Tier Hierarchy Map</title>
+  <style>
+    :root { --bg:#0d1117; --surface:#161b22; --elevated:#21262d; --border:#30363d; --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --core:#a371f7; --dist:#58a6ff; --access:#3fb950; --link:#484f58; --link-hi:#58a6ff; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:12px; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+    .banner { background:linear-gradient(90deg,#8957e533,#388bfd33); border-bottom:1px solid var(--border); padding:0.4rem 1rem; font-size:0.7rem; color:var(--muted); text-align:center; flex-shrink:0; }
+    .banner strong { color:var(--core); }
+    .toolbar { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 1rem; border-bottom:1px solid var(--border); flex-shrink:0; flex-wrap:wrap; }
+    .toolbar h1 { font-size:1rem; font-weight:600; }
+    .map-switch { display:flex; gap:0.2rem; margin-left:auto; }
+    .map-switch span { padding:0.3rem 0.55rem; border-radius:5px; border:1px solid var(--border); font-size:0.65rem; color:var(--muted); cursor:pointer; }
+    .map-switch span.on { border-color:var(--accent); color:var(--accent); background:rgba(88,166,255,0.12); }
+    .split { flex:1; display:grid; grid-template-columns:1fr 340px; min-height:0; }
+    @media(max-width:900px){ .split { grid-template-columns:1fr; grid-template-rows:1fr auto; } }
+    .map-pane { display:flex; flex-direction:column; border-right:1px solid var(--border); min-height:0; }
+    .map-head { padding:0.5rem 1rem; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); border-bottom:1px solid var(--border); }
+    .map-canvas { flex:1; padding:1rem; overflow:auto; position:relative; }
+    .tier-map { min-width:680px; }
+    .tier-band { margin-bottom:1.5rem; }
+    .tier-label { font-size:0.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem; padding-left:0.25rem; }
+    .tier-band.core .tier-label { color:var(--core); }
+    .tier-band.dist .tier-label { color:var(--dist); }
+    .tier-band.access .tier-label { color:var(--access); }
+    .tier-nodes { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; position:relative; }
+    .node-box {
+      background:var(--surface); border:2px solid var(--border); border-radius:8px;
+      padding:0.5rem 0.85rem; min-width:100px; text-align:center; cursor:pointer; position:relative; z-index:2;
+      transition:border-color 0.15s, box-shadow 0.15s;
+    }
+    .node-box:hover, .node-box.sel { border-color:var(--accent); box-shadow:0 0 0 3px rgba(88,166,255,0.2); }
+    .node-box.core { border-color:var(--core); }
+    .node-box.dist { border-color:var(--dist); }
+    .node-box.acc { border-color:var(--access); }
+    .node-box .name { font-weight:700; font-size:0.8rem; }
+    .node-box .sub { font-size:0.6rem; color:var(--muted); margin-top:0.15rem; }
+    .connector-layer { position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:1; }
+    .right-pane { display:flex; flex-direction:column; background:var(--surface); min-height:0; }
+    .brief { padding:0.65rem 0.85rem; border-bottom:1px solid var(--border); font-size:0.72rem; }
+    .brief .kpis { display:flex; gap:0.5rem; margin-top:0.35rem; flex-wrap:wrap; }
+    .kpi { background:var(--elevated); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.65rem; }
+    .kpi b { color:var(--accent); }
+    .table-wrap { flex:1; overflow:auto; }
+    table { width:100%; border-collapse:collapse; font-size:0.72rem; }
+    th, td { text-align:left; padding:0.4rem 0.5rem; border-bottom:1px solid var(--border); }
+    th { color:var(--muted); font-size:0.6rem; text-transform:uppercase; position:sticky; top:0; background:var(--surface); }
+    tr { cursor:pointer; }
+    tr:hover td { background:rgba(88,166,255,0.06); }
+    tr.sel td { background:rgba(88,166,255,0.14); }
+    .detail { padding:0.65rem 0.85rem; border-top:1px solid var(--border); font-size:0.72rem; background:var(--elevated); }
+    .detail strong { display:block; margin-bottom:0.35rem; }
+    svg.links { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+    .link-line { stroke:var(--link); stroke-width:2; fill:none; }
+    .link-line.hi { stroke:var(--link-hi); stroke-width:2.5; }
+  </style>
+</head>
+<body>
+  <div class="banner"><strong>Viz 1 — Tier Hierarchy</strong> · Recommended default for NOC · Map + connection table always visible</div>
+  <div class="toolbar">
+    <h1>CAMPUS-HQ · Standard Map</h1>
+    <span style="color:var(--muted);font-size:0.75rem">47 devices · 89 links</span>
+    <div class="map-switch">
+      <span class="on">Tier</span><span>Radial</span><span>Schematic</span><span>Focus</span><span>Matrix</span>
+    </div>
+  </div>
+  <div class="split">
+    <div class="map-pane">
+      <div class="map-head">Connection map — top-down tiers (Core → Dist → Access)</div>
+      <div class="map-canvas">
+        <div class="tier-map">
+          <div class="tier-band core">
+            <div class="tier-label">Core layer</div>
+            <div class="tier-nodes" id="coreRow">
+              <div class="node-box core" data-id="CORE-01"><div class="name">CORE-01</div><div class="sub">C9500 · 5 links</div></div>
+              <div class="node-box core" data-id="CORE-02"><div class="name">CORE-02</div><div class="sub">C9500 · Po1 peer</div></div>
+            </div>
+          </div>
+          <div class="tier-band dist">
+            <div class="tier-label">Distribution layer</div>
+            <div class="tier-nodes">
+              <div class="node-box dist sel" data-id="DIST-N1"><div class="name">DIST-N1</div><div class="sub">C9300 · 8 links</div></div>
+              <div class="node-box dist" data-id="DIST-N2"><div class="name">DIST-N2</div><div class="sub">C9300</div></div>
+              <div class="node-box dist" data-id="DIST-S1"><div class="name">DIST-S1</div><div class="sub">C9300</div></div>
+              <div class="node-box dist" data-id="DIST-S2"><div class="name">DIST-S2</div><div class="sub">C9300</div></div>
+            </div>
+          </div>
+          <div class="tier-band access">
+            <div class="tier-label">Access layer (sample)</div>
+            <div class="tier-nodes">
+              <div class="node-box acc" data-id="SW-ACC-01"><div class="name">SW-ACC-01</div><div class="sub">Gi1/0/1 uplink</div></div>
+              <div class="node-box acc" data-id="SW-ACC-02"><div class="name">SW-ACC-02</div></div>
+              <div class="node-box acc" data-id="SW-ACC-03"><div class="name">SW-ACC-03</div></div>
+              <div class="node-box acc" data-id="AP-F2-03"><div class="name">AP-F2-03</div><div class="sub">LLDP endpoint</div></div>
+            </div>
+          </div>
+          <!-- schematic link hints -->
+          <svg style="width:100%;height:80px;margin-top:-1rem" viewBox="0 0 700 80">
+            <path class="link-line hi" d="M175,0 L175,40 L350,40 L350,80" />
+            <path class="link-line" d="M525,0 L525,40 L350,40" />
+            <path class="link-line" d="M350,80 L350,80" opacity="0"/>
+            <text x="360" y="35" fill="#8b949e" font-size="9">Te1/0/1 ↔ Te1/1/1</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="right-pane">
+      <div class="brief">
+        <strong>Briefing</strong> · 18 Jun 2026 14:32 · 2 failed hosts
+        <div class="kpis"><span class="kpi"><b>89</b> links</span><span class="kpi"><b>3</b> Po/vPC</span><span class="kpi" style="color:#d29922"><b>1</b> unidirectional</span></div>
+      </div>
+      <div class="table-wrap">
+        <table id="connTable">
+          <thead><tr><th>Local</th><th>Port</th><th>Remote</th><th>Port</th></tr></thead>
+          <tbody>
+            <tr class="sel"><td>CORE-01</td><td>Te1/0/1</td><td>DIST-N1</td><td>Te1/1/1</td></tr>
+            <tr><td>DIST-N1</td><td>Gi1/0/48</td><td>SW-ACC-01</td><td>Gi1/0/1</td></tr>
+            <tr><td>DIST-N1</td><td>Po1</td><td>DIST-N2</td><td>Po1</td></tr>
+            <tr><td>SW-ACC-01</td><td>Gi1/0/24</td><td>AP-F2-03</td><td>eth0</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="detail">
+        <strong>Selected link</strong>
+        CORE-01 Te1/0/1 → DIST-N1 Te1/1/1 · CDP · trunk · 10G · VLANs 1,110,120
+      </div>
+    </div>
+  </div>
+  <script>
+    document.querySelectorAll('.node-box, #connTable tbody tr').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.node-box, #connTable tbody tr').forEach(x => x.classList.remove('sel'));
+        if (el.classList.contains('node-box')) el.classList.add('sel');
+        if (el.tagName === 'TR') el.classList.add('sel');
+      });
+    });
+  </script>
+</body>
+</html>

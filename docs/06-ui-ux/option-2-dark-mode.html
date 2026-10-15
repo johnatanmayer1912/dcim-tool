@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 2: Dark Mode Professional - Network Swiss Tool Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #60a5fa;
+            letter-spacing: -0.5px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-item {
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #60a5fa;
+            border-bottom-color: #60a5fa;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Cards */
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #e2e8f0;
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        /* Status Indicators */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-item {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .grid-item-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .grid-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .grid-item-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: #e2e8f0;
+            overflow-x: auto;
+        }
+
+        /* Tables */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #334155;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #f1f5f9;
+            border-bottom: 1px solid #475569;
+        }
+
+        .table td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #cbd5e1;
+            border-bottom: 1px solid #334155;
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Glow Effects */
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .glow-green {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Network Swiss Tool Pro</div>
+        <nav class="nav">
+            <a href="#" class="nav-item active">Dashboard</a>
+            <a href="#" class="nav-item">Network Search</a>
+            <a href="#" class="nav-item">Interfaces</a>
+            <a href="#" class="nav-item">VLAN</a>
+            <a href="#" class="nav-item">Tools</a>
+        </nav>
+    </div>
+
+    <div class="main">
+        <h1>Dashboard</h1>
+        <p>Overview of your network infrastructure</p>
+
+        <div class="grid" style="margin-bottom: 32px;">
+            <div class="grid-item glow-blue">
+                <div class="grid-item-icon">🌐</div>
+                <div class="grid-item-title">Total Devices</div>
+                <div class="grid-item-value">24</div>
+            </div>
+            <div class="grid-item glow-green">
+                <div class="grid-item-icon">✅</div>
+                <div class="grid-item-title">Online</div>
+                <div class="grid-item-value">22</div>
+            </div>
+            <div class="grid-item">
+                <div class="grid-item-icon">⚠️</div>
+                <div class="grid-item-title">Warnings</div>
+                <div class="grid-item-value">2</div>
+            </div>
+            <div class="grid-item">
+                <div class="grid-item-icon">❌</div>
+                <div class="grid-item-title">Offline</div>
+                <div class="grid-item-value">0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Quick Actions</h2>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-primary">Run Discovery</button>
+                <button class="btn btn-secondary">Generate Report</button>
+                <button class="btn btn-secondary">Export Data</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Recent Activity</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>Action</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>sw-core-01</td>
+                        <td>Configuration Backup</td>
+                        <td><span class="status status-success">Success</span></td>
+                        <td>2 min ago</td>
+                    </tr>
+                    <tr>
+                        <td>sw-core-02</td>
+                        <td>Interface Discovery</td>
+                        <td><span class="status status-success">Success</span></td>
+                        <td>5 min ago</td>
+                    </tr>
+                    <tr>
+                        <td>sw-access-15</td>
+                        <td>VLAN Audit</td>
+                        <td><span class="status status-warning">Warning</span></td>
+                        <td>10 min ago</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

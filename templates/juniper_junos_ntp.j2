@@ -1,0 +1,11 @@
+# Juniper Junos NTP Configuration Template
+# Target Device: {{ hostname }}
+#
+system {
+    ntp {
+        server {{ ntp_server_1 }} prefer;
+        {% if ntp_server_2 %}
+        server {{ ntp_server_2 }};
+        {% endif %}
+    }
+}

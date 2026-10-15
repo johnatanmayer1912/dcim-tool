@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple vis.js Test</title>
+  <script type="text/javascript">
+    // Minimal vis.js test - just 2 nodes and 1 edge
+    var nodes = new vis.DataSet([
+      {id: 1, label: 'Node 1', color: '#ff0000'},
+      {id: 2, label: 'Node 2', color: '#00ff00'}
+    ]);
+    var edges = new vis.DataSet([
+      {from: 1, to: 2}
+    ]);
+    var container = document.getElementById('mynetwork');
+    var data = {nodes: nodes, edges: edges};
+    var options = {
+      physics: {enabled: false}
+    };
+    var network = new vis.Network(container, data, options);
+  </script>
+</head>
+<body>
+  <h1>Simple vis.js Test</h1>
+  <div id="mynetwork" style="width: 600px; height: 400px; border: 1px solid red;"></div>
+  <p>If you see 2 nodes (red and green) connected by a line, vis.js is working.</p>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "mode": "live_ssh_prereq_skip",
+  "authorized": true,
+  "live_ssh_executed": false,
+  "live_vendor_validated": false,
+  "ok": false,
+  "skipped": true,
+  "not_executed_reason": "NST_LAB_HOSTS / NST_LAB_USER / NST_LAB_PASSWORD not set in environment",
+  "honesty": "NOT live vendor validation — prerequisites missing; SSH not attempted",
+  "vault_or_credential_key_read": false,
+  "result_authority": "process_exit_code_and_json_artifact",
+  "note": "Authorized gate NST_PHASE5_LIVE_LAB=1 was set. Replay was not used. This is not a readiness PASS artifact."
+}

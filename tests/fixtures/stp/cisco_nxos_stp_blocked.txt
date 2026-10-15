@@ -1,0 +1,6 @@
+Flags:  * - Forwarding, B - Blocking
+Interface                Status
+------------------------ --------
+Eth1/1                   Forwarding
+Eth1/2                   Blocking
+Eth1/3                   Forwarding

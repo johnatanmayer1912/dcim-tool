@@ -1,0 +1,8 @@
+# Committed by Network Swiss Tool Pro
+# Format: IP,device_type[,group] or IP,device_type,port,group
+
+[Access]
+127.0.0.1,cisco_ios,2201,Access
+[NXOS]
+127.0.0.1,cisco_nxos,2202,NXOS
+127.0.0.1,cisco_nxos,2203,NXOS

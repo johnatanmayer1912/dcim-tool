@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viz 5 — Matrix Adjacency Map</title>
+  <style>
+    :root { --bg:#0d1117; --surface:#161b22; --elevated:#21262d; --border:#30363d; --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --cell:#238636; --cell-warn:#d29922; --cell-miss:#f85149; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:12px; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+    .banner { background:#f8514922; border-bottom:1px solid var(--border); padding:0.4rem 1rem; font-size:0.7rem; color:var(--muted); text-align:center; }
+    .banner strong { color:#f85149; }
+    .toolbar { display:flex; padding:0.6rem 1rem; border-bottom:1px solid var(--border); align-items:center; gap:0.75rem; }
+    .map-switch { margin-left:auto; display:flex; gap:0.2rem; }
+    .map-switch span { padding:0.3rem 0.55rem; border:1px solid var(--border); border-radius:5px; font-size:0.65rem; color:var(--muted); }
+    .map-switch span.on { border-color:#f85149; color:#f85149; background:rgba(248,81,73,0.1); }
+    .split { flex:1; display:grid; grid-template-columns:1fr 300px; min-height:0; }
+    .map-pane { border-right:1px solid var(--border); display:flex; flex-direction:column; min-height:0; }
+    .map-head { padding:0.5rem 1rem; font-size:0.65rem; text-transform:uppercase; font-weight:700; color:var(--muted); border-bottom:1px solid var(--border); }
+    .matrix-wrap { flex:1; overflow:auto; padding:1rem; }
+    .matrix { border-collapse:collapse; font-size:0.6rem; }
+    .matrix th { padding:0.35rem 0.25rem; color:var(--muted); font-weight:600; writing-mode:vertical-rl; text-orientation:mixed; height:80px; max-width:28px; }
+    .matrix th.row-h { writing-mode:horizontal-tb; height:auto; text-align:right; padding-right:0.5rem; color:var(--text); }
+    .matrix td { width:22px; height:22px; border:1px solid var(--border); text-align:center; cursor:pointer; }
+    .matrix td.self { background:var(--elevated); }
+    .matrix td.link { background:var(--cell); }
+    .matrix td.link-warn { background:var(--cell-warn); }
+    .matrix td.link-miss { background:var(--cell-miss); }
+    .matrix td:hover { outline:2px solid var(--accent); z-index:1; }
+    .matrix td.sel { outline:2px solid #fff; }
+    .legend-row { display:flex; gap:1rem; padding:0.5rem 1rem; font-size:0.65rem; color:var(--muted); border-top:1px solid var(--border); flex-wrap:wrap; }
+    .leg { display:flex; align-items:center; gap:0.35rem; }
+    .leg i { width:12px; height:12px; border-radius:2px; display:inline-block; }
+    .right-pane { background:var(--surface); display:flex; flex-direction:column; min-height:0; }
+    .brief { padding:0.65rem; border-bottom:1px solid var(--border); font-size:0.72rem; }
+    .anomaly { background:rgba(248,81,73,0.1); border:1px solid rgba(248,81,73,0.3); margin:0.5rem 0.65rem; padding:0.5rem; border-radius:6px; font-size:0.7rem; color:#f85149; }
+    table.detail-table { width:100%; font-size:0.72rem; border-collapse:collapse; }
+    table.detail-table th, table.detail-table td { padding:0.4rem; border-bottom:1px solid var(--border); }
+    .detail { padding:0.65rem; border-top:1px solid var(--border); font-size:0.72rem; background:var(--elevated); flex:1; }
+  </style>
+</head>
+<body>
+  <div class="banner"><strong>Viz 5 — Matrix / Adjacency Grid</strong> · NetEng audit · spot missing return CDP, orphans, asymmetry</div>
+  <div class="toolbar">
+    <h1 style="font-size:1rem">Adjacency matrix · core + dist sample</h1>
+    <div class="map-switch"><span>Tier</span><span>Radial</span><span>Schematic</span><span>Focus</span><span class="on">Matrix</span></div>
+  </div>
+  <div class="split">
+    <div class="map-pane">
+      <div class="map-head">Row = local device · Column = remote · Cell color = link state</div>
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th class="row-h"></th>
+              <th>CORE-01</th><th>CORE-02</th><th>DIST-N1</th><th>DIST-N2</th><th>DIST-S1</th><th>SW-01</th><th>SW-02</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th class="row-h">CORE-01</th><td class="self"></td><td class="link" title="Po1"></td><td class="link sel"></td><td class="link"></td><td></td><td></td><td></td></tr>
+            <tr><th class="row-h">CORE-02</th><td class="link"></td><td class="self"></td><td></td><td class="link"></td><td class="link"></td><td></td><td></td></tr>
+            <tr><th class="row-h">DIST-N1</th><td class="link"></td><td></td><td class="self"></td><td class="link-warn" title="Po1 vPC - verify peer"></td><td></td><td class="link"></td><td class="link"></td></tr>
+            <tr><th class="row-h">DIST-N2</th><td></td><td class="link"></td><td class="link-warn"></td><td class="self"></td><td class="link"></td><td class="link"></td><td></td></tr>
+            <tr><th class="row-h">DIST-S1</th><td></td><td class="link"></td><td></td><td class="link"></td><td class="self"></td><td class="link-miss" title="CDP seen one-way"></td><td></td></tr>
+            <tr><th class="row-h">SW-ACC-01</th><td></td><td></td><td class="link"></td><td></td><td></td><td class="self"></td><td></td></tr>
+            <tr><th class="row-h">SW-ACC-02</th><td></td><td></td><td class="link"></td><td class="link"></td><td></td><td></td><td class="self"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="legend-row">
+        <span class="leg"><i style="background:var(--cell)"></i> Bidirectional CDP/LLDP</span>
+        <span class="leg"><i style="background:var(--cell-warn)"></i> Bundle / verify</span>
+        <span class="leg"><i style="background:var(--cell-miss)"></i> Unidirectional / missing return</span>
+        <span class="leg"><i style="background:var(--elevated);border:1px solid var(--border)"></i> No link</span>
+      </div>
+    </div>
+    <div class="right-pane">
+      <div class="brief"><strong>Audit mode</strong> · 6 devices shown · filter: dist+core</div>
+      <div class="anomaly">⚠ DIST-S1 → SW-ACC-03: CDP on DIST-S1 only (no return). Investigate.</div>
+      <table class="detail-table">
+        <thead><tr><th>Local</th><th>Remote</th><th>State</th></tr></thead>
+        <tbody>
+          <tr style="background:rgba(88,166,255,0.1)"><td>CORE-01</td><td>DIST-N1</td><td>OK · CDP both ways</td></tr>
+          <tr><td>DIST-N1</td><td>DIST-N2</td><td>Po1 · verify vPC</td></tr>
+          <tr><td>DIST-S1</td><td>SW-ACC-03</td><td style="color:#f85149">Unidirectional</td></tr>
+        </tbody>
+      </table>
+      <div class="detail"><strong>Selected:</strong> CORE-01 ↔ DIST-N1<br>Te1/0/1 ↔ Te1/1/1 · CDP · trunk · symmetric ✓</div>
+    </div>
+  </div>
+</body>
+</html>

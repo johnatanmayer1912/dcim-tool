@@ -1,0 +1,6 @@
+[DataCenter]
+192.168.1.1, cisco_ios
+192.168.1.2, cisco_nxos
+
+[Campus_Access]
+192.168.1.3, juniper_junos

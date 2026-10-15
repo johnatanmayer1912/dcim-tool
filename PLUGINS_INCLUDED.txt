@@ -1,0 +1,213 @@
+================================================================================
+NETWORK SWISS TOOL PRO v6.9.22 - BUNDLED PLUGINS MANIFEST
+================================================================================
+
+HARDCODED POLICY: ALL PLUGINS MUST BE INCLUDED
+================================================
+
+This distribution package INCLUDES ALL PLUGINS from the modules/plugins/
+directory. This is a MANDATORY policy - no plugin exclusions are permitted.
+
+Users receive the complete plugin set. Users decide which plugins to upload
+via the "Plugin Tools" tab, but ALL plugins are provided in this package.
+
+================================================================================
+BUNDLED PLUGINS (13 TOTAL)
+================================================================================
+
+1. base_template.py
+   - Display Name: Base Plugin Template
+   - Category: Template
+   - Version: 1.0.0
+   - Description: Reference implementation for plugin development
+   - Documentation: docs/plugins/base_template/
+
+2. vlan_audit_plugin.py
+   - Display Name: VLAN Audit
+   - Category: Audit
+   - Version: 1.0.0
+   - Description: VLAN discovery and detailed reporting
+   - Documentation: docs/plugins/vlan_audit_plugin/
+
+3. device_time_plugin.py
+   - Display Name: Device Time Check
+   - Category: Discovery
+   - Version: 1.0.0
+   - Description: Retrieve device time and NTP status
+   - Platforms: Cisco IOS, IOS-XE, NXOS, Juniper JunOS
+   - Documentation: docs/plugins/device_time_plugin/
+
+4. serial_number_plugin.py
+   - Display Name: Serial Number Inventory
+   - Category: Discovery
+   - Version: 1.0.0
+   - Description: Hardware inventory and serial number collection
+   - Platforms: Cisco IOS, IOS-XE, NXOS, Juniper JunOS
+   - Documentation: docs/plugins/serial_number_plugin/
+
+5. critical_logs_plugin.py
+   - Display Name: Critical Log Scanner
+   - Category: Audit
+   - Version: 1.0.0
+   - Description: Syslog analysis with severity filtering
+   - Platforms: Cisco IOS, IOS-XE, NXOS, Juniper JunOS
+   - Documentation: docs/plugins/critical_logs_plugin/
+
+6. interface_errors_plugin.py
+   - Display Name: Interface Error Check
+   - Category: Audit
+   - Version: 1.0.0
+   - Description: Interface error counter retrieval
+   - Platforms: Cisco IOS, IOS-XE, NXOS, Juniper JunOS
+   - Documentation: docs/plugins/interface_errors_plugin/
+
+7. environment_status_plugin.py
+   - Display Name: Environment Health Check
+   - Category: Discovery
+   - Version: 1.0.0
+   - Description: Temperature, fan, and power supply monitoring
+   - Platforms: Cisco IOS, IOS-XE, NXOS, Juniper JunOS
+   - Documentation: docs/plugins/environment_status_plugin/
+
+8. stp_topology_visualizer.py
+   - Display Name: STP Topology Visualizer
+   - Category: Troubleshooting
+   - Version: 1.0.1
+   - Description: Visualizes Spanning-Tree topology, Root Bridge location,
+                  and Blocked/Forwarding ports
+   - Platforms: Cisco IOS, IOS-XE, NXOS, Juniper JunOS
+   - Documentation: (inline)
+
+9. unused_trunk_pruner.py
+   - Display Name: Unused Trunk VLAN Pruner
+   - Category: Cleanup
+   - Version: 1.0.1
+   - Description: Identifies 'Ghost' VLANs allowed on trunk ports but
+                  missing from the switch database
+   - Platforms: Cisco IOS, IOS-XE, NXOS (Juniper partial)
+   - Documentation: docs/plugins/unused_trunk_pruner/
+
+10. standards_validator.py
+   - Display Name: Standards Validator
+   - Category: Compliance
+   - Version: 1.0.0
+   - Description: Compares live device config against your organization's
+                  standards policy library (YAML). Reports violations with
+                  exact remediation commands. Read-only.
+   - Platforms: Cisco IOS, IOS-XE, NXOS, Juniper JunOS
+   - Documentation: docs/plugins/standards_validator/
+   - Policy Library: policies/standards.yaml
+
+11. vpc_domain_plugin.py
+   - Display Name: vPC Domain Analysis
+   - Category: Audit
+   - Version: 2.3.1
+   - Description: Enhanced vPC domain analysis with comprehensive vPC member display
+   - Platforms: Cisco NXOS
+   - Documentation: docs/plugins/vpc_domain_plugin/
+
+12. network_discovery.py
+   - Display Name: Network Discovery & Crawl
+   - Category: Discovery
+   - Version: 1.0.0
+   - Description: Recursively crawl CDP/LLDP neighbors starting from a seed device
+   - Platforms: Cisco IOS, IOS-XE, NXOS, Juniper JunOS
+   - Documentation: docs/plugins/network_discovery/
+
+13. config_templates.py
+   - Display Name: Configuration Templates
+   - Category: Template
+   - Version: 1.0.0
+   - Description: Safe, read-only Jinja2 config template generator
+   - Platforms: All
+   - Documentation: docs/plugins/config_templates/
+
+================================================================================
+PLUGIN DOCUMENTATION
+================================================================================
+
+Each plugin includes 6 documentation files:
+
+1. README.md - Usage instructions and examples
+2. RELEASE_NOTES.md - Version history and release details
+3. PROMPT.md - Creation and modification instructions
+4. CHANGELOG.md - Detailed changelog following Keep a Changelog format
+5. TEST_RESULTS.md - QA validation and test results
+6. COMPATIBILITY.md - Platform support matrix
+
+All documentation is located in: docs/plugins/{plugin_id}/
+
+Version archives are located in: docs/plugins/{plugin_id}/versions/
+
+================================================================================
+PLUGIN USAGE
+================================================================================
+
+1. All plugin files are in the /plugins folder
+2. To activate a plugin:
+   a. Open the web interface at http://127.0.0.1:5000
+   b. Click the "Plugin Tools" tab
+   c. Click "Reload Registry" to see available plugins
+   d. Select a plugin from the list
+   e. Fill in required parameters
+   f. Click "Execute Plugin"
+
+3. Plugins are validated by the Gatekeeper system before execution
+4. Previous versions can be restored via the Rollback Manager
+
+================================================================================
+HARDCODED BUILD POLICY
+================================================================================
+
+The following are MANDATORY for all offline builds:
+
+✅ ALL plugins from modules/plugins/ are included
+✅ NO plugin exclusions are permitted
+✅ Plugins are copied to dist_package/plugins/
+✅ Plugin documentation is included in dist_package/docs/plugins/
+✅ Users receive complete set - they decide what to use
+✅ Build script validates all plugins are present
+✅ Spec file includes entire plugins directory
+
+This policy ensures:
+- Complete offline functionality (no internet required)
+- Full documentation availability
+- Consistent version tracking across the platform
+- Complete rollback capability for all versions
+- Audit compliance
+
+See: docs/00_MASTER/PLUGIN_BUNDLING_POLICY.md
+
+================================================================================
+ADDING NEW PLUGINS TO FUTURE BUILDS
+================================================================================
+
+When new plugins are created:
+
+1. Create plugin file in modules/plugins/{plugin_id}.py
+2. Create documentation in docs/plugins/{plugin_id}/ (6 files)
+3. Add plugin to build_scripts/NetworkSwissToolPro_v6.9.22_OFFLINE.spec hiddenimports
+4. Update this manifest (PLUGINS_INCLUDED.txt)
+5. Rebuild distribution package
+
+The new plugin will automatically be included in the next build.
+
+================================================================================
+VALIDATION
+================================================================================
+
+To validate this distribution package:
+
+1. Check plugins/ folder contains all 13 .py files
+2. Check docs/plugins/ folder contains 13 plugin documentation folders
+3. Run: python test_plugins.py (should find 13+ plugins)
+4. Verify each plugin has valid METADATA
+
+================================================================================
+VERSION: 6.9.22
+MANIFEST DATE: 2026-05-31
+POLICY VERSION: 1.0.0
+TOTAL PLUGINS: 13
+
+END OF MANIFEST
+================================================================================

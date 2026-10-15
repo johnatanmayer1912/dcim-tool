@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>00 App shell — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 00</strong>
+    <span>Static HTML — no Flask. Not the live console.</span>
+    <a href="index.html">All demos</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-on" href="06-settings-vault.html">
+          <span class="ico" aria-hidden="true">●</span> Vault UNLOCKED
+        </a>
+        <label class="field inline">
+          <span>Credential</span>
+          <select aria-label="Named credential set">
+            <option selected>lab-ops (ssh)</option>
+            <option>core-ro (ssh)</option>
+          </select>
+        </label>
+        <label class="field inline">
+          <span>Scope</span>
+          <select aria-label="Target scope">
+            <option selected>Group DIST — 12 devices</option>
+            <option>Bulk — 20 devices</option>
+            <option>Single CORE-01</option>
+          </select>
+        </label>
+      </div>
+      <p class="freshness">Last L2: 14m · Issues: 3 · Overlay: none · Live SSH overlay: not started</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+      <details>
+        <summary>More</summary>
+        <div class="card">
+          <button type="button" class="danger">Stop EXE</button>
+          <p class="muted">Stop lives here so it is not next to Import.</p>
+        </div>
+      </details>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html">Maps <span class="badge" title="3 link issues">3</span><span class="kbd">2</span></a>
+      <a href="03-find.html">Find <span class="kbd">3</span></a>
+      <a href="04-change.html">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>App shell</h1>
+          <p class="lede">Persistent chrome replaces the left password rail. Six jobs replace eleven tabs. This page is idle until you pick a task-strip state.</p>
+        </div>
+        <div class="title-actions">
+          <button type="button" id="btn-inspector" aria-expanded="true">Hide inspector</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Task-strip states</h2>
+        <p class="muted">Cancel is enabled only while a job is running. Cancelled discovery is partial, not complete truth.</p>
+        <div class="title-actions">
+          <button type="button" onclick="nstDemoSetTask('idle')">Idle</button>
+          <button type="button" class="primary" onclick="nstDemoSetTask('running')">Running</button>
+          <button type="button" onclick="nstDemoSetTask('cancelled')">Cancelled</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>What this chrome must always show</h2>
+        <ul>
+          <li>Vault pill (LOCKED amber / UNLOCKED plain) — no password</li>
+          <li>Named credential set (kind <code>ssh</code> only in this demo)</li>
+          <li>Scope with device count after parse (12 DIST)</li>
+          <li>Freshness of last map / overlay / Live SSH sample (not SNMP)</li>
+          <li>Cancel for the running job; Stop EXE in overflow</li>
+        </ul>
+      </div>
+      <script type="application/json" id="sample-data">
+{"scope":{"group":"DIST","device_count":12},"vault":"UNLOCKED","credential":"lab-ops","issues":3}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Inspector</h2>
+      <p>Closed on Inventory until a row is selected. Here it explains chrome:</p>
+      <dl>
+        <dt>Decision</dt>
+        <dd>Is chrome enough to kill the sidebar password boxes?</dd>
+        <dt>Scope engine</dt>
+        <dd>Same <code>filter_inventory()</code> — bulk / group / single. No fourth targeting mode.</dd>
+        <dt>Honesty</dt>
+        <dd>Physical view is bidirectional CDP/LLDP, not a cable cert.</dd>
+      </dl>
+    </aside>
+  </div>
+  <footer class="task-strip" aria-live="polite">
+    <span id="task-strip-body"><span class="idle">No running job</span></span>
+    <button type="button" id="btn-cancel-strip" disabled>Cancel</button>
+  </footer>
+  <script src="nst-demo.js"></script>
+</body>
+</html>

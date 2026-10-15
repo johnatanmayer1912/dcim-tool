@@ -1,0 +1,827 @@
+{
+  "phase": "before",
+  "timestamp": "2026-08-24T05:53:35.962Z",
+  "pages": 9,
+  "totalViolations": 35,
+  "results": [
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 4,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 7,
+          "targets": [
+            [
+              "#nst-freshness"
+            ],
+            [
+              "#btn-chrome-stop"
+            ],
+            [
+              ".sidebar-about-label"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              "#ws-inventory > .nst-hub > .lede"
+            ]
+          ]
+        },
+        {
+          "id": "landmark-complementary-is-top-level",
+          "impact": "moderate",
+          "description": "Ensure the complementary landmark or aside is at top level",
+          "help": "Aside should not be contained in another landmark",
+          "nodes": 1,
+          "targets": [
+            [
+              "aside"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 4,
+          "targets": [
+            [
+              "#sidebar-brand-link"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              ".form-row:nth-child(2)"
+            ],
+            [
+              "#filter_group"
+            ]
+          ]
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "description": "Ensure select element has an accessible name",
+          "help": "Select element must have an accessible name",
+          "nodes": 2,
+          "targets": [
+            [
+              "#target_mode"
+            ],
+            [
+              "#group_filter"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "inventory"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 4,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 5,
+          "targets": [
+            [
+              "#nst-freshness"
+            ],
+            [
+              "#btn-chrome-stop"
+            ],
+            [
+              ".sidebar-about-label"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              "#ws-maps > .nst-hub > .lede"
+            ]
+          ]
+        },
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "help": "Heading levels should only increase by one",
+          "nodes": 1,
+          "targets": [
+            [
+              ".nst-map-hero-card > div:nth-child(1) > div:nth-child(1) > h6"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 4,
+          "targets": [
+            [
+              "#sidebar-brand-link"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              ".form-row:nth-child(2)"
+            ],
+            [
+              "#filter_group"
+            ]
+          ]
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "description": "Ensure select element has an accessible name",
+          "help": "Select element must have an accessible name",
+          "nodes": 2,
+          "targets": [
+            [
+              "#target_mode"
+            ],
+            [
+              "#group_filter"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "maps"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 4,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 13,
+          "targets": [
+            [
+              "#nst-freshness"
+            ],
+            [
+              "#btn-chrome-stop"
+            ],
+            [
+              ".sidebar-about-label"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              "#ws-maps > .nst-hub > .lede"
+            ]
+          ]
+        },
+        {
+          "id": "label",
+          "impact": "critical",
+          "description": "Ensure every form element has a label",
+          "help": "Form elements must have labels",
+          "nodes": 1,
+          "targets": [
+            [
+              "#disc-timeout"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 4,
+          "targets": [
+            [
+              "#sidebar-brand-link"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              ".form-row:nth-child(2)"
+            ],
+            [
+              "#filter_group"
+            ]
+          ]
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "description": "Ensure select element has an accessible name",
+          "help": "Select element must have an accessible name",
+          "nodes": 3,
+          "targets": [
+            [
+              "#target_mode"
+            ],
+            [
+              "#group_filter"
+            ],
+            [
+              "#disc-protocol"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 2
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 9
+        }
+      ],
+      "label": "maps_discovery"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 4,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 8,
+          "targets": [
+            [
+              "#nst-freshness"
+            ],
+            [
+              "#btn-chrome-stop"
+            ],
+            [
+              ".sidebar-about-label"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              "#ws-find > .nst-hub > .lede"
+            ]
+          ]
+        },
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "help": "Heading levels should only increase by one",
+          "nodes": 1,
+          "targets": [
+            [
+              ".tab-view-title"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 4,
+          "targets": [
+            [
+              "#sidebar-brand-link"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              ".form-row:nth-child(2)"
+            ],
+            [
+              "#filter_group"
+            ]
+          ]
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "description": "Ensure select element has an accessible name",
+          "help": "Select element must have an accessible name",
+          "nodes": 2,
+          "targets": [
+            [
+              "#target_mode"
+            ],
+            [
+              "#group_filter"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "find"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 4,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 10,
+          "targets": [
+            [
+              "#nst-freshness"
+            ],
+            [
+              "#btn-chrome-stop"
+            ],
+            [
+              ".sidebar-about-label"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              "#ws-change > .nst-hub > .lede"
+            ]
+          ]
+        },
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "help": "Heading levels should only increase by one",
+          "nodes": 1,
+          "targets": [
+            [
+              "#tab-vlan > h5"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 4,
+          "targets": [
+            [
+              "#sidebar-brand-link"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              ".form-row:nth-child(2)"
+            ],
+            [
+              "#filter_group"
+            ]
+          ]
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "description": "Ensure select element has an accessible name",
+          "help": "Select element must have an accessible name",
+          "nodes": 2,
+          "targets": [
+            [
+              "#target_mode"
+            ],
+            [
+              "#group_filter"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "change"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 3,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 8,
+          "targets": [
+            [
+              "#nst-freshness"
+            ],
+            [
+              "#btn-chrome-stop"
+            ],
+            [
+              ".sidebar-about-label"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              "#ws-evidence > .nst-hub > .lede:nth-child(2)"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 4,
+          "targets": [
+            [
+              "#sidebar-brand-link"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              ".form-row:nth-child(2)"
+            ],
+            [
+              "#filter_group"
+            ]
+          ]
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "description": "Ensure select element has an accessible name",
+          "help": "Select element must have an accessible name",
+          "nodes": 2,
+          "targets": [
+            [
+              "#target_mode"
+            ],
+            [
+              "#group_filter"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "evidence"
+    },
+    {
+      "url": "http://127.0.0.1:5051/",
+      "violationCount": 5,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 6,
+          "targets": [
+            [
+              "#nst-freshness"
+            ],
+            [
+              "#btn-chrome-stop"
+            ],
+            [
+              ".sidebar-about-label"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              "#ws-settings > .nst-hub > .lede"
+            ]
+          ]
+        },
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "help": "Heading levels should only increase by one",
+          "nodes": 1,
+          "targets": [
+            [
+              "#tab-credentials > .align-items-start.mb-4.justify-content-between > div:nth-child(1) > h5"
+            ]
+          ]
+        },
+        {
+          "id": "label",
+          "impact": "critical",
+          "description": "Ensure every form element has a label",
+          "help": "Form elements must have labels",
+          "nodes": 1,
+          "targets": [
+            [
+              "#import-file"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 4,
+          "targets": [
+            [
+              "#sidebar-brand-link"
+            ],
+            [
+              ".settings-label"
+            ],
+            [
+              ".form-row:nth-child(2)"
+            ],
+            [
+              "#filter_group"
+            ]
+          ]
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "description": "Ensure select element has an accessible name",
+          "help": "Select element must have an accessible name",
+          "nodes": 2,
+          "targets": [
+            [
+              "#target_mode"
+            ],
+            [
+              "#group_filter"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 8
+        }
+      ],
+      "label": "settings"
+    },
+    {
+      "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/maps/standard_l2_overlay_replay.html",
+      "violationCount": 4,
+      "incompleteCount": 2,
+      "violations": [
+        {
+          "id": "html-has-lang",
+          "impact": "serious",
+          "description": "Ensure every HTML document has a lang attribute",
+          "help": "<html> element must have a lang attribute",
+          "nodes": 1,
+          "targets": [
+            [
+              "html"
+            ]
+          ]
+        },
+        {
+          "id": "landmark-one-main",
+          "impact": "moderate",
+          "description": "Ensure the document has a main landmark",
+          "help": "Document should have one main landmark",
+          "nodes": 1,
+          "targets": [
+            [
+              "html"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 13,
+          "targets": [
+            [
+              ".nst-top-row"
+            ],
+            [
+              "label[for=\"searchInput\"]"
+            ],
+            [
+              "#searchInput"
+            ],
+            [
+              "#nst-util-toggle-wrap"
+            ],
+            [
+              "#nst-util-mode-chip"
+            ]
+          ]
+        },
+        {
+          "id": "scrollable-region-focusable",
+          "impact": "serious",
+          "description": "Ensure elements that have scrollable content are accessible by keyboard",
+          "help": "Scrollable region must have keyboard access",
+          "nodes": 1,
+          "targets": [
+            [
+              ".nst-conn-table-wrap"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "impact": null,
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 0
+        }
+      ],
+      "label": "map_standard_l2"
+    },
+    {
+      "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/maps/discovery_command_center.html",
+      "violationCount": 3,
+      "incompleteCount": 1,
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 5,
+          "targets": [
+            [
+              "#nst-util-chrome > span:nth-child(3)"
+            ],
+            [
+              ".disc-ps-note:nth-child(6)"
+            ],
+            [
+              ".disc-ps-jumps > span"
+            ],
+            [
+              ".disc-ps-note:nth-child(8)"
+            ],
+            [
+              "#nst-freshness"
+            ]
+          ]
+        },
+        {
+          "id": "landmark-one-main",
+          "impact": "moderate",
+          "description": "Ensure the document has a main landmark",
+          "help": "Document should have one main landmark",
+          "nodes": 1,
+          "targets": [
+            [
+              "html"
+            ]
+          ]
+        },
+        {
+          "id": "region",
+          "impact": "moderate",
+          "description": "Ensure all page content is contained by landmarks",
+          "help": "All page content should be contained by landmarks",
+          "nodes": 5,
+          "targets": [
+            [
+              ".disc-legend"
+            ],
+            [
+              "#nst-util-chrome"
+            ],
+            [
+              "#nst-util-banner"
+            ],
+            [
+              ".nst-layer-switch"
+            ],
+            [
+              "#disc-panel-overview"
+            ]
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 2
+        }
+      ],
+      "label": "map_discovery"
+    }
+  ]
+}

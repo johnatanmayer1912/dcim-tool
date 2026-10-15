@@ -1,0 +1,8 @@
+{
+  "platform": "cisco_nxos",
+  "hostname": "leaf-nx-02",
+  "path": "sys/intf/phys-[eth1/2]/dbgStats/inOctets",
+  "interface": "Ethernet1/2",
+  "value": {"nested": true},
+  "timestamp": "2026-08-20T18:03:00Z"
+}

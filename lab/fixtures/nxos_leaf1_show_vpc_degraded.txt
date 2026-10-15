@@ -1,0 +1,33 @@
+Legend:
+                (*) - local vPC is down, forwarding via vPC peer-link
+
+vPC domain id                     : 10
+Peer status                       : peer adjacency formed failed (peer-keepalive down)
+vPC keep-alive status             : Suspended (Destination IP not reachable)
+Configuration consistency status  : success
+Per-vlan consistency status       : success
+Type-2 consistency status         : success
+vPC role                          : primary, operational secondary
+Number of vPCs configured         : 2
+Peer Gateway                      : Enabled
+Dual-active excluded VLANs        : -
+Graceful Consistency Check        : Enabled
+Auto-recovery status              : Enabled, timer is off.(timeout = 240s)
+Delay-restore status              : Timer is off.(timeout = 30s)
+Delay-restore SVI status          : Timer is off.(timeout = 10s)
+Operational Layer3 Peer-router    : Disabled
+Virtual-peerlink mode             : Disabled
+
+vPC Peer-link status
+---------------------------------------------------------------------
+id    Port   Status Active vlans
+--    ----   ------ -------------------------------------------------
+1     Po1    down   -
+
+
+vPC status
+----------------------------------------------------------------------------
+Id    Port          Status Consistency Reason                Active vlans
+--    ------------  ------ ----------- ------                ---------------
+10    Po10          down   success     peer not reachable    -
+20    Po20          down   success     peer not reachable    -

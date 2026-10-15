@@ -1,0 +1,60 @@
+# Network Swiss Tool Pro — real NX-OS Clos (Containerlab + vrnetlab)
+#
+# PREREQS (host):
+#   - Docker Desktop / Linux Docker with KVM (Linux preferred for N9Kv)
+#   - containerlab (https://containerlab.dev)
+#   - Local image built from Cisco Nexus 9000v qcow2 (NOT redistributed here)
+#     See: lab/containerlab/build-n9kv-image.sh
+#
+# DEPLOY:
+#   export N9KV_IMAGE=vrnetlab/cisco_n9kv:lite.10.5.2.F   # your tag
+#   ./lab/containerlab/deploy.sh
+#
+# RESOURCES (lite): ~6 GB RAM + 2 vCPU per switch × 4 ≈ 24 GB RAM recommended
+#
+name: nst-clos
+
+mgmt:
+  network: nst-clos-mgmt
+  ipv4-subnet: 172.28.28.0/24
+
+topology:
+  defaults:
+    kind: cisco_n9kv
+  kinds:
+    cisco_n9kv:
+      image: ${N9KV_IMAGE:-vrnetlab/cisco_n9kv:latest}
+      env:
+        QEMU_MEMORY: 6144
+        QEMU_SMP: 2
+  nodes:
+    spine1:
+      mgmt-ipv4: 172.28.28.11
+      startup-config: configs/spine1.cfg
+    spine2:
+      mgmt-ipv4: 172.28.28.12
+      startup-config: configs/spine2.cfg
+    leaf1:
+      mgmt-ipv4: 172.28.28.21
+      startup-config: configs/leaf1.cfg
+    leaf2:
+      mgmt-ipv4: 172.28.28.22
+      startup-config: configs/leaf2.cfg
+    # Optional Linux hosts for L2 adjacency noise (no NX-OS)
+    host1:
+      kind: linux
+      image: alpine:3.20
+      exec:
+        - sleep infinity
+    host2:
+      kind: linux
+      image: alpine:3.20
+      exec:
+        - sleep infinity
+  links:
+    - endpoints: ["spine1:eth1", "leaf1:eth1"]
+    - endpoints: ["spine1:eth2", "leaf2:eth1"]
+    - endpoints: ["spine2:eth1", "leaf1:eth2"]
+    - endpoints: ["spine2:eth2", "leaf2:eth2"]
+    - endpoints: ["leaf1:eth3", "host1:eth1"]
+    - endpoints: ["leaf2:eth3", "host2:eth1"]

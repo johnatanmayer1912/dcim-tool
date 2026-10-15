@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Manager - Split View Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #1a1a2e;
+            color: #eaeaea;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+        }
+
+        .top-bar {
+            background: #16213e;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #0f3460;
+        }
+
+        .top-bar h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #eaeaea;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #e94560;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #d63350;
+        }
+
+        .btn-secondary {
+            background: #0f3460;
+            color: #eaeaea;
+        }
+
+        .btn-secondary:hover {
+            background: #1a4a8a;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr 400px;
+            overflow: hidden;
+        }
+
+        .sidebar-left {
+            background: #16213e;
+            padding: 16px;
+            border-right: 1px solid #0f3460;
+            overflow-y: auto;
+        }
+
+        .sidebar-right {
+            background: #16213e;
+            padding: 16px;
+            border-left: 1px solid #0f3460;
+            overflow-y: auto;
+        }
+
+        .center-content {
+            background: #1a1a2e;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #aaa;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0f3460;
+            border: 1px solid #1a4a8a;
+            border-radius: 6px;
+            color: #eaeaea;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        .interface-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .interface-item {
+            background: #0f3460;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .interface-item:hover {
+            background: #1a4a8a;
+        }
+
+        .interface-item.selected {
+            border-color: #e94560;
+            background: #1a4a8a;
+        }
+
+        .interface-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .interface-item-status {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .interface-item-status.up {
+            color: #4ade80;
+        }
+
+        .interface-item-status.down {
+            color: #f87171;
+        }
+
+        .interface-detail {
+            background: #0f3460;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .interface-detail h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #eaeaea;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .detail-item {
+            background: #1a4a8a;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #eaeaea;
+        }
+
+        .config-editor {
+            background: #0f3460;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .config-editor textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            background: #1a1a2e;
+            border: 1px solid #1a4a8a;
+            border-radius: 6px;
+            color: #eaeaea;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            resize: vertical;
+        }
+
+        .config-editor textarea:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        .validation-panel {
+            background: #064e3b;
+            border: 1px solid #059669;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .validation-panel.error {
+            background: #7f1d1d;
+            border-color: #dc2626;
+        }
+
+        .validation-panel h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #4ade80;
+        }
+
+        .validation-panel.error h4 {
+            color: #f87171;
+        }
+
+        .validation-item {
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #4ade80;
+        }
+
+        .validation-panel.error .validation-item {
+            color: #f87171;
+        }
+
+        .deployment-panel {
+            background: #1e3a8a;
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .deployment-panel h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #60a5fa;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #1a4a8a;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #e94560;
+            transition: width 0.3s;
+        }
+
+        .deployment-log {
+            font-size: 11px;
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .stat-badge {
+            background: #0f3460;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-badge .value {
+            color: #e94560;
+            font-size: 16px;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .filter-tag {
+            padding: 6px 12px;
+            background: #0f3460;
+            border: 1px solid #1a4a8a;
+            border-radius: 16px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover,
+        .filter-tag.active {
+            background: #e94560;
+            border-color: #e94560;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .quick-action-btn {
+            padding: 12px;
+            background: #0f3460;
+            border: 1px solid #1a4a8a;
+            border-radius: 8px;
+            color: #eaeaea;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-action-btn:hover {
+            background: #1a4a8a;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #0f3460;
+        }
+
+        .tab-btn {
+            padding: 10px 16px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #888;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: #eaeaea;
+        }
+
+        .tab-btn.active {
+            color: #e94560;
+            border-bottom-color: #e94560;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="top-bar">
+            <h1>🔧 Interface Manager</h1>
+            <div class="top-bar-actions">
+                <button class="btn btn-secondary">🔄 Refresh</button>
+                <button class="btn btn-secondary">📤 Export</button>
+                <button class="btn btn-secondary">📥 Import</button>
+                <button class="btn btn-primary">⚡ Quick Deploy</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar-left">
+                <div class="section-title">Device Connection</div>
+                <div class="form-group">
+                    <label>Device IP</label>
+                    <input type="text" placeholder="192.168.1.1">
+                </div>
+                <div class="form-group">
+                    <label>Device Type</label>
+                    <select>
+                        <option>Cisco NX-OS</option>
+                        <option>Cisco IOS</option>
+                        <option>Cisco IOS-XE</option>
+                        <option>Juniper JUNOS</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 24px;">Connect</button>
+
+                <div class="section-title">Filter</div>
+                <div class="filter-tags">
+                    <div class="filter-tag active">All</div>
+                    <div class="filter-tag">Up</div>
+                    <div class="filter-tag">Down</div>
+                    <div class="filter-tag">Configured</div>
+                </div>
+
+                <div class="section-title">Quick Actions</div>
+                <div class="quick-actions">
+                    <button class="quick-action-btn">🔍 Search</button>
+                    <button class="quick-action-btn">📋 Copy Config</button>
+                    <button class="quick-action-btn">🔄 Rediscover</button>
+                    <button class="quick-action-btn">📊 Statistics</button>
+                </div>
+            </div>
+
+            <div class="center-content">
+                <div class="stats-bar">
+                    <div class="stat-badge">Total: <span class="value">24</span></div>
+                    <div class="stat-badge">Up: <span class="value">18</span></div>
+                    <div class="stat-badge">Down: <span class="value">6</span></div>
+                    <div class="stat-badge">Configured: <span class="value">3</span></div>
+                </div>
+
+                <div class="section-title">Interfaces</div>
+                <div class="interface-list">
+                    <div class="interface-item selected">
+                        <div class="interface-item-name">Ethernet1/1</div>
+                        <div class="interface-item-status up">Up - 10G - VLAN 10</div>
+                    </div>
+                    <div class="interface-item">
+                        <div class="interface-item-name">Ethernet1/2</div>
+                        <div class="interface-item-status up">Up - 10G - VLAN 20</div>
+                    </div>
+                    <div class="interface-item">
+                        <div class="interface-item-name">Ethernet1/3</div>
+                        <div class="interface-item-status down">Down - 1G</div>
+                    </div>
+                    <div class="interface-item">
+                        <div class="interface-item-name">Ethernet1/4</div>
+                        <div class="interface-item-status up">Up - 1G - VLAN 30</div>
+                    </div>
+                    <div class="interface-item">
+                        <div class="interface-item-name">Port-channel1</div>
+                        <div class="interface-item-status up">Up - 20G</div>
+                    </div>
+                    <div class="interface-item">
+                        <div class="interface-item-name">Port-channel2</div>
+                        <div class="interface-item-status up">Up - 20G</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-right">
+                <div class="tab-nav">
+                    <button class="tab-btn active">Details</button>
+                    <button class="tab-btn">Config</button>
+                    <button class="tab-btn">Validate</button>
+                    <button class="tab-btn">Deploy</button>
+                </div>
+
+                <div class="tab-content active">
+                    <div class="interface-detail">
+                        <h3>Ethernet1/1</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Status</div>
+                                <div class="detail-value" style="color: #4ade80;">Up</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Speed</div>
+                                <div class="detail-value">10G</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Duplex</div>
+                                <div class="detail-value">Full</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">VLAN</div>
+                                <div class="detail-value">10</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">MTU</div>
+                                <div class="detail-value">9000</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Description</div>
+                                <div class="detail-value">Server Port</div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary">View Config</button>
+                            <button class="btn btn-primary">Edit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <div class="config-editor">
+                        <textarea placeholder="Enter configuration...
+interface Ethernet1/1
+  description Server Port
+  switchport mode access
+  switchport access vlan 10
+  spanning-tree portfast"></textarea>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary">Clear</button>
+                        <button class="btn btn-primary">Validate</button>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <div class="validation-panel">
+                        <h4>✓ Configuration Valid</h4>
+                        <div class="validation-item">✓ Syntax check passed</div>
+                        <div class="validation-item">✓ Platform compatible</div>
+                        <div class="validation-item">✓ No conflicts</div>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <div class="deployment-panel">
+                        <h4>Deployment Status</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%;"></div>
+                        </div>
+                        <div class="deployment-log">
+                            [12:34:56] Creating backup...<br>
+                            [12:34:58] Configuring...<br>
+                            [12:35:02] Verifying...
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary">Cancel</button>
+                        <button class="btn btn-primary">Deploy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple demo script - not changing any code
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                tabContents[index].classList.add('active');
+            });
+        });
+
+        const interfaceItems = document.querySelectorAll('.interface-item');
+        interfaceItems.forEach(item => {
+            item.addEventListener('click', () => {
+                interfaceItems.forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+            });
+        });
+
+        const filterTags = document.querySelectorAll('.filter-tag');
+        filterTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                filterTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

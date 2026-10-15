@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cisco EOL/EOS Catalog - Demo</title>
+    <style>
+        :root {
+            --accent-primary: #007aff;
+            --accent-secondary: #5856d6;
+            --accent-gradient: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            --bg-deep: #000000;
+            --bg-surface: #1c1c1e;
+            --bg-glass: rgba(28, 28, 30, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --radius-apple: 14px;
+            --radius-pill: 20px;
+            --shadow-premium: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            padding: 24px;
+            font-size: 13px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        h2 {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 26px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stats-summary {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            box-shadow: var(--shadow-premium);
+        }
+
+        /* Asset Report Table */
+        .asset-table-container {
+            background: var(--bg-surface);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: rgba(0, 122, 255, 0.1);
+            color: var(--accent-primary);
+            font-weight: 600;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 2px solid var(--accent-primary);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Clickable PID */
+        .nst-clickable-pid {
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .nst-clickable-pid:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Status Badges */
+        .nst-status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nst-status-active {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+
+        .nst-status-expired {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
+        .nst-status-warning {
+            background: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+            border: 1px solid #f39c12;
+        }
+
+        .nst-status-unknown {
+            background: rgba(149, 165, 166, 0.2);
+            color: #95a5a6;
+            border: 1px solid #95a5a6;
+        }
+
+        /* Modal */
+        .nst-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nst-modal-content {
+            background: var(--bg-surface);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 85vh;
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-premium);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nst-modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%);
+        }
+
+        .nst-modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .nst-modal-close {
+            background: var(--border-glass);
+            border: none;
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .nst-modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Search and Filter Toolbar */
+        .nst-toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-apple);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .toolbar input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 13px;
+            outline: none;
+            min-width: 240px;
+            flex: 1;
+            transition: all 0.2s;
+        }
+
+        .toolbar input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+
+        .toolbar button {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toolbar button:hover {
+            background: #0071e3;
+        }
+
+        .toolbar button.secondary {
+            background: #e8e8ed;
+            color: #1d1d1f;
+        }
+
+        .toolbar button.secondary:hover {
+            background: #d2d2d7;
+        }
+
+        .nst-filter-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nst-filter-btn {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .nst-filter-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .nst-filter-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Highlighted row */
+        .nst-highlighted-row {
+            background: rgba(0, 122, 255, 0.2) !important;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        /* Export button */
+        .export-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        /* Info box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.1) 0%, rgba(88, 86, 214, 0.1) 100%);
+            border: 1px solid var(--accent-primary);
+            border-radius: var(--radius-apple);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-box h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--accent-primary);
+        }
+
+        .info-box p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>🔍 Cisco Asset & Warranty Report</h2>
+        <div class="stats-summary">Demo Mode • 3 Devices • Click PID to view catalog</div>
+    </div>
+
+    <div class="info-box">
+        <h3>📋 Demo Mode Instructions</h3>
+        <p>This is a demonstration of the Cisco EOL/EOS catalog feature. Click on any <strong style="color: var(--accent-primary);">Product ID (PID)</strong> in the table below to open the interactive model catalog modal. The catalog shows lifecycle dates, warranty status, and allows searching/filtering across all Cisco models.</p>
+    </div>
+
+    <div class="asset-table-container">
+        <div class="section-title">Asset Inventory (Click PID for Details)</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Host</th>
+                    <th>Hostname</th>
+                    <th>Product ID (PID)</th>
+                    <th>Serial Number</th>
+                    <th>Software Version</th>
+                    <th>Warranty Status</th>
+                    <th>End of Life</th>
+                    <th>End of Support</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>192.168.1.1</td>
+                    <td>switch-core-01</td>
+                    <td><a class="nst-clickable-pid" onclick="openCiscoEolCatalog('C9300-48P')">C9300-48P</a></td>
+                    <td>FOC1234ABCD</td>
+                    <td>17.9.4</td>
+                    <td><span class="nst-status-badge nst-status-active">Active</span></td>
+                    <td>2030-12-01</td>
+                    <td>2033-12-01</td>
+                </tr>
+                <tr>
+                    <td>192.168.1.2</td>
+                    <td>switch-dist-01</td>
+                    <td><a class="nst-clickable-pid" onclick="openCiscoEolCatalog('C9500-48Y4C')">C9500-48Y4C</a></td>
+                    <td>FOC5678EFGH</td>
+                    <td>17.9.4</td>
+                    <td><span class="nst-status-badge nst-status-active">Active</span></td>
+                    <td>2032-06-01</td>
+                    <td>2035-06-01</td>
+                </tr>
+                <tr>
+                    <td>192.168.1.3</td>
+                    <td>router-edge-01</td>
+                    <td><a class="nst-clickable-pid" onclick="openCiscoEolCatalog('ISR4451-X/K9')">ISR4451-X/K9</a></td>
+                    <td>FTW9123XYZ</td>
+                    <td>16.12.4</td>
+                    <td><span class="nst-status-badge nst-status-warning">Expiring Soon</span></td>
+                    <td>2026-03-01</td>
+                    <td>2027-03-01</td>
+                </tr>
+                <tr>
+                    <td>192.168.1.4</td>
+                    <td>switch-legacy-01</td>
+                    <td><a class="nst-clickable-pid" onclick="openCiscoEolCatalog('WS-C3750X-48S')">WS-C3750X-48S</a></td>
+                    <td>FDO1011ABC</td>
+                    <td>15.2(2)E7</td>
+                    <td><span class="nst-status-badge nst-status-expired">Expired</span></td>
+                    <td>2019-11-30</td>
+                    <td>2020-11-30</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div class="nst-modal-overlay" id="nst-cisco-eol-modal">
+        <div class="nst-modal-content">
+            <div class="nst-modal-header">
+                <div class="nst-modal-title">📚 Cisco EOL/EOS Model Catalog</div>
+                <button class="nst-modal-close" onclick="closeCiscoEolCatalog()">×</button>
+            </div>
+            <div class="nst-modal-body">
+                <div class="nst-toolbar">
+                    <span style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">🔍</span>
+                    <input type="text" id="nst-eol-search" placeholder="Search by PID, model name..." oninput="filterCiscoEolCatalog()">
+                    <button class="secondary" onclick="clearCiscoEolSearch()">Clear</button>
+                    <span style="color: rgba(255,255,255,0.2);">|</span>
+                    <div class="nst-filter-btns">
+                        <button class="nst-filter-btn active" id="nst-btn-all" onclick="setCiscoEolFilter('all')">All</button>
+                        <button class="nst-filter-btn" id="nst-btn-active" onclick="setCiscoEolFilter('active')">Active</button>
+                        <button class="nst-filter-btn" id="nst-btn-expired" onclick="setCiscoEolFilter('expired')">Expired</button>
+                        <button class="nst-filter-btn" id="nst-btn-warning" onclick="setCiscoEolFilter('warning')">Expiring Soon</button>
+                    </div>
+                    <span style="color: rgba(255,255,255,0.2);">|</span>
+                    <button class="export-btn" onclick="exportCSV()">📥 Export CSV</button>
+                </div>
+
+                <table id="catalogTable">
+                    <thead>
+                        <tr>
+                            <th>PID</th>
+                            <th>Model Name</th>
+                            <th>End of Life</th>
+                            <th>End of Support</th>
+                            <th>End of Service</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nst-eol-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+
+                <div id="noResults" style="display: none; text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+                    <p>No models found matching your search.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo data - would come from SQLite database in production
+        const ciscoEolData = [
+            { pid: 'C9300-48P', name: 'Catalyst 9300 48-port PoE+', eol: '2030-12-01', eos: '2033-12-01', eosvc: '2036-12-01', status: 'active' },
+            { pid: 'C9300-24P', name: 'Catalyst 9300 24-port PoE+', eol: '2030-12-01', eos: '2033-12-01', eosvc: '2036-12-01', status: 'active' },
+            { pid: 'C9500-48Y4C', name: 'Catalyst 9500 48-port', eol: '2032-06-01', eos: '2035-06-01', eosvc: '2038-06-01', status: 'active' },
+            { pid: 'C9500-24Y4C', name: 'Catalyst 9500 24-port', eol: '2032-06-01', eos: '2035-06-01', eosvc: '2038-06-01', status: 'active' },
+            { pid: 'ISR4451-X/K9', name: 'ISR 4451-X Router', eol: '2026-03-01', eos: '2027-03-01', eosvc: '2028-03-01', status: 'warning' },
+            { pid: 'ISR4331/K9', name: 'ISR 4331 Router', eol: '2026-03-01', eos: '2027-03-01', eosvc: '2028-03-01', status: 'warning' },
+            { pid: 'WS-C3750X-48S', name: 'Catalyst 3750X 48-port', eol: '2019-11-30', eos: '2020-11-30', eosvc: '2021-11-30', status: 'expired' },
+            { pid: 'WS-C3750X-24S', name: 'Catalyst 3750X 24-port', eol: '2019-11-30', eos: '2020-11-30', eosvc: '2021-11-30', status: 'expired' },
+            { pid: 'N9K-C93180YC-FX', name: 'Nexus 93180YC', eol: '2034-01-01', eos: '2037-01-01', eosvc: '2040-01-01', status: 'active' },
+            { pid: 'N9K-C93180LC-FX', name: 'Nexus 93180LC', eol: '2034-01-01', eos: '2037-01-01', eosvc: '2040-01-01', status: 'active' },
+            { pid: 'ASR-1001-X', name: 'ASR 1001-X Router', eol: '2028-09-01', eos: '2029-09-01', eosvc: '2030-09-01', status: 'active' },
+            { pid: 'ASR-1002-X', name: 'ASR 1002-X Router', eol: '2028-09-01', eos: '2029-09-01', eosvc: '2030-09-01', status: 'active' },
+            { pid: 'C9200-48P', name: 'Catalyst 9200 48-port PoE+', eol: '2029-08-01', eos: '2032-08-01', eosvc: '2035-08-01', status: 'active' },
+            { pid: 'C9200-24P', name: 'Catalyst 9200 24-port PoE+', eol: '2029-08-01', eos: '2032-08-01', eosvc: '2035-08-01', status: 'active' },
+            { pid: 'WS-C3850-48XS', name: 'Catalyst 3850 48-port', eol: '2024-09-01', eos: '2025-09-01', eosvc: '2026-09-01', status: 'expired' },
+            { pid: 'WS-C3850-24XS', name: 'Catalyst 3850 24-port', eol: '2024-09-01', eos: '2025-09-01', eosvc: '2026-09-01', status: 'expired' },
+            { pid: 'C9404R', name: 'Catalyst 9404R', eol: '2035-03-01', eos: '2038-03-01', eosvc: '2041-03-01', status: 'active' },
+            { pid: 'C9407R', name: 'Catalyst 9407R', eol: '2035-03-01', eos: '2038-03-01', eosvc: '2041-03-01', status: 'active' },
+            { pid: 'N9K-C9336C-FX2', name: 'Nexus 9336C', eol: '2033-06-01', eos: '2036-06-01', eosvc: '2039-06-01', status: 'active' },
+            { pid: 'N9K-C9348GC-FXP', name: 'Nexus 9348GC', eol: '2033-06-01', eos: '2036-06-01', eosvc: '2039-06-01', status: 'active' },
+        ];
+
+        let ciscoEolFilter = 'all';
+        let ciscoEolHighlightedPid = null;
+
+        function openCiscoEolCatalog(pid) {
+            ciscoEolHighlightedPid = pid;
+            document.getElementById('nst-cisco-eol-modal').style.display = 'flex';
+            renderCiscoEolCatalog();
+            highlightCiscoEolRow(pid);
+        }
+
+        function closeCiscoEolCatalog() {
+            document.getElementById('nst-cisco-eol-modal').style.display = 'none';
+            ciscoEolHighlightedPid = null;
+        }
+
+        function getCiscoEolStatusBadge(status) {
+            const badges = {
+                'active': '<span class="nst-status-badge nst-status-active">Active</span>',
+                'expired': '<span class="nst-status-badge nst-status-expired">Expired</span>',
+                'warning': '<span class="nst-status-badge nst-status-warning">Expiring Soon</span>',
+                'unknown': '<span class="nst-status-badge nst-status-unknown">Unknown</span>'
+            };
+            return badges[status] || badges['unknown'];
+        }
+
+        function renderCiscoEolCatalog() {
+            const searchTerm = document.getElementById('nst-eol-search').value.toLowerCase();
+            const tbody = document.getElementById('nst-eol-body');
+            const noResults = document.getElementById('noResults');
+            
+            let filteredData = ciscoEolData.filter(item => {
+                const matchesSearch = item.pid.toLowerCase().includes(searchTerm) || 
+                                     item.name.toLowerCase().includes(searchTerm);
+                const matchesFilter = ciscoEolFilter === 'all' || item.status === ciscoEolFilter;
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            tbody.innerHTML = filteredData.map(item => `
+                <tr data-pid="${item.pid}" class="${item.pid === ciscoEolHighlightedPid ? 'nst-highlighted-row' : ''}">
+                    <td><strong>${item.pid}</strong></td>
+                    <td>${item.name}</td>
+                    <td>${item.eol}</td>
+                    <td>${item.eos}</td>
+                    <td>${item.eosvc}</td>
+                    <td>${getCiscoEolStatusBadge(item.status)}</td>
+                </tr>
+            `).join('');
+
+            if (ciscoEolHighlightedPid) {
+                highlightCiscoEolRow(ciscoEolHighlightedPid);
+            }
+        }
+
+        function highlightCiscoEolRow(pid) {
+            // Remove existing highlights
+            document.querySelectorAll('#nst-eol-body tr').forEach(row => {
+                row.classList.remove('nst-highlighted-row');
+            });
+            
+            // Add highlight to matching row
+            const row = document.querySelector(`tr[data-pid="${pid}"]`);
+            if (row) {
+                row.classList.add('nst-highlighted-row');
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function filterCiscoEolCatalog() {
+            renderCiscoEolCatalog();
+        }
+
+        function clearCiscoEolSearch() {
+            document.getElementById('nst-eol-search').value = '';
+            renderCiscoEolCatalog();
+        }
+
+        function setCiscoEolFilter(filter) {
+            ciscoEolFilter = filter;
+            
+            // Update button styles
+            document.querySelectorAll('.nst-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`nst-btn-${filter}`).classList.add('active');
+            
+            renderCiscoEolCatalog();
+        }
+
+        function exportCSV() {
+            const headers = ['PID', 'Model Name', 'End of Life', 'End of Support', 'End of Service', 'Status'];
+            const rows = ciscoEolData.map(item => [
+                item.pid,
+                item.name,
+                item.eol,
+                item.eos,
+                item.eosvc,
+                item.status
+            ]);
+            
+            const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cisco_eol_catalog.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeCiscoEolCatalog();
+            }
+        });
+
+        // Close modal on overlay click
+        document.getElementById('nst-cisco-eol-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'nst-cisco-eol-modal') {
+                closeCiscoEolCatalog();
+            }
+        });
+
+        // Initial render
+        renderCiscoEolCatalog();
+    </script>
+</body>
+</html>

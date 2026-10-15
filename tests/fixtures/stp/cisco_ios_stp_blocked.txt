@@ -1,0 +1,7 @@
+VLAN0100
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32768
+  Interface           Role Sts Cost      Prio.Nbr Type
+  ------------------- ---- --- --------- -------- --------------------------------
+  Gi1/0/1             Desg FWD 4         128.1    P2p
+  Gi1/0/2             Altn BLK 4         128.2    P2p

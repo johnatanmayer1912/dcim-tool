@@ -1,0 +1,76 @@
+{
+  "product": "Network Swiss Tool Pro",
+  "version": "7.2.2",
+  "date": "2026-08-23",
+  "results_folder": "docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/",
+  "final_verdict": "CONDITIONALLY_READY_OFFLINE_LOCALHOST_ONLY",
+  "honesty": {
+    "fixtures_are_not_live": true,
+    "release_gate": "BLOCKED",
+    "may_claim_enterprise_ready": false,
+    "windows_pe_built_this_host": false
+  },
+  "reports": [
+    "EXECUTIVE_SUMMARY.md",
+    "BEHAVIOR_AND_RENDERING_REPORT.md",
+    "MAP_VALIDATION_REPORT.md",
+    "UI_UX_REVIEW.md",
+    "USABILITY_AND_ACCESSIBILITY_REPORT.md",
+    "PARSER_REGEX_FALLBACK_REPORT.md",
+    "PLAYWRIGHT_RESULTS.md",
+    "TEST_RESULTS.md",
+    "BUILD_AND_SHIP_READINESS.md",
+    "REMAINING_BLOCKERS.md",
+    "AUDIT_MATRIX.md"
+  ],
+  "evidence": {
+    "maps_expected_vs_actual": {
+      "path": "generated_outputs/exports/expected_vs_actual.json",
+      "match": true
+    },
+    "json_fixtures": "json_fixtures/",
+    "edge_cases": "generated_outputs/edge_cases/edge_case_results.json",
+    "maps_html": [
+      "generated_outputs/maps/standard_l2_overlay_replay.html",
+      "generated_outputs/maps/standard_l2_overlay_off.html",
+      "generated_outputs/maps/discovery_command_center.html"
+    ],
+    "screenshots_operator": [
+      "screenshots/operator/01_inventory.png",
+      "screenshots/operator/02_maps.png",
+      "screenshots/operator/03_find.png",
+      "screenshots/operator/04_change_vlan.png",
+      "screenshots/operator/04_change_im.png",
+      "screenshots/operator/05_evidence.png",
+      "screenshots/operator/06_settings.png",
+      "screenshots/operator/07_about.png"
+    ],
+    "screenshots_maps": [
+      "screenshots/maps/standard_l2.png",
+      "screenshots/maps/discovery.png",
+      "screenshots/reports/vpc_demo_map.png"
+    ],
+    "pytest": {
+      "core_battery": {"path": "pytest/core_battery.txt", "passed": 309},
+      "ui_after_im_calm": {"path": "pytest/ui_after_im_calm.txt", "passed": 47},
+      "parser_vendor": {"path": "pytest/parser_vendor.txt", "passed": 57},
+      "final_ui_trust": {"path": "pytest/final_ui_trust.txt", "passed": 22}
+    },
+    "playwright": {
+      "unified_e2e": {"path": "playwright/run_playwright_e2e.txt", "result": "PASS"},
+      "offline_map_html": {"path": "playwright/offline_map_html.txt", "result": "PASS"}
+    },
+    "prebuild": {"path": "prebuild/prebuild.txt", "result": "READY_TO_BUILD"},
+    "mandatory_qa": {"path": "qa/every_code_change.txt", "result": "PASS"},
+    "packaging": {
+      "spec": "packaging/NetworkSwissToolPro_v7.2.2.spec",
+      "exe_readme": "exe/README.md"
+    },
+    "demo_lab": "demo_lab/",
+    "fixes_this_pass": [
+      "IM KPI cards calmed to white (index.html)",
+      "VLAN button Destroy → Delete VLAN",
+      "Softened Enterprise-grade IM marketing copy"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+Chassis id: 748f.c2dd.ee11
+Local Port id: Eth1/48
+Port id: 748f.c2dd.ee22
+Port Description: Ethernet1/1
+System Description: Cisco Nexus Operating System (NX-OS) Software

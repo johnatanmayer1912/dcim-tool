@@ -1,0 +1,30 @@
+{
+  "device_count": 8,
+  "l2_edge_count": 7,
+  "non_cable_count": 2,
+  "standard_l2_vis_edges": 7,
+  "discovery_vis_edges": 9,
+  "paint_eligible_mixed": 7,
+  "overlay_ok": true,
+  "overlay_painted": 1,
+  "overlay_bindings": [
+    "e0"
+  ],
+  "discovery_host": true,
+  "discovery_bindings": [
+    "e0"
+  ],
+  "discovery_evpn_unpainted": true,
+  "fingerprint_unchanged": true,
+  "trust_tiers": [
+    "high",
+    "high",
+    "high",
+    "high",
+    "medium",
+    "high",
+    "high"
+  ],
+  "link_issue_count": 1,
+  "honesty": "Offline fixture lab. Not live vendor evidence. Not a certified cable plant."
+}

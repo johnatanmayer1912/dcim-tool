@@ -1,0 +1,34 @@
+{
+  "url": "http://127.0.0.1:5051/",
+  "violationCount": 1,
+  "incompleteCount": 2,
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 1,
+      "targets": [
+        [
+          "#nst-evidence-status"
+        ]
+      ]
+    }
+  ],
+  "incomplete": [
+    {
+      "id": "aria-prohibited-attr",
+      "impact": "serious",
+      "description": "Ensure ARIA attributes are not prohibited for an element's role",
+      "nodes": 1
+    },
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "nodes": 8
+    }
+  ],
+  "label": "evidence"
+}

@@ -1,0 +1,17 @@
+! Cisco NX-OS Port-Channel (LACP) — preview only
+! Device: {{ hostname }} — {{ timestamp }}
+configure terminal
+interface port-channel{{ po_id }}
+  description {{ description }}
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan {{ allowed_vlans }}
+{% for m in members.split(',') %}
+interface {{ m.strip() }}
+  description Po{{ po_id }} member
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan {{ allowed_vlans }}
+  channel-group {{ po_id }} mode active
+{% endfor %}
+end

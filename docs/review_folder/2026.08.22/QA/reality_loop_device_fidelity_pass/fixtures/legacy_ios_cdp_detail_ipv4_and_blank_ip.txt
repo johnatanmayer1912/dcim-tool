@@ -1,0 +1,14 @@
+-------------------------
+Device ID: CORE-R1.invalid
+Entry address(es):
+  IPv4 Address: 10.9.9.1
+Platform: cisco ISR4321,  Capabilities: Router Switch
+Interface: GigabitEthernet0/0/1,  Port ID (outgoing port): GigabitEthernet0/1
+Holdtime : 140 sec
+
+-------------------------
+Device ID: SILENT-SW
+Entry address(es):
+Platform: cisco WS-C3560,  Capabilities: Switch IGMP
+Interface: FastEthernet0/1,  Port ID (outgoing port): FastEthernet0/24
+Holdtime : 155 sec

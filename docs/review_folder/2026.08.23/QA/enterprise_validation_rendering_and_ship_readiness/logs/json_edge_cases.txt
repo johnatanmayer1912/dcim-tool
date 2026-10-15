@@ -1,0 +1,82 @@
+[
+  [
+    "duplicate_edge_ids.json",
+    "LOADED",
+    "schema=None edges=2 \u2014 fixture only; join must not mint topology"
+  ],
+  [
+    "empty_object.json",
+    "LOADED",
+    "schema=None edges=0 \u2014 fixture only; join must not mint topology"
+  ],
+  [
+    "malformed_not_json.txt",
+    "PASS",
+    "malformed rejected by json.loads"
+  ],
+  [
+    "partial_overlay.json",
+    "LOADED",
+    "schema='utilization_overlay_v1' edges=1 \u2014 fixture only; join must not mint topology"
+  ],
+  [
+    "valid_minimal_overlay.json",
+    "LOADED",
+    "schema='utilization_overlay_v1' edges=0 \u2014 fixture only; join must not mint topology"
+  ],
+  [
+    "wrong_version_overlay.json",
+    "LOADED",
+    "schema='utilization_overlay_v999' edges=1 \u2014 fixture only; join must not mint topology"
+  ],
+  [
+    "inventory_empty",
+    "counts",
+    {
+      "accept": 0,
+      "warn": 0,
+      "reject": 0,
+      "device_rows": 0
+    }
+  ],
+  [
+    "inventory_dns",
+    "counts",
+    {
+      "accept": 0,
+      "warn": 0,
+      "reject": 1,
+      "device_rows": 1
+    }
+  ],
+  [
+    "inventory_dup",
+    "counts",
+    {
+      "accept": 1,
+      "warn": 1,
+      "reject": 0,
+      "device_rows": 2
+    }
+  ],
+  [
+    "inventory_bad_type",
+    "counts",
+    {
+      "accept": 0,
+      "warn": 0,
+      "reject": 1,
+      "device_rows": 1
+    }
+  ],
+  [
+    "inventory_ipv6",
+    "counts",
+    {
+      "accept": 1,
+      "warn": 0,
+      "reject": 0,
+      "device_rows": 1
+    }
+  ]
+]

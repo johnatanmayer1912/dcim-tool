@@ -1,0 +1,13 @@
+Host,Hostname,Product ID (PID),Serial Number,Software Version,Warranty Status,End of Life,End of Support
+10.1.1.1,sw1,C9300-48P,FDOPW1,17.9,active,2030-01-01,2033-01-01
+10.1.1.2,junos1,,,,not a cisco device,,
+10.1.1.3,sw3,C9500,FDOPW3,17.6,active,2028-01-01,2031-01-01
+192.168.1.1,switch1,Catalyst 9300,FDO12345,,Active,2028-12-31,
+192.168.1.2,switch2,Catalyst 9300,FDO12346,,Expired,2023-06-30,
+192.168.1.3,switch3,Catalyst 3850,FDO12347,,Active,2027-03-15,
+192.168.1.10,router1,ISR 4431,FDO12348,,Active,2029-01-20,
+192.168.1.11,router2,ISR 4431,FDO12349,,Expired,2022-11-01,
+192.168.2.1,switch4,Catalyst 9300,FDO12350,,Active,2029-06-30,
+192.168.2.2,switch5,Catalyst 9300,FDO12351,,Active,2028-09-15,
+192.168.2.3,switch6,Catalyst 3850,FDO12352,,Expired,2024-01-01,
+192.168.2.10,router3,ISR 4451,FDO12353,,Active,2030-05-10,

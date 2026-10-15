@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viz 2 — Radial Core Map</title>
+  <style>
+    :root { --bg:#0d1117; --surface:#161b22; --elevated:#21262d; --border:#30363d; --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --core:#a371f7; --dist:#58a6ff; --access:#3fb950; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:12px; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+    .banner { background:#388bfd22; border-bottom:1px solid var(--border); padding:0.4rem 1rem; font-size:0.7rem; color:var(--muted); text-align:center; }
+    .banner strong { color:var(--accent); }
+    .toolbar { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 1rem; border-bottom:1px solid var(--border); }
+    .toolbar h1 { font-size:1rem; }
+    .map-switch { display:flex; gap:0.2rem; margin-left:auto; }
+    .map-switch span { padding:0.3rem 0.55rem; border-radius:5px; border:1px solid var(--border); font-size:0.65rem; color:var(--muted); }
+    .map-switch span.on { border-color:var(--accent); color:var(--accent); background:rgba(88,166,255,0.12); }
+    .split { flex:1; display:grid; grid-template-columns:1fr 320px; min-height:0; }
+    .map-pane { border-right:1px solid var(--border); display:flex; flex-direction:column; min-height:0; }
+    .map-head { padding:0.5rem 1rem; font-size:0.65rem; font-weight:700; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--border); }
+    .radial-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:1rem; }
+    .radial { position:relative; width:420px; height:420px; }
+    .ring { position:absolute; border:1px dashed var(--border); border-radius:50%; }
+    .ring.r1 { inset:35px; }
+    .ring.r2 { inset:95px; }
+    .ring.r3 { inset:155px; }
+    .center-node {
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+      background:var(--surface); border:3px solid var(--core); border-radius:50%;
+      width:72px; height:72px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-size:0.65rem; font-weight:700; z-index:5; box-shadow:0 0 20px rgba(163,113,247,0.3);
+    }
+    .orbit-node {
+      position:absolute; background:var(--surface); border:2px solid var(--border);
+      border-radius:6px; padding:0.35rem 0.5rem; font-size:0.65rem; font-weight:600;
+      transform:translate(-50%,-50%); cursor:pointer; white-space:nowrap;
+    }
+    .orbit-node.dist { border-color:var(--dist); }
+    .orbit-node.acc { border-color:var(--access); font-size:0.6rem; }
+    .orbit-node.sel { border-color:var(--accent); box-shadow:0 0 0 2px rgba(88,166,255,0.4); }
+    .spoke { stroke:#484f58; stroke-width:1.5; fill:none; }
+    .spoke.hi { stroke:var(--accent); stroke-width:2.5; }
+    .right-pane { background:var(--surface); display:flex; flex-direction:column; min-height:0; }
+    .brief { padding:0.65rem; border-bottom:1px solid var(--border); font-size:0.72rem; }
+    .table-wrap { flex:1; overflow:auto; }
+    table { width:100%; font-size:0.72rem; border-collapse:collapse; }
+    th, td { padding:0.4rem 0.5rem; border-bottom:1px solid var(--border); text-align:left; }
+    th { color:var(--muted); font-size:0.6rem; text-transform:uppercase; }
+    tr.sel td { background:rgba(88,166,255,0.12); }
+    .detail { padding:0.65rem; border-top:1px solid var(--border); font-size:0.72rem; background:var(--elevated); }
+    .legend { position:absolute; bottom:0; left:1rem; font-size:0.65rem; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="banner"><strong>Viz 2 — Radial Hub</strong> · NetEng design review · “What depends on this core?”</div>
+  <div class="toolbar">
+    <h1>CAMPUS-HQ · Radial view</h1>
+    <div class="map-switch"><span>Tier</span><span class="on">Radial</span><span>Schematic</span><span>Focus</span><span>Matrix</span></div>
+  </div>
+  <div class="split">
+    <div class="map-pane">
+      <div class="map-head">Core at center · dist ring · access outer ring · line length ≈ hop depth</div>
+      <div class="radial-wrap">
+        <div class="radial">
+          <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+          <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
+            <line class="spoke hi" x1="210" y1="210" x2="210" y2="70" />
+            <line class="spoke" x1="210" y1="210" x2="350" y2="120" />
+            <line class="spoke" x1="210" y1="210" x2="70" y2="120" />
+            <line class="spoke" x1="210" y1="210" x2="350" y2="300" />
+            <line class="spoke" x1="210" y1="210" x2="70" y2="300" />
+            <line class="spoke" x1="210" y1="210" x2="210" y2="350" />
+          </svg>
+          <div class="center-node">CORE<br>01</div>
+          <div class="orbit-node dist sel" style="left:50%;top:17%">DIST-N1</div>
+          <div class="orbit-node dist" style="left:83%;top:29%">DIST-N2</div>
+          <div class="orbit-node dist" style="left:17%;top:29%">DIST-S1</div>
+          <div class="orbit-node dist" style="left:83%;top:71%">DIST-S2</div>
+          <div class="orbit-node dist" style="left:17%;top:71%">DIST-N1 peer</div>
+          <div class="orbit-node acc" style="left:50%;top:83%">SW-ACC-01</div>
+          <div class="orbit-node acc" style="left:92%;top:50%">SW-ACC-02</div>
+          <div class="orbit-node acc" style="left:8%;top:50%">SW-ACC-03</div>
+        </div>
+      </div>
+      <div class="legend">Inner ring = distribution · Outer = access · Click node filters connection table</div>
+    </div>
+    <div class="right-pane">
+      <div class="brief"><strong>Filtered:</strong> links involving CORE-01 (12 shown)</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Local</th><th>Remote</th><th>Hops</th></tr></thead>
+          <tbody>
+            <tr class="sel"><td>CORE-01</td><td>DIST-N1</td><td>1</td></tr>
+            <tr><td>CORE-01</td><td>DIST-N2</td><td>1</td></tr>
+            <tr><td>CORE-01</td><td>CORE-02</td><td>1 (Po1)</td></tr>
+            <tr><td>DIST-N1</td><td>SW-ACC-01</td><td>2 via core</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="detail"><strong>CORE-01 → DIST-N1</strong> Te1/0/1 ↔ Te1/1/1 · 10G trunk</div>
+    </div>
+  </div>
+</body>
+</html>

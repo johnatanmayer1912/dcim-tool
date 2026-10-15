@@ -1,0 +1,11 @@
+{
+  "plugin_id": "device_time",
+  "version": "1.0.0",
+  "display_name": "Device Time Check",
+  "created_date": "2026-04-20T10:00:00Z",
+  "author": "Network Swiss Tool",
+  "category": "Discovery",
+  "qa_status": "approved",
+  "documentation_complete": true,
+  "status": "current"
+}

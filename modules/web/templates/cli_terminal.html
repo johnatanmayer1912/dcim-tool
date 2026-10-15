@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Terminal - Network Swiss Tool Pro v6.8.1</title>
+    
+    <!-- xterm.js CSS (local for offline support) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/xterm/xterm.css') }}" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #16213e;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #0f3460;
+        }
+        
+        .header h1 {
+            font-size: 16px;
+            color: #e94560;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e74c3c;
+            transition: background 0.3s;
+        }
+        
+        .status-indicator.connected {
+            background: #27ae60;
+        }
+        
+        .status-indicator.connecting {
+            background: #f39c12;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .toolbar {
+            background: #0f3460;
+            padding: 8px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .toolbar button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        
+        .toolbar button:hover {
+            background: #c73e54;
+        }
+
+        .toolbar button:focus-visible,
+        .dialog-buttons button:focus-visible,
+        .form-group input:focus-visible,
+        .form-group select:focus-visible {
+            outline: 2px solid #58a6ff;
+            outline-offset: 2px;
+        }
+        
+        .toolbar button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        
+        .toolbar .info {
+            margin-left: auto;
+            font-size: 12px;
+            color: #a0aec0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        #wsStatus {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .ws-ok { color: #27ae60; }
+        .ws-fail { color: #e74c3c; }
+        
+        .terminal-container {
+            flex: 1;
+            padding: 10px;
+            overflow: hidden;
+        }
+        
+        #terminal {
+            width: 100%;
+            height: 100%;
+            background: #0d1117;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        
+        .connection-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .dialog-box {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 8px;
+            width: 400px;
+            border: 1px solid #0f3460;
+        }
+        
+        .dialog-box h2 {
+            color: #e94560;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #a0aec0;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            background: #0f3460;
+            border: 1px solid #1a1a2e;
+            color: #eee;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+        
+        .dialog-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .dialog-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .btn-primary {
+            background: #e94560;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #0f3460;
+            color: #eee;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        /* v5.4.8: Technical Debug Log Styles */
+        #debugLog {
+            background: rgba(0, 0, 0, 0.84);
+            border: 1px solid #333;
+            color: #ccc;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 11px;
+            padding: 10px;
+            margin-top: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .debug-entry { border-bottom: 1px solid #222; padding: 2px 0; }
+        .debug-toggle {
+            color: #666;
+            cursor: pointer;
+            font-size: 10px;
+            text-decoration: underline;
+            margin-top: 2px;
+            display: block;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Dialog -->
+    <div id="connectionDialog" class="connection-dialog">
+        <div class="dialog-box">
+            <h2>🔌 Connect to Device</h2>
+            <div id="errorMessage" class="error-message hidden"></div>
+            
+            <div class="form-group">
+                <label>Device Host</label>
+                <input type="text" id="connHost" value="{{ host }}" placeholder="192.168.1.1">
+            </div>
+            
+            <div class="form-group">
+                <label>Device Type</label>
+                <select id="connDeviceType">
+                    <option value="cisco_ios">Cisco IOS</option>
+                    <option value="cisco_xe">Cisco IOS-XE</option>
+                    <option value="cisco_nxos">Cisco NXOS</option>
+                    <option value="juniper_junos">Juniper JUNOS</option>
+                    <option value="hp_comware">HP Comware</option>
+                    <option value="huawei">Huawei</option>
+                    <option value="arista_eos">Arista EOS</option>
+                    <option value="linux">Linux Server (Generic)</option>
+                    <option value="linux_ssh">Linux Server (SSH Shell)</option>
+                </select>
+                <small style="color: #888; font-size: 11px; margin-top: 4px; display: block;">
+                    Linux uses standard SSH shell - compatible with Ubuntu, CentOS, RHEL, Debian
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label>SSH Port</label>
+                <input type="number" id="connPort" value="22" placeholder="22" min="1" max="65535">
+            </div>
+            
+            <div class="form-group">
+                <label for="connCredentialSelect">Stored credential (preferred)</label>
+                <select id="connCredentialSelect" aria-label="Stored vault credential_id" autocomplete="off">
+                    <option value="">— select vault credential_id —</option>
+                </select>
+                <input type="text" id="connCredentialId" aria-label="credential_id" placeholder="or type credential_id" autocomplete="off" style="margin-top: 6px;">
+                <small style="color: #888; font-size: 11px; margin-top: 4px; display: block;">
+                    Passwords stay on the server. List is metadata-only (no secrets).
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label for="connUsername">Username (optional display / mismatch check)</label>
+                <input type="text" id="connUsername" placeholder="usually matches credential_id" autocomplete="off">
+            </div>
+            
+            <div id="credentialRequiredHint" class="form-group">
+                <small style="color: #888; font-size: 11px; display: block;">
+                    A vault credential_id is required. Add credentials in the main console Settings, unlock the vault if needed, then select one here. Plaintext Socket.IO passwords are not supported.
+                </small>
+            </div>
+            
+            <div class="dialog-buttons">
+                <button type="button" class="btn-secondary" aria-label="Cancel connection" onclick="window.close()">Cancel</button>
+                <button type="button" class="btn-primary" aria-label="Connect with selected credential" onclick="connect()">Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Interface -->
+    <div class="header">
+        <h1>
+            <span>🖥️</span>
+            <span id="hostname">CLI Terminal</span>
+        </h1>
+        <div class="status">
+            <div id="wsIndicator" style="display: flex; align-items: center; gap: 5px; margin-right: 15px; border-right: 1px solid #0f3460; padding-right: 15px;">
+                <span style="font-size: 11px; color: #a0aec0;">SERVER:</span>
+                <span id="wsStatus" class="ws-fail" style="font-size: 11px;">OFFLINE</span>
+                <div class="debug-toggle" onclick="toggleDebug()">[Debug]</div>
+                <div id="debugLog"></div>
+            </div>
+            <span id="statusText">Disconnected</span>
+            <div id="statusIndicator" class="status-indicator"></div>
+        </div>
+    </div>
+    
+    <div class="toolbar">
+        <button id="connectBtn" type="button" aria-label="Connect to device" onclick="showConnectDialog()">Connect</button>
+        <button id="disconnectBtn" type="button" aria-label="Disconnect session" onclick="disconnect()" disabled>Disconnect</button>
+        <button id="clearBtn" type="button" aria-label="Clear terminal" onclick="clearTerminal()">Clear</button>
+        <button id="reconnectBtn" type="button" aria-label="Reconnect session" onclick="reconnect()" class="hidden">Reconnect</button>
+        <span class="info">v6.8.0 | Terminal output is NOT logged | <span style="color: #e94560; font-weight: 600;">Made by AI IDE</span></span>
+    </div>
+    
+    <div class="terminal-container">
+        <div id="terminal"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/xterm/xterm.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/xterm/xterm-addon-fit.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    
+    <script>
+        // Terminal instance
+        let term;
+        let fitAddon;
+        let socket;
+        let sessionId;
+        let currentHost = '';
+        
+        const ConnectionState = {
+            DISCONNECTED: 'disconnected',
+            CONNECTING: 'connecting',
+            CONNECTED: 'connected',
+            FAILED: 'failed'
+        };
+        let currentState = ConnectionState.DISCONNECTED;
+        let isConnected = false; // Kept for backward compatibility
+        
+        // Generate session ID
+        function generateSessionId() {
+            return 'cli_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        // Initialize terminal
+        function initTerminal() {
+            term = new Terminal({
+                cursorBlink: true,
+                cursorStyle: 'block',
+                fontSize: 14,
+                fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                theme: {
+                    background: '#0d1117',
+                    foreground: '#c9d1d9',
+                    cursor: '#e94560',
+                    selection: '#e9456040',
+                    black: '#484f58',
+                    red: '#ff7b72',
+                    green: '#3fb950',
+                    yellow: '#d29922',
+                    blue: '#58a6ff',
+                    magenta: '#bc8cff',
+                    cyan: '#39c5cf',
+                    white: '#b1bac4',
+                    brightBlack: '#6e7681',
+                    brightRed: '#ffa198',
+                    brightGreen: '#56d364',
+                    brightYellow: '#e3b341',
+                    brightBlue: '#79c0ff',
+                    background: '#1a1a2e',
+                    foreground: '#ffffff'
+                },
+                fontSize: 14,
+                fontFamily: 'Consolas, "Courier New", monospace'
+            });
+            
+            fitAddon = new FitAddon.FitAddon();
+            term.loadAddon(fitAddon);
+            term.open(document.getElementById('terminal'));
+            fitAddon.fit();
+            
+            // Handle terminal input (RAW STREAMING for v5.4.0)
+            term.onData(data => {
+                if (!isConnected) return;
+                
+                if (data.length > 1) addDebug(`cli_data emitted: ${data.length} bytes`);
+                // Immediately send every keystroke to the backend shell
+                socket.emit('cli_data', {
+                    session_id: sessionId,
+                    data: data
+                });
+            });
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                fitAddon.fit();
+                if (socket && isConnected) {
+                    socket.emit('cli_resize', {
+                        session_id: sessionId,
+                        cols: term.cols,
+                        rows: term.rows
+                    });
+                }
+            });
+            
+            term.writeln('');
+            term.writeln('╔════════════════════════════════════════════════════════════╗');
+            term.writeln('║     Network Swiss Tool Pro v6.8.1 — CLI Terminal           ║');
+            term.writeln('║                                                            ║');
+            term.writeln('║  Click "Connect" to open a live interactive SSH session    ║');
+            term.writeln('║  v6.8.1: Modern + Legacy SSH algorithm auto-negotiation    ║');
+            term.writeln('║  Terminal output is NOT logged for security                ║');
+            term.writeln('╚════════════════════════════════════════════════════════════╝');
+            term.writeln('');
+        }
+        
+        // Show connection dialog
+        function showConnectDialog() {
+            document.getElementById('connectionDialog').classList.remove('hidden');
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+        
+        // Connection timeout timer
+        let connectionTimer = null;
+        const CONNECTION_TIMEOUT = 30000; // 30 seconds
+        
+        // Connect to device (v6.1.2: Two-pass SSH with modern + legacy fallback)
+        // v6.5.8: Added connection timeout to prevent stuck connecting state
+        function connect() {
+            const host = document.getElementById('connHost').value.trim();
+            const port = parseInt(document.getElementById('connPort').value) || 22;
+            const deviceType = document.getElementById('connDeviceType').value.trim();
+            const username = document.getElementById('connUsername').value.trim();
+            const selectEl = document.getElementById('connCredentialSelect');
+            const credentialId = (
+                (document.getElementById('connCredentialId')?.value || '') ||
+                (selectEl ? selectEl.value : '')
+            ).trim();
+            
+            if (!host) {
+                showError('Host is required');
+                return;
+            }
+            if (!credentialId) {
+                showError('credential_id required. Select a stored vault credential.');
+                return;
+            }
+            
+            // v6.5.8: Check if socket is connected before attempting
+            if (!socket || !socket.connected) {
+                showError('Not connected to server. Please wait for WebSocket connection or refresh the page.');
+                term.writeln('\r\n✗ ERROR: WebSocket not connected to server.');
+                term.writeln('  Please ensure the application is running and refresh the page.\r\n');
+                return;
+            }
+            
+            currentHost = host;
+            sessionId = generateSessionId();
+            
+            // Hide dialog
+            document.getElementById('connectionDialog').classList.add('hidden');
+            document.getElementById('errorMessage').classList.add('hidden');
+            
+            // Update UI
+            updateStatus('connecting', `Connecting to ${host}:${port}...`);
+            document.getElementById('connectBtn').disabled = true;
+            term.writeln(`\r\n⟳ Opening Interactive Shell to ${host}:${port}...`);
+            term.writeln('  Session ID: ' + sessionId);
+            term.writeln('  Device Type: ' + deviceType);
+            term.writeln('  Auth: vault credential_id (password stays on the server)');
+            term.writeln('  Pass 1: Trying modern SSH algorithms (rsa-sha2-256/512)...');
+            term.writeln('  Pass 2: Legacy fallback (ssh-rsa) if needed.\r\n');
+            
+            // v6.5.8: Set connection timeout to prevent stuck state
+            clearTimeout(connectionTimer);
+            connectionTimer = setTimeout(() => {
+                if (currentState !== ConnectionState.CONNECTED) {
+                    term.writeln('\r\n✗ CONNECTION TIMEOUT (30s)');
+                    term.writeln('  The server did not respond in time.');
+                    term.writeln('  Possible causes:');
+                    term.writeln('    - Backend server is busy or frozen');
+                    term.writeln('    - SSH service on target device not responding');
+                    term.writeln('    - Network latency or packet loss');
+                    term.writeln('  Please try again or check the main application logs.\r\n');
+                    updateStatus(ConnectionState.FAILED, 'Connection timeout');
+                    document.getElementById('connectBtn').disabled = false;
+                    document.getElementById('disconnectBtn').disabled = true;
+                    document.getElementById('reconnectBtn').classList.remove('hidden');
+                }
+            }, CONNECTION_TIMEOUT);
+            
+            // credential_id only — never emit password fields
+            try {
+                const payload = {
+                    session_id: sessionId,
+                    host: host,
+                    port: port,
+                    device_type: deviceType,
+                    username: username,
+                    credential_id: credentialId,
+                };
+                socket.emit('cli_connect', payload);
+                term.writeln('  [SENT] Connection request to backend...\r\n');
+            } catch (e) {
+                term.writeln(`\r\n✗ FAILED to send connection request: ${e.message}\r\n`);
+                updateStatus('disconnected', 'Emit failed');
+                document.getElementById('connectBtn').disabled = false;
+                clearTimeout(connectionTimer);
+            }
+        }
+        
+        // v5.5.0: Global addDebug function for use throughout
+        function addDebug(msg) {
+            const log = document.getElementById('debugLog');
+            if (!log) return;
+            const entry = document.createElement('div');
+            entry.className = 'debug-entry';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        window.toggleDebug = function() {
+            const log = document.getElementById('debugLog');
+            log.style.display = (log.style.display === 'none' || log.style.display === '') ? 'block' : 'none';
+        }
+
+        function getBackendBaseUrl() {
+            // Use the current origin first; this avoids hardcoded-port failures.
+            const origin = window.location.origin;
+            if (!origin || origin === 'null' || origin.startsWith('file:')) {
+                return 'http://127.0.0.1:5051';
+            }
+            return origin;
+        }
+
+        function debugToTerminal(msg) {
+            if (!term) return;
+            term.writeln(`\r\n[DEBUG] ${msg}`);
+        }
+
+        // v5.5.0: Health check before Socket.IO connection
+        async function checkServerHealth() {
+            addDebug("v5.5.0: Checking server health...");
+            try {
+                const response = await fetch(`${getBackendBaseUrl()}/health`, {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    timeout: 5000
+                });
+                if (response.ok) {
+                    addDebug("Server health check: OK");
+                    debugToTerminal(`Health check OK via ${getBackendBaseUrl()}`);
+                    return true;
+                } else {
+                    addDebug(`Server health check: FAILED (${response.status})`);
+                    debugToTerminal(`Health check FAILED (${response.status}) via ${getBackendBaseUrl()}`);
+                    return false;
+                }
+            } catch (error) {
+                addDebug(`Server health check: ERROR - ${error.message}`);
+                debugToTerminal(`Health check ERROR: ${error.message}`);
+                return false;
+            }
+        }
+
+        // v5.5.0: Initialize Socket.IO with health check
+        async function initSocket() {
+            addDebug("v5.5.0: Initializing Socket.IO...");
+            
+            // First check if server is alive
+            const isHealthy = await checkServerHealth();
+            if (!isHealthy) {
+                addDebug("WARNING: Server health check failed, attempting Socket.IO anyway...");
+                term.writeln('\r\n[!] Server may not be ready yet, retrying...\r\n');
+            }
+            
+            // v5.5.0: Enhanced Socket.IO configuration with longer timeout
+            const backendBase = getBackendBaseUrl();
+            addDebug(`Connecting Socket.IO to ${backendBase}`);
+            debugToTerminal(`Socket.IO target: ${backendBase}`);
+            socket = io(backendBase, {
+                transports: ['websocket', 'polling'],  // v5.5.0: Try WebSocket first
+                upgrade: true,
+                reconnection: true,
+                reconnectionAttempts: 15,  // v5.5.0: Increased from 10
+                reconnectionDelay: 1000,  // v5.5.0: Start with 1 second
+                reconnectionDelayMax: 10000,  // Increased max delay for exponential backoff
+                randomizationFactor: 0.5,     // Added randomization for exponential backoff
+                timeout: 30000,  // v5.5.0: Increased from 20s for EXE cold start
+                forceNew: true  // v5.5.0: Force new connection
+            });
+
+            socket.on('connect', () => {
+                const transport = socket.io.engine.transport.name;
+                addDebug(`v5.5.0: Socket connected via ${transport.toUpperCase()}`);
+                debugToTerminal(`Socket connected via ${transport.toUpperCase()}`);
+                console.log('Socket connected via ' + transport);
+                const statusEl = document.getElementById('wsStatus');
+                statusEl.textContent = 'OK (' + transport.toUpperCase() + ')';
+                statusEl.className = 'ws-ok';
+                document.getElementById('connectBtn').disabled = false;
+            });
+            
+            socket.on('connect_error', (error) => {
+                addDebug(`v5.5.0: Connection error - ${error.message || error}`);
+                debugToTerminal(`Socket connect_error: ${error.message || error}`);
+                console.error('Socket connection error:', error);
+                const statusEl = document.getElementById('wsStatus');
+                statusEl.textContent = 'ERR: ' + (error.message || 'CONNECT_FAIL');
+                statusEl.className = 'ws-fail';
+                
+                // v5.5.0: Show helpful error message in terminal
+                if (error.message && error.message.includes('xhr poll error')) {
+                    term.writeln('\r\n[!] XHR POLL ERROR: Cannot reach server at 127.0.0.1:5051');
+                    term.writeln('    Possible causes:');
+                    term.writeln('    - Server not started yet (EXE still loading)');
+                    term.writeln('    - Port 5051 blocked by firewall');
+                    term.writeln('    - Antivirus blocking localhost connection');
+                    term.writeln('    - Page loaded before server was ready\r\n');
+                }
+                
+                term.writeln(`\r\n[!] TRANSPORT ERROR: ${error.message || 'Handshake failed'}`);
+                term.writeln(`    Type: ${error.type || 'Unknown'}`);
+            });
+            
+            socket.on('reconnect_attempt', (num) => {
+                addDebug(`Re-attempting connection #${num}...`);
+            });
+            
+            socket.on('error', (error) => {
+                addDebug(`Protocol Error: ${error}`);
+                console.error('Socket error:', error);
+                term.writeln(`\r\n[!] SOCKET ERROR: ${error}\r\n`);
+            });
+            
+            socket.on('disconnect', (reason) => {
+                addDebug(`Socket disconnected: ${reason}`);
+                debugToTerminal(`Socket disconnected: ${reason}`);
+                console.log('Socket disconnected:', reason);
+                const statusEl = document.getElementById('wsStatus');
+                statusEl.textContent = 'Offline (' + reason + ')';
+                statusEl.className = 'ws-fail';
+                document.getElementById('connectBtn').disabled = true;
+                isConnected = false;
+                updateStatus('disconnected', 'Server Connection Lost');
+            });
+            
+            socket.on('cli_status', (data) => {
+                addDebug(`cli_status: ${JSON.stringify(data)}`);
+                debugToTerminal(`cli_status: ${JSON.stringify(data)}`);
+                if (data.status === 'connected') {
+                    isConnected = true;
+                    clearTimeout(connectionTimer); // v6.5.8: Clear timeout on success
+                    updateStatus('connected', `Connected to ${data.hostname || currentHost}`);
+                    document.getElementById('hostname').textContent = `CLI: ${data.hostname || currentHost}`;
+                    document.title = `CLI: ${data.hostname || currentHost}`;
+                    document.getElementById('disconnectBtn').disabled = false;
+                    document.getElementById('reconnectBtn').classList.add('hidden');
+                    
+                    term.writeln(`\r\n✓ Connected to ${data.hostname || currentHost}\r\n`);
+                    
+                    // Sync initial size
+                    socket.emit('cli_resize', {
+                        session_id: sessionId,
+                        cols: term.cols,
+                        rows: term.rows
+                    });
+                } else if (data.status === 'disconnected') {
+                    isConnected = false;
+                    clearTimeout(connectionTimer); // v6.5.8: Clear timeout
+                    updateStatus('disconnected', 'Disconnected');
+                    document.getElementById('connectBtn').disabled = false;
+                    document.getElementById('disconnectBtn').disabled = true;
+                    term.writeln(`\r\n✗ Disconnected\r\n`);
+                } else if (data.status === 'connecting') {
+                    updateStatus('connecting', data.message || 'Connecting...');
+                }
+            });
+
+            socket.on('cli_progress', (data) => {
+                if (data.message) {
+                    addDebug(`cli_progress: ${data.message}`);
+                    debugToTerminal(`cli_progress: ${data.message}`);
+                    term.writeln(`  [INFO] ${data.message}`);
+                }
+            });
+            
+            socket.on('cli_output', (data) => {
+                if (data.output) {
+                    if (data.output.length > 50) addDebug(`cli_output received: ${data.output.length} bytes`);
+                    // Raw bytes from Paramiko already contain needed \r where appropriate
+                    term.write(data.output);
+                }
+            });
+            
+            socket.on('cli_error', (data) => {
+                const msg = (data && data.message) || 'Connection error';
+                const code = (data && data.code) || '';
+                addDebug('cli_error: ' + msg + (code ? ' (' + code + ')' : ''));
+                debugToTerminal('cli_error: ' + msg);
+                clearTimeout(connectionTimer);
+                if (code === 'unknown_credential_id' || code === 'unavailable_credential' || code === 'vault_locked' || code === 'invalid_credential_id' || code === 'credential_unavailable') {
+                    showError('Credential is unavailable. Select a valid vault credential_id.');
+                } else if (code === 'credential_id_required') {
+                    showError('credential_id required. Store a vault credential in the main console, unlock if needed, then select it here.');
+                } else {
+                    showError(msg);
+                }
+                term.writeln(`\r\n✗ Connection failed: ${msg}\r\n`);
+                updateStatus('disconnected', 'Connection failed');
+                document.getElementById('connectBtn').disabled = false;
+                document.getElementById('disconnectBtn').disabled = true;
+                document.getElementById('reconnectBtn').classList.remove('hidden');
+            });
+        }
+        
+        // Send command
+        function sendCommand(command) {
+            if (socket && isConnected) {
+                socket.emit('cli_command', {
+                    session_id: sessionId,
+                    command: command
+                });
+            }
+        }
+        
+        // Disconnect
+        function disconnect() {
+            if (socket && isConnected) {
+                socket.emit('cli_disconnect', { session_id: sessionId });
+            }
+            isConnected = false;
+            updateStatus('disconnected', 'Disconnected');
+            document.getElementById('connectBtn').disabled = false;
+            document.getElementById('disconnectBtn').disabled = true;
+        }
+        
+        // Reconnect
+        function reconnect() {
+            document.getElementById('reconnectBtn').classList.add('hidden');
+            showConnectDialog();
+        }
+        
+        // Clear terminal
+        function clearTerminal() {
+            term.clear();
+        }
+        
+        // Update status
+        function updateStatus(status, text) {
+            currentState = status;
+            isConnected = (status === ConnectionState.CONNECTED);
+            
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            indicator.className = 'status-indicator ' + status;
+            statusText.textContent = text;
+            addDebug(`State transition to: ${status}`);
+        }
+        
+        // Show error
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+        
+        // Handle page close
+        window.addEventListener('beforeunload', (e) => {
+            if (isConnected) {
+                disconnect();
+            }
+        });
+        
+        // v5.5.0: Initialize with async support
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTerminal();
+            // Keep debug visible by default so failures are never "silent".
+            const dbg = document.getElementById('debugLog');
+            if (dbg) dbg.style.display = 'block';
+
+            const selectEl = document.getElementById('connCredentialSelect');
+            const idEl = document.getElementById('connCredentialId');
+            if (selectEl && idEl) {
+                selectEl.addEventListener('change', () => {
+                    if (selectEl.value) {
+                        idEl.value = selectEl.value;
+                        const uname = document.getElementById('connUsername');
+                        if (uname && !uname.value) uname.value = selectEl.value;
+                    }
+                });
+            }
+
+            await initSocket();  // v5.5.0: Await async Socket.IO initialization with health check
+            try {
+                // Metadata-only list — never expects password fields
+                const listResp = await fetch(getBackendBaseUrl() + '/api/credentials/list');
+                if (listResp.ok) {
+                    const listData = await listResp.json();
+                    const rows = listData.credentials || listData.items || listData || [];
+                    if (selectEl && Array.isArray(rows)) {
+                        rows.forEach((row) => {
+                            const cid = row.credential_id || row.username;
+                            if (!cid) return;
+                            const opt = document.createElement('option');
+                            opt.value = cid;
+                            opt.textContent = (row.label ? (row.label + ' — ') : '') + cid;
+                            selectEl.appendChild(opt);
+                        });
+                    }
+                }
+            } catch (e) {}
+            try {
+                const r = await fetch(getBackendBaseUrl() + '/api/session/credentials');
+                if (r.ok) {
+                    const d = await r.json();
+                    // Never copy password / enable / become from session or GET
+                    if (d.credential_id) {
+                        if (idEl) idEl.value = d.credential_id;
+                        if (selectEl) selectEl.value = d.credential_id;
+                    }
+                    if (d.username && !document.getElementById('connUsername').value) {
+                        document.getElementById('connUsername').value = d.username;
+                    }
+                }
+            } catch (e) {}
+            
+            // If host provided in URL, show connect dialog
+            if (document.getElementById('connHost').value) {
+                showConnectDialog();
+            }
+        });
+        // Pre-populate device type from URL parameter
+        document.addEventListener('DOMContentLoaded', function() {
+            const deviceType = '{{ device_type }}';
+            if (deviceType && deviceType !== 'None') {
+                const select = document.getElementById('connDeviceType');
+                if (select) {
+                    select.value = deviceType;
+                    console.log('Device type pre-populated:', deviceType);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

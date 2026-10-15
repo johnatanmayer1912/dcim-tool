@@ -1,0 +1,5 @@
+hostname,serial_number,model,ip_address,warranty_status,warranty_end_date
+switch4,FDO12350,Catalyst 9300,192.168.2.1,Active,2029-06-30
+switch5,FDO12351,Catalyst 9300,192.168.2.2,Active,2028-09-15
+switch6,FDO12352,Catalyst 3850,192.168.2.3,Expired,2024-01-01
+router3,FDO12353,ISR 4451,192.168.2.10,Active,2030-05-10

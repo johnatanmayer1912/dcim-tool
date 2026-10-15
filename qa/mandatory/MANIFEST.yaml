@@ -1,0 +1,338 @@
+# NLAP Mandatory QA Manifest — always keep in sync with tests/mandatory/
+# Council skill: .cursor/skills/nlap-release-council/
+# Policy: qa/mandatory/EVOLUTION_POLICY.md
+
+version: 1
+platform: Network Log Analysis Platform
+last_updated: "2026-08-02"
+introduced_version: "5.3.8"
+platform_version: "5.5.0"
+
+workflow:
+  runner: scripts/run_mandatory_qa.py
+  prebuild_manifest_check: true
+  ci_workflow: .github/workflows/mandatory-qa.yml
+  cursor_hook: .cursor/hooks/mandatory-qa-gate.py
+  agent_rule: .cursor/rules/05-nlap-mandatory-qa-gate.mdc
+
+personas:
+  - id: network_council
+    name: Network Engineer Council
+    questionnaire_sections: [A, B, C, H, I, J]
+  - id: architect
+    name: System Architect
+    questionnaire_sections: [K, L, M, E]
+  - id: software_engineer
+    name: Software Engineer
+    questionnaire_sections: [N, O, B]
+  - id: field_operator
+    name: Field Operator Team
+    questionnaire_sections: [D, P, Q]
+  - id: product_simplicity
+    name: Product Simplicity (Steve Jobs lens)
+    questionnaire_sections: [R, D]
+  - id: ui_ux
+    name: UI/UX Professional
+    questionnaire_sections: [D, S, T]
+
+lenses:
+  - id: architect
+    module: tests/mandatory/test_lens_architect.py
+    scenarios:
+      - id: MQA-arch-store-schema-001
+        questionnaire_ids: [K-01, K-02]
+        scenario: Investigation SQLite schema and evidence types exist
+      - id: MQA-arch-json-safe-001
+        questionnaire_ids: [K-06]
+        scenario: API responses use sanitize_for_json
+      - id: MQA-arch-output-paths-001
+        questionnaire_ids: [E-07]
+        scenario: Outputs use output_paths not CWD
+      - id: MQA-arch-module-boundaries-001
+        questionnaire_ids: [L-01, L-02]
+        scenario: Web routes delegate to service modules
+      - id: MQA-arch-job-separation-001
+        questionnaire_ids: [K-07]
+        scenario: Incident job vs acquisition job modules distinct
+      - id: MQA-arch-time-sync-module-001
+        questionnaire_ids: [K-08, P-12]
+        scenario: Time sync analyzer module exists
+
+  - id: software_engineer
+    module: tests/mandatory/test_lens_software_engineer.py
+    scenarios:
+      - id: MQA-sw-route-errors-001
+        questionnaire_ids: [N-01, N-02, N-03]
+        scenario: Investigation routes return consistent error shapes
+      - id: MQA-sw-store-finalize-001
+        questionnaire_ids: [H-04, O-01]
+        scenario: Acquisition finalize uses update_investigation_metadata
+      - id: MQA-sw-workflow-context-001
+        questionnaire_ids: [H-03]
+        scenario: Workflow merges incident_story into context
+      - id: MQA-sw-telemetry-dict-001
+        questionnaire_ids: [D-07]
+        scenario: Telemetry exposes error_count and warning_count
+      - id: MQA-sw-command-audit-error-001
+        questionnaire_ids: [A-07]
+        scenario: Failed commands write audit events
+
+  - id: field_operator
+    module: tests/mandatory/test_lens_field_operator.py
+    scenarios:
+      - id: MQA-field-offline-paste-001
+        questionnaire_ids: [P-01, B-06]
+        scenario: Offline log analysis without SSH
+      - id: MQA-field-autonomous-start-001
+        questionnaire_ids: [P-02, B-01]
+        scenario: Autonomous run start API exists
+      - id: MQA-field-forensic-acquisition-001
+        questionnaire_ids: [P-03, B-02]
+        scenario: Forensic acquisition start and result APIs
+      - id: MQA-field-audit-export-001
+        questionnaire_ids: [P-06, A-08]
+        scenario: Audit CSV export route
+      - id: MQA-field-health-wizard-001
+        questionnaire_ids: [P-09, D-05]
+        scenario: Health check run endpoint
+      - id: MQA-field-multi-device-001
+        questionnaire_ids: [P-10, B-08]
+        scenario: Additional devices in incident payload
+      - id: MQA-field-time-sync-panel-001
+        questionnaire_ids: [P-12, D-10]
+        scenario: Time sync management panel in health wizard
+      - id: MQA-field-time-sync-api-001
+        questionnaire_ids: [P-12, L-05]
+        scenario: Time sync analysis API endpoints
+      - id: MQA-field-time-sync-analyzer-001
+        questionnaire_ids: [P-12, K-08]
+        scenario: Time sync analyzer module
+
+  - id: product_simplicity
+    module: tests/mandatory/test_lens_product_simplicity.py
+    scenarios:
+      - id: MQA-jobs-single-build-cta-001
+        questionnaire_ids: [R-01]
+        scenario: incidentStoryBuild is primary incident CTA
+      - id: MQA-jobs-forensic-label-001
+        questionnaire_ids: [R-02, B-02]
+        scenario: Forensic checkbox distinct from auto-collect
+      - id: MQA-jobs-progress-hide-001
+        questionnaire_ids: [R-03]
+        scenario: hideAcquisitionProgress function exists
+      - id: MQA-jobs-release-notes-001
+        questionnaire_ids: [R-06, Z-03]
+        scenario: In-app release notes API
+
+  - id: ui_ux
+    module: tests/mandatory/test_lens_ui_ux.py
+    scenarios:
+      - id: MQA-ux-xss-escape-001
+        questionnaire_ids: [S-04]
+        scenario: sosEsc used in incident story render
+      - id: MQA-ux-verdict-colors-001
+        questionnaire_ids: [S-01]
+        scenario: incidentVerdictColor helper exists
+      - id: MQA-ux-acquisition-progress-001
+        questionnaire_ids: [D-06, S-03]
+        scenario: Acquisition progress bar and step indicators
+      - id: MQA-ux-cancelled-state-001
+        questionnaire_ids: [D-01]
+        scenario: Cancelled stage label in autonomous poll
+      - id: MQA-ux-audit-links-001
+        questionnaire_ids: [D-08]
+        scenario: Audit download links in story result
+      - id: MQA-ux-config-compare-filters-001
+        questionnaire_ids: [D-09]
+        scenario: Config compare diff filter controls
+
+  - id: network_council
+    module: tests/mandatory/test_lens_network_council.py
+    scenarios:
+      - id: MQA-net-localhost-ssh-001
+        questionnaire_ids: [A-02]
+        scenario: SSH API localhost guard
+      - id: MQA-net-counter-verdict-001
+        questionnaire_ids: [B-03, C-04]
+        scenario: Counter-based interface verdict module
+      - id: MQA-net-correlation-engine-001
+        questionnaire_ids: [B-07, C-03]
+        scenario: Incident correlation with time window
+      - id: MQA-net-runbook-dedupe-001
+        questionnaire_ids: [B-04, J-03]
+        scenario: Runbook collect-next module
+      - id: MQA-net-multi-device-001
+        questionnaire_ids: [B-08]
+        scenario: Multi-device correlation module
+      - id: MQA-net-vendor-collectors-001
+        questionnaire_ids: [C-01, C-02]
+        scenario: Per-vendor log collection plans
+      - id: MQA-net-junos-iface-001
+        questionnaire_ids: [C-03]
+        scenario: Junos interface patterns in correlation
+      - id: MQA-net-runbook-templates-001
+        questionnaire_ids: [J-01, J-02]
+        scenario: Scenario runbook template library
+
+  - id: security
+    module: tests/mandatory/test_lens_security.py
+    scenarios:
+      - id: MQA-sec-vault-unlock-001
+        questionnaire_ids: [A-05]
+        scenario: Vault unlock guard on credential get
+      - id: MQA-sec-pcap-ssrf-001
+        questionnaire_ids: [A-04]
+        scenario: PCAP URL validation helper
+      - id: MQA-sec-shutdown-001
+        questionnaire_ids: [A-03]
+        scenario: Shutdown route exists with guards
+      - id: MQA-sec-api-security-module-001
+        questionnaire_ids: [A-01, A-06]
+        scenario: api_security module provides local guards
+      - id: MQA-sec-audit-events-001
+        questionnaire_ids: [A-07, A-08]
+        scenario: Audit event recording in store
+
+  - id: incident_pipeline
+    module: tests/mandatory/test_lens_incident_pipeline.py
+    scenarios:
+      - id: MQA-inc-brain-001
+        questionnaire_ids: [B-11]
+        scenario: _apply_incident_brain in service
+      - id: MQA-inc-export-writer-001
+        questionnaire_ids: [E-01]
+        scenario: incident_export_writer module
+      - id: MQA-inc-job-cancel-001
+        questionnaire_ids: [B-05, M-01]
+        scenario: Abort checks in autonomous pipeline
+      - id: MQA-inc-offline-analyze-001
+        questionnaire_ids: [B-06]
+        scenario: analyze_incident_story_from_logs
+      - id: MQA-inc-render-export-001
+        questionnaire_ids: [B-09]
+        scenario: UI renders export_path
+
+  - id: acquisition
+    module: tests/mandatory/test_lens_acquisition.py
+    scenarios:
+      - id: MQA-acq-12-steps-001
+        questionnaire_ids: [H-01]
+        scenario: WorkflowStep enum has 12 steps
+      - id: MQA-acq-background-job-001
+        questionnaire_ids: [H-02]
+        scenario: acquisition_job background runner
+      - id: MQA-acq-result-merge-001
+        questionnaire_ids: [H-07]
+        scenario: Result route merges job cache and engine
+      - id: MQA-acq-context-window-001
+        questionnaire_ids: [H-08]
+        scenario: Acquisition start passes window params
+
+  - id: credentials
+    module: tests/mandatory/test_lens_credentials.py
+    scenarios:
+      - id: MQA-cred-manager-001
+        questionnaire_ids: [A-01]
+        scenario: Credential manager encryption module
+      - id: MQA-cred-routes-001
+        questionnaire_ids: [P-05]
+        scenario: Credential CRUD routes registered
+      - id: MQA-cred-use-bridge-001
+        questionnaire_ids: [D-03]
+        scenario: useCredential in UI
+
+  - id: pcap
+    module: tests/mandatory/test_lens_pcap.py
+    scenarios:
+      - id: MQA-pcap-analyzer-001
+        questionnaire_ids: [I-01, I-02]
+        scenario: PCAP analyzer and flow infographic
+      - id: MQA-pcap-offline-demo-001
+        questionnaire_ids: [I-05, E-02]
+        scenario: Offline PCAP demo factory
+      - id: MQA-pcap-limits-001
+        questionnaire_ids: [I-04]
+        scenario: PCAP size limits module
+      - id: MQA-pcap-traffic-correlate-001
+        questionnaire_ids: [I-03]
+        scenario: Traffic-log correlation
+
+  - id: config_translator
+    module: tests/mandatory/test_lens_config_translator.py
+    scenarios:
+      - id: MQA-ct-parse-translate-001
+        questionnaire_ids: [P-07]
+        scenario: Config parser and translator modules
+      - id: MQA-ct-compare-001
+        questionnaire_ids: [P-07, D-09]
+        scenario: Config comparator engine
+      - id: MQA-ct-routes-001
+        questionnaire_ids: [L-04]
+        scenario: Config translator web routes
+
+  - id: offline_exe
+    module: tests/mandatory/test_lens_offline_exe.py
+    scenarios:
+      - id: MQA-exe-spec-version-001
+        questionnaire_ids: [E-03, Z-01]
+        scenario: Build spec bundles VERSION and modules
+      - id: MQA-exe-verify-script-001
+        questionnaire_ids: [E-05]
+        scenario: verify_offline_bundle.py exists
+      - id: MQA-exe-smoke-script-001
+        questionnaire_ids: [E-06]
+        scenario: smoke_release.py exists
+      - id: MQA-exe-resource-path-001
+        questionnaire_ids: [E-08]
+        scenario: _get_resource_path in web entry
+
+  - id: control_plane
+    module: tests/mandatory/test_lens_control_plane.py
+    scenarios:
+      - id: MQA-cp-tasks-list-001
+        questionnaire_ids: [D-02]
+        scenario: Control plane tasks API
+      - id: MQA-cp-cancel-001
+        questionnaire_ids: [D-02, P-04]
+        scenario: Task cancel endpoint
+      - id: MQA-cp-incident-job-001
+        questionnaire_ids: [M-01]
+        scenario: Incident job integrates control plane
+
+  - id: gap_closure
+    module: tests/mandatory/test_lens_gap_closure.py
+    scenarios:
+      - id: MQA-gap04-integration-001
+        questionnaire_ids: [H-09]
+        scenario: Acquisition integration tests pass with NLAP_RUN_INTEGRATION=1
+      - id: MQA-gap24-advanced-001
+        questionnaire_ids: [R-04, D-10]
+        scenario: Advanced options panel consolidates paste/demo/runbook
+      - id: MQA-gap27-split-001
+        questionnaire_ids: [L-05]
+        scenario: index.html component split into partials and static CSS
+      - id: MQA-gap29-a11y-001
+        questionnaire_ids: [S-05, T-01]
+        scenario: Accessibility skip link ARIA and focus rings
+      - id: MQA-gap30-mobile-001
+        questionnaire_ids: [S-06, T-02]
+        scenario: Mobile tablet responsive layout rules
+      - id: MQA-gap31-status-001
+        questionnaire_ids: [D-01, S-02]
+        scenario: Unified workflow status banners and pills
+      - id: MQA-gap32-tokens-001
+        questionnaire_ids: [T-03]
+        scenario: Design tokens in nlap-design-system and a11y CSS
+
+  - id: audit_compliance
+    module: tests/mandatory/test_lens_audit_compliance.py
+    scenarios:
+      - id: MQA-audit-list-export-001
+        questionnaire_ids: [A-08]
+        scenario: list_audit_events and export_audit_events_csv
+      - id: MQA-audit-command-001
+        questionnaire_ids: [A-07]
+        scenario: record_audit_event on command path
+      - id: MQA-audit-manifest-meta-001
+        questionnaire_ids: [Z-04, Z-05, Z-06]
+        scenario: Mandatory gate workflow files exist

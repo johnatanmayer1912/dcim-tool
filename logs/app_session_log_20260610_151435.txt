@@ -1,0 +1,71 @@
+[15:14:35] [test] Starting Interface Configuration Manager - deploy...
+[15:14:35] [test] Connecting to cisco_ios...
+[15:14:35] [test] Connecting to device...
+[15:14:37] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[15:14:37] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[15:14:37] [test] Starting Interface Configuration Manager - discover...
+[15:14:37] [test] Connecting to cisco_ios...
+[15:14:37] [test] Connecting to device...
+[15:14:40] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[15:14:40] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[15:14:40] [test] Starting Interface Configuration Manager - validate...
+[15:14:40] [test] Connecting to cisco_ios...
+[15:14:40] [test] Connecting to device...
+[15:14:43] [test] Connection/operation failed: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[15:14:43] [test] ERROR: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios test:22
+
+
+[15:14:43] [Discovery] Job e319d00c started — seeds: ['10.0.0.1'], depth: 2
+[15:14:43] [Discovery] Job e319d00c failed: No valid seed hosts

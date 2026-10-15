@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>04 Change — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 04</strong>
+    <span>Static HTML — no Flask. Not the live console.</span>
+    <a href="index.html">All demos</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-on" href="06-settings-vault.html"><span class="ico" aria-hidden="true">●</span> Vault UNLOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select aria-label="Named credential set"><option selected>lab-ops (ssh)</option></select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope"><option selected>Group DIST — 12 devices</option></select>
+        </label>
+      </div>
+      <p class="freshness">Golden gate: policies/golden_gate.yaml · last validate 2m</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html">Maps <span class="badge">3</span><span class="kbd">2</span></a>
+      <a href="03-find.html">Find <span class="kbd">3</span></a>
+      <a href="04-change.html" aria-current="page">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Change</h1>
+          <p class="lede">Mutate only after dry-run, syntax, platform, conflicts, golden-config, and a confirm that lists hosts. Live apply never looks like validate.</p>
+        </div>
+        <div class="title-actions">
+          <button type="button" class="primary" id="btn-validate">Validate</button>
+          <button type="button" id="btn-apply" disabled>Confirm apply…</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Job type</h2>
+        <div class="tabs" role="tablist" aria-label="Change job">
+          <button type="button" role="tab" aria-selected="true">VLAN</button>
+          <button type="button" role="tab" aria-selected="false">Interfaces</button>
+          <button type="button" role="tab" aria-selected="false">Templates</button>
+          <button type="button" role="tab" aria-selected="false">Standards</button>
+        </div>
+        <fieldset>
+          <legend>VLAN scenario</legend>
+          <label class="field inline"><input type="radio" name="vlan" value="20" checked> VLAN 20 add (should pass)</label>
+          <label class="field inline"><input type="radio" name="vlan" value="1002"> VLAN 1002 (golden fail, no SSH)</label>
+        </fieldset>
+        <label class="field" style="margin-top:0.5rem">
+          <span>VLAN name</span>
+          <input type="text" id="vlan-name" value="USERS" autocomplete="off">
+        </label>
+        <label class="field inline" style="margin-top:0.4rem">
+          <input type="checkbox" id="im-dry" checked>
+          <span>IM dry-run default on (Interfaces job)</span>
+        </label>
+      </div>
+      <div class="card">
+        <h2>Validation pipeline</h2>
+        <div class="stepper" id="steps">
+          <span class="step pending">1 Dry-run CLI</span>
+          <span class="step pending">2 Syntax</span>
+          <span class="step pending">3 Platform</span>
+          <span class="step pending">4 Conflicts</span>
+          <span class="step pending">5 Golden-config</span>
+          <span class="step pending">6 Approval required</span>
+        </div>
+        <pre class="mono" id="cli-preview" hidden></pre>
+      </div>
+      <script type="application/json" id="sample-data">
+{"vlan_20":{"pass":true,"hosts":["DIST-01","DIST-02","ACC-01","ACC-02","ACC-03"]},"vlan_1002":{"pass":false,"reason":"golden_gate reserved","ssh":false}}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Pipeline</h2>
+      <p id="insp">Pick VLAN 20 or 1002, then Validate. Apply stays disabled until every step passes and you check the confirm boxes.</p>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span></footer>
+  <dialog id="apply-modal" aria-labelledby="apply-title">
+    <h2 id="apply-title">Confirm apply — 5 devices</h2>
+    <p>This writes CLI. Validate already passed. Targets:</p>
+    <ul>
+      <li>DIST-01</li><li>DIST-02</li><li>ACC-01</li><li>ACC-02</li><li>ACC-03</li>
+    </ul>
+    <label class="field inline"><input type="checkbox" id="chk-hosts"> I reviewed the device list (5)</label>
+    <label class="field inline"><input type="checkbox" id="chk-golden"> Golden-config re-check on apply is understood</label>
+    <form method="dialog" style="margin-top:0.7rem">
+      <button value="cancel">Back</button>
+      <button class="primary" id="apply-go" value="ok" disabled>Apply VLAN 20</button>
+    </form>
+  </dialog>
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var steps = document.getElementById("steps");
+      var apply = document.getElementById("btn-apply");
+      var insp = document.getElementById("insp");
+      var preview = document.getElementById("cli-preview");
+      function vlanVal() {
+        var el = document.querySelector('input[name="vlan"]:checked');
+        return el ? el.value : "20";
+      }
+      document.getElementById("btn-validate").onclick = function () {
+        var v = vlanVal();
+        if (v === "1002") {
+          steps.innerHTML =
+            '<span class="step pass">1 Dry-run CLI</span>' +
+            '<span class="step pass">2 Syntax</span>' +
+            '<span class="step pass">3 Platform</span>' +
+            '<span class="step pass">4 Conflicts</span>' +
+            '<span class="step fail">5 Golden-config — VLAN 1002 reserved</span>' +
+            '<span class="step pending">6 Approval required</span>';
+          apply.disabled = true;
+          preview.hidden = true;
+          insp.innerHTML = "<strong>Blocked locally.</strong> Golden gate rejected VLAN 1002. <em>No SSH was opened.</em>";
+        } else {
+          steps.innerHTML =
+            '<span class="step pass">1 Dry-run CLI</span>' +
+            '<span class="step pass">2 Syntax</span>' +
+            '<span class="step pass">3 Platform</span>' +
+            '<span class="step pass">4 Conflicts</span>' +
+            '<span class="step pass">5 Golden-config</span>' +
+            '<span class="step pass">6 Approval required</span>';
+          apply.disabled = false;
+          preview.hidden = false;
+          preview.textContent = "vlan 20\n name USERS";
+          insp.textContent = "Ready. Confirm apply lists 5 DIST hosts. Apply re-checks golden.";
+        }
+      };
+      apply.onclick = function () {
+        if (apply.disabled) return;
+        document.getElementById("apply-modal").showModal();
+      };
+      function syncApplyGo() {
+        var a = document.getElementById("chk-hosts").checked;
+        var b = document.getElementById("chk-golden").checked;
+        document.getElementById("apply-go").disabled = !(a && b);
+      }
+      document.getElementById("chk-hosts").onchange = syncApplyGo;
+      document.getElementById("chk-golden").onchange = syncApplyGo;
+    })();
+  </script>
+</body>
+</html>

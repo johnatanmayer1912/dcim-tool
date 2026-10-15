@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Swiss Tool — Logo placement options (mockups)</title>
+    <link rel="icon" href="../../favicon_program.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0f172a;
+            --color-accent: #3b82f6;
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-sidebar: #ffffff;
+            --bg-console: #0f172a;
+            --border-light: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #e2e8f0;
+            color: var(--text-primary);
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: var(--color-primary);
+            color: #fff;
+            padding: 20px 28px;
+        }
+
+        .page-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            font-size: 13px;
+            opacity: 0.85;
+            max-width: 720px;
+        }
+
+        .page-header .hint {
+            margin-top: 12px;
+            font-size: 12px;
+            background: rgba(59, 130, 246, 0.25);
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 100px);
+        }
+
+        @media (max-width: 1100px) {
+            .layout { grid-template-columns: 1fr; }
+            .picker { border-right: none; border-bottom: 1px solid var(--border-light); max-height: none; }
+        }
+
+        .picker {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-light);
+            padding: 16px;
+            overflow-y: auto;
+            max-height: calc(100vh - 100px);
+            position: sticky;
+            top: 0;
+        }
+
+        .picker h2 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--color-accent);
+            background: #f8fafc;
+        }
+
+        .option-btn.active {
+            border-color: var(--color-accent);
+            background: rgba(59, 130, 246, 0.08);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .option-btn .id {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .option-btn .title {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 4px 0 2px;
+        }
+
+        .option-btn .desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .option-btn .rec {
+            font-size: 10px;
+            margin-top: 6px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .option-btn.current-opt .id { color: #e94560; }
+
+        .preview-pane {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .preview-meta {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .preview-meta h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .preview-meta ul {
+            margin-left: 18px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .preview-meta li { margin-bottom: 4px; }
+
+        .preview-meta .choice-note {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: #fef3c7;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #92400e;
+        }
+
+        /* —— Mini app chrome (shared) —— */
+        .mini-app {
+            background: var(--bg-main);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            max-width: 1100px;
+        }
+
+        .mini-header {
+            height: 48px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 10px;
+        }
+
+        .traffic { display: flex; gap: 6px; }
+        .traffic span {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+        .traffic .r { background: #ff5f56; }
+        .traffic .y { background: #ffbd2e; }
+        .traffic .g { background: #27c93f; }
+
+        .mini-title {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            flex-wrap: wrap;
+        }
+
+        .mini-title .logo-header {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .badge-blue { background: rgba(0, 122, 255, 0.12); color: #007aff; }
+        .badge-muted { color: #a0aec0; font-weight: 400; }
+        .badge-pink { background: rgba(233, 69, 96, 0.1); color: #e94560; }
+
+        .mini-body {
+            display: flex;
+            height: 520px;
+        }
+
+        .mini-sidebar {
+            width: 248px;
+            flex-shrink: 0;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-light);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mini-group {
+            background: var(--bg-main);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 12px;
+        }
+
+        .mini-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .fake-input {
+            height: 28px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .fake-btn {
+            height: 28px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .fake-btn-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .fake-btn-row .fake-btn { flex: 1; }
+
+        .fake-textarea {
+            height: 56px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            margin-top: 6px;
+        }
+
+        .fake-exit {
+            margin-top: auto;
+            height: 36px;
+            background: #ef4444;
+            border-radius: 8px;
+            opacity: 0.85;
+        }
+
+        .mini-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .mini-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 12px 12px 0;
+            flex-wrap: wrap;
+        }
+
+        .mini-tab {
+            padding: 6px 10px;
+            font-size: 11px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 8px 8px 0 0;
+            color: var(--text-secondary);
+        }
+
+        .mini-tab.on {
+            background: #fff;
+            border-bottom-color: #fff;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .mini-workspace {
+            flex: 1;
+            margin: 0 12px 12px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 0 8px 8px 8px;
+            padding: 16px;
+        }
+
+        .mini-card {
+            height: 72px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        .mini-card.y { background: #fef9c3; border: 1px solid #fde047; }
+        .mini-card.p { background: #f3e8ff; border: 1px solid #d8b4fe; }
+        .mini-card.g { background: #dcfce7; border: 1px solid #86efac; }
+
+        .mini-console {
+            width: 200px;
+            flex-shrink: 0;
+            background: var(--bg-console);
+            padding: 10px;
+            font-size: 10px;
+            color: #94a3b8;
+            font-family: ui-monospace, monospace;
+        }
+
+        /* —— Logo variant styles —— */
+        .brand-current-outer {
+            display: flex;
+            justify-content: center;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            background: linear-gradient(160deg, #fff 0%, #f1f5f9 55%, #e8eef9 100%);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-current-inner {
+            width: 72px;
+            height: 72px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+        }
+
+        .brand-current-inner img { width: 62px; height: 62px; object-fit: contain; border-radius: 8px; }
+
+        .brand-top-strip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+        }
+
+        .brand-top-strip img {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            object-fit: contain;
+            background: var(--color-primary);
+            padding: 4px;
+        }
+
+        .brand-top-strip .name {
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .brand-top-strip .sub {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .brand-top-icon-only {
+            display: flex;
+            justify-content: center;
+            padding: 8px 0 4px;
+        }
+
+        .brand-top-icon-only img {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            object-fit: contain;
+            background: var(--color-primary);
+            padding: 5px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
+            opacity: 0.9;
+        }
+
+        .brand-footer img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: var(--color-primary);
+            padding: 3px;
+        }
+
+        .brand-footer span {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .brand-mid-compact {
+            display: flex;
+            justify-content: center;
+            padding: 6px 0;
+            margin: 4px 0;
+            border-top: 1px dashed var(--border-light);
+            border-bottom: 1px dashed var(--border-light);
+        }
+
+        .brand-mid-compact img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: var(--color-primary);
+            padding: 4px;
+        }
+
+        .highlight-zone {
+            outline: 2px dashed rgba(59, 130, 246, 0.6);
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        .all-grid {
+            display: none;
+        }
+
+        .all-grid.visible {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .all-grid .mini-app { max-width: none; }
+        .all-grid .mini-body { height: 380px; }
+        .all-grid .mini-console { display: none; }
+        .all-grid .card-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar button {
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .toolbar button:hover { border-color: var(--color-accent); }
+        .toolbar button.on { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1>Logo placement — UI mockups</h1>
+        <p>Compare options for Network Swiss Tool v7.0.8+. Open this file in a browser (double-click). Pick an option in the left list, then tell your developer: <strong>“Apply option A/B/C…”</strong></p>
+        <span class="hint">Logo file: <code>favicon_program.png</code> (project root) — if image is missing, placeholders still show layout.</span>
+    </header>
+
+    <div class="layout">
+        <aside class="picker">
+            <h2>Choose a layout</h2>
+
+            <button type="button" class="option-btn current-opt active" data-option="current">
+                <span class="id">Current</span>
+                <div class="title">Mid sidebar (v7.0.8)</div>
+                <div class="desc">Large double-frame between filters and Import — what you have now.</div>
+            </button>
+
+            <button type="button" class="option-btn" data-option="a">
+                <span class="id">Option A</span>
+                <div class="title">Sidebar top — icon + name</div>
+                <div class="desc">48px icon, product name, above Credentials. Best identity + flow.</div>
+                <div class="rec">★ Recommended</div>
+            </button>
+
+            <button type="button" class="option-btn" data-option="b">
+                <span class="id">Option B</span>
+                <div class="title">Sidebar top — icon only</div>
+                <div class="desc">Minimal 48px mark, no extra text. Cleanest sidebar.</div>
+                <div class="rec">★ Recommended (minimal)</div>
+            </button>
+
+            <button type="button" class="option-btn" data-option="c">
+                <span class="id">Option C</span>
+                <div class="title">Header — micro logo</div>
+                <div class="desc">26px next to title. Single brand anchor with version badges.</div>
+            </button>
+
+            <button type="button" class="option-btn" data-option="d">
+                <span class="id">Option D</span>
+                <div class="title">Footer — above Exit</div>
+                <div class="desc">32px subtle mark. Does not interrupt Target Scope workflow.</div>
+            </button>
+
+            <button type="button" class="option-btn" data-option="e">
+                <span class="id">Option E</span>
+                <div class="title">Mid sidebar — compact divider</div>
+                <div class="desc">40px single plate, dashed divider — if you want logo near inventory.</div>
+            </button>
+
+            <button type="button" class="option-btn" data-option="f">
+                <span class="id">Option F</span>
+                <div class="title">A + C combined</div>
+                <div class="desc">Small header icon + sidebar top strip. Strong branding (use sparingly).</div>
+            </button>
+
+            <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--border-light);">
+
+            <button type="button" class="option-btn" data-option="all">
+                <span class="id">Compare all</span>
+                <div class="title">Grid view</div>
+                <div class="desc">See every option side-by-side (smaller previews).</div>
+            </button>
+        </aside>
+
+        <main class="preview-pane">
+            <div class="toolbar">
+                <button type="button" id="btn-single" class="on">Single preview</button>
+                <button type="button" id="btn-all">Compare all grid</button>
+            </div>
+
+            <div id="single-view">
+                <div class="preview-meta" id="preview-meta"></div>
+                <div id="preview-mount"></div>
+            </div>
+
+            <div id="all-view" class="all-grid hidden"></div>
+        </main>
+    </div>
+
+    <script>
+        const LOGO_SRC = '../../favicon_program.png';
+
+        const META = {
+            current: {
+                title: 'Current — Mid Target Scope (v7.0.8)',
+                pros: ['Highly visible', 'Dark plate matches console theme'],
+                cons: ['Breaks form flow (filter → logo → Import)', 'Feels large (~120px tall)', 'Double frame (card + dark square)', 'Duplicates header branding'],
+                note: 'Baseline — you asked to remove watermark; this was the first sidebar fix.'
+            },
+            a: {
+                title: 'Option A — Sidebar top (icon + name)',
+                pros: ['Standard app-chrome placement', 'Does not interrupt Target Scope', 'Clear identity at session start', 'Clickable → About (optional)'],
+                cons: ['Uses ~56px vertical space at top of sidebar'],
+                note: 'Tell developer: "Apply Option A" — best balance of visibility and UX.'
+            },
+            b: {
+                title: 'Option B — Sidebar top (icon only)',
+                pros: ['Same placement as A, less visual weight', 'Single 48px plate, no double frame', 'Header already shows product name'],
+                cons: ['Slightly less obvious for first-time users'],
+                note: 'Tell developer: "Apply Option B" if you want the cleanest sidebar.'
+            },
+            c: {
+                title: 'Option C — Header micro logo (26px)',
+                pros: ['Industry-standard (IDE / SaaS pattern)', 'Zero impact on sidebar workflow', 'Works with existing title + badges'],
+                cons: ['Small — less "hero" branding', 'Crowded if many header badges'],
+                note: 'Tell developer: "Apply Option C" — good if sidebar must stay 100% functional.'
+            },
+            d: {
+                title: 'Option D — Footer above Exit',
+                pros: ['Never blocks credentials / scope / inventory', 'Subtle, professional'],
+                cons: ['Easy to overlook', 'Far from primary attention'],
+                note: 'Tell developer: "Apply Option D" for understated branding only.'
+            },
+            e: {
+                title: 'Option E — Mid sidebar compact divider',
+                pros: ['Keeps logo near inventory area', 'Much smaller than current', 'Single container, dashed divider'],
+                cons: ['Still splits Target Scope flow', 'Weaker than top placement'],
+                note: 'Tell developer: "Apply Option E" only if you insist on logo above Import.'
+            },
+            f: {
+                title: 'Option F — Header + sidebar top (combined)',
+                pros: ['Maximum brand presence'],
+                cons: ['Redundant with title text', 'Can feel busy / marketing-heavy'],
+                note: 'Usually avoid unless building a white-label product.'
+            }
+        };
+
+        function logoImg(size, className) {
+            const c = className ? ` class="${className}"` : '';
+            return `<img src="${LOGO_SRC}" alt="" width="${size}" height="${size}"${c} onerror="this.style.opacity='0.3'">`;
+        }
+
+        function sidebarContent(variant) {
+            let top = '';
+            let mid = '';
+            let foot = '';
+
+            switch (variant) {
+                case 'current':
+                    mid = `<div class="brand-current-outer highlight-zone">
+                        <div class="brand-current-inner">${logoImg(62)}</div>
+                    </div>`;
+                    break;
+                case 'a':
+                    top = `<div class="brand-top-strip highlight-zone">
+                        ${logoImg(44)}
+                        <div><div class="name">Network Swiss Tool</div><div class="sub">v7.0.8 · Offline</div></div>
+                    </div>`;
+                    break;
+                case 'b':
+                    top = `<div class="brand-top-icon-only highlight-zone">${logoImg(48)}</div>`;
+                    break;
+                case 'd':
+                    foot = `<div class="brand-footer highlight-zone">${logoImg(32)}<span>Network Swiss Tool</span></div>`;
+                    break;
+                case 'e':
+                    mid = `<div class="brand-mid-compact highlight-zone">${logoImg(40)}</div>`;
+                    break;
+                case 'f':
+                    top = `<div class="brand-top-icon-only highlight-zone">${logoImg(40)}</div>`;
+                    break;
+                default:
+                    break;
+            }
+
+            return `
+                ${top}
+                <div class="mini-group">
+                    <span class="mini-label">🔐 Credentials</span>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                </div>
+                <div class="mini-group" style="flex:1;display:flex;flex-direction:column;">
+                    <span class="mini-label">🎯 Target Scope</span>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                    <div class="fake-input"></div>
+                    ${mid}
+                    <div class="fake-btn-row">
+                        <div class="fake-btn">📥 Import</div>
+                        <div class="fake-btn" style="flex:0 0 70px">📁 Browse</div>
+                    </div>
+                    <div class="fake-textarea"></div>
+                </div>
+                ${foot}
+                <div class="fake-exit" title="Stop Program & Exit"></div>
+            `;
+        }
+
+        function headerContent(variant) {
+            const logo = (variant === 'c' || variant === 'f')
+                ? logoImg(26, 'logo-header')
+                : '';
+            return `
+                <div class="traffic">
+                    <span class="r"></span><span class="y"></span><span class="g"></span>
+                </div>
+                <div class="mini-title">
+                    ${logo}
+                    <span>Network Swiss Tool</span>
+                    <span class="badge badge-blue">7.0.8</span>
+                    <span class="badge badge-muted">Updated: 2026-05-24</span>
+                    <span class="badge badge-pink">Made by AI IDE</span>
+                </div>
+            `;
+        }
+
+        function buildMiniApp(variant, label) {
+            const labelHtml = label ? `<div class="card-label">${label}</div>` : '';
+            return `
+                ${labelHtml}
+                <div class="mini-app">
+                    <div class="mini-header">${headerContent(variant)}</div>
+                    <div class="mini-body">
+                        <div class="mini-sidebar">${sidebarContent(variant)}</div>
+                        <div class="mini-main">
+                            <div class="mini-tabs">
+                                <span class="mini-tab on">search_it</span>
+                                <span class="mini-tab">Interfaces</span>
+                                <span class="mini-tab">VLAN</span>
+                                <span class="mini-tab">Swiss Tools</span>
+                            </div>
+                            <div class="mini-workspace">
+                                <div class="mini-card y"></div>
+                                <div class="mini-card p"></div>
+                                <div class="mini-card g"></div>
+                            </div>
+                        </div>
+                        <div class="mini-console">&gt; System ready…<br>&gt; Plugins loaded</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMeta(key) {
+            const m = META[key];
+            document.getElementById('preview-meta').innerHTML = `
+                <h3>${m.title}</h3>
+                <ul>
+                    <li><strong>Pros:</strong> ${m.pros.join('; ')}</li>
+                    <li><strong>Cons:</strong> ${m.cons.join('; ')}</li>
+                </ul>
+                <div class="choice-note">${m.note}</div>
+            `;
+        }
+
+        function showOption(key) {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.option === key);
+            });
+            renderMeta(key);
+            document.getElementById('preview-mount').innerHTML = buildMiniApp(key);
+            document.getElementById('single-view').classList.remove('hidden');
+            document.getElementById('all-view').classList.remove('visible');
+            document.getElementById('all-view').classList.add('hidden');
+            document.getElementById('btn-single').classList.add('on');
+            document.getElementById('btn-all').classList.remove('on');
+        }
+
+        function showAllGrid() {
+            const keys = ['current', 'a', 'b', 'c', 'd', 'e', 'f'];
+            const labels = {
+                current: 'Current',
+                a: 'Option A',
+                b: 'Option B',
+                c: 'Option C',
+                d: 'Option D',
+                e: 'Option E',
+                f: 'Option F'
+            };
+            document.getElementById('all-view').innerHTML = keys.map(k =>
+                buildMiniApp(k, labels[k])
+            ).join('');
+            document.getElementById('single-view').classList.add('hidden');
+            document.getElementById('all-view').classList.remove('hidden');
+            document.getElementById('all-view').classList.add('visible');
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('[data-option="all"]').classList.add('active');
+            document.getElementById('btn-single').classList.remove('on');
+            document.getElementById('btn-all').classList.add('on');
+        }
+
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const opt = btn.dataset.option;
+                if (opt === 'all') showAllGrid();
+                else showOption(opt);
+            });
+        });
+
+        document.getElementById('btn-single').addEventListener('click', () => showOption('a'));
+        document.getElementById('btn-all').addEventListener('click', showAllGrid);
+
+        showOption('current');
+    </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+Local Interface    : ge-0/0/0
+Parent Interface   : ge-0/0/0
+Local Port ID      : 514
+Chassis ID         : 00:11:22:33:44:55
+System name        : edge-junos-04
+System description : Juniper Networks, Inc. ex4300-48t internet router
+Management address : 10.0.0.4

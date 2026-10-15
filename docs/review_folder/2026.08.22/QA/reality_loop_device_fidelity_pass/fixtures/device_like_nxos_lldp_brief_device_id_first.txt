@@ -1,0 +1,6 @@
+Capability codes:
+  (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+  (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+Device ID            Local Intf      Hold-time  Capability  Port ID
+SPINE-NXOS-01        Eth1/1          120        R,B         Eth1/2
+DIST-IOS-02          Eth1/3          120        B           Gi1/0/1

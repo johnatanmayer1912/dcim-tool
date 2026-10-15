@@ -1,0 +1,2 @@
+% Invalid command at '^' marker.
+Feature lldp is not enabled

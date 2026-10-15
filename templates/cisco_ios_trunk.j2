@@ -1,0 +1,10 @@
+! Cisco IOS/XE trunk — preview only
+! Device: {{ hostname }} — {{ timestamp }}
+configure terminal
+interface {{ interface }}
+ description {{ description }}
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan {{ allowed_vlans }}
+ switchport trunk native vlan {{ native_vlan }}
+end

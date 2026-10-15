@@ -1,0 +1,8 @@
+Chassis id: mac 00:1A:2B:3C:4D:5E
+Local Port id: Eth1/1
+Port id: mac 00:AA:BB:CC:DD:EE
+Port Description: Ethernet1/48
+System Name: not advertised
+
+System Description: Cisco Nexus Operating System (NX-OS) Software
+Management Address: 10.1.1.8

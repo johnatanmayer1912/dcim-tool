@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo A — NOC Briefing Board</title>
+  <style>
+    :root {
+      --bg: #0d1117; --surface: #161b22; --elevated: #21262d;
+      --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+      --accent: #58a6ff; --green: #3fb950; --amber: #d29922; --red: #f85149;
+      --core: #a371f7; --dist: #58a6ff; --access: #3fb950;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 13px; }
+    .demo-banner {
+      background: linear-gradient(90deg, #1f6feb33, #8957e533);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .demo-banner strong { color: var(--accent); }
+    header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;
+    }
+    header h1 { font-size: 1.25rem; font-weight: 600; }
+    header .meta { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+    .kpis { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.85rem;
+      min-width: 90px;
+    }
+    .kpi .val { font-size: 1.35rem; font-weight: 700; }
+    .kpi .lbl { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .kpi.warn .val { color: var(--amber); }
+    .kpi.ok .val { color: var(--green); }
+    .alert-strip {
+      margin: 0 1.25rem;
+      padding: 0.6rem 1rem;
+      background: rgba(210,153,34,0.12);
+      border: 1px solid rgba(210,153,34,0.35);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .main { display: grid; grid-template-columns: 1fr 320px; gap: 0; min-height: calc(100vh - 200px); }
+    @media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+    .left { padding: 1rem 1.25rem; border-right: 1px solid var(--border); overflow: auto; }
+    .right { background: var(--surface); padding: 1rem; overflow: auto; }
+    .section-title {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--muted); margin-bottom: 0.75rem;
+    }
+    .swimlanes { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .lane {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+    }
+    .lane-header {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 0.5rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border);
+    }
+    .lane.core .lane-header { color: var(--core); }
+    .lane.dist .lane-header { color: var(--dist); }
+    .lane.access .lane-header { color: var(--access); }
+    .nodes { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .node {
+      background: var(--elevated);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.65rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .node:hover, .node.selected { border-color: var(--accent); }
+    .node .role { font-size: 0.6rem; color: var(--muted); display: block; }
+    .edge-line { color: var(--muted); font-size: 0.7rem; padding: 0 0.25rem; }
+    .graph-box {
+      height: 220px;
+      background: var(--elevated);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 0.8rem; margin-bottom: 1rem;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    th, td { text-align: left; padding: 0.45rem 0.5rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; font-size: 0.65rem; text-transform: uppercase; }
+    tr:hover td { background: rgba(88,166,255,0.06); }
+    tr.selected td { background: rgba(88,166,255,0.12); }
+    .proto { font-size: 0.65rem; padding: 0.15rem 0.35rem; border-radius: 3px; background: var(--elevated); }
+    .detail-card { background: var(--elevated); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.75rem; }
+    .detail-card h3 { font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .detail-row { display: flex; justify-content: space-between; font-size: 0.75rem; padding: 0.25rem 0; border-bottom: 1px solid var(--border); }
+    .detail-row:last-child { border: none; }
+    .detail-row span:first-child { color: var(--muted); }
+    .legend { font-size: 0.7rem; color: var(--muted); margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="demo-banner"><strong>Demo A</strong> — NOC Briefing Board · Sample site: CAMPUS-HQ · Not live data</div>
+
+  <header>
+    <div>
+      <h1>Standard Map — CAMPUS-HQ</h1>
+      <div class="meta">Collected 18 Jun 2026 14:32 UTC · 47 devices · 89 links · CDP + LLDP · SSH pool 8/8</div>
+    </div>
+    <div class="kpis">
+      <div class="kpi ok"><div class="val">47</div><div class="lbl">Devices</div></div>
+      <div class="kpi ok"><div class="val">89</div><div class="lbl">Links</div></div>
+      <div class="kpi warn"><div class="val">2</div><div class="lbl">Failed</div></div>
+      <div class="kpi"><div class="val">3</div><div class="lbl">Po/vPC</div></div>
+      <div class="kpi warn"><div class="val">1</div><div class="lbl">Unidirect</div></div>
+    </div>
+  </header>
+
+  <div class="alert-strip">⚠ Failed hosts: <strong>SW-ACCESS-12</strong> (timeout), <strong>AP-FLOOR3-07</strong> (auth). Truncation: none. Review before handoff.</div>
+
+  <div class="main">
+    <div class="left">
+      <div class="section-title">Network tiers — who sits where</div>
+      <div class="swimlanes">
+        <div class="lane core">
+          <div class="lane-header">Core · 2 devices</div>
+          <div class="nodes">
+            <div class="node selected" data-id="CORE-01"><strong>CORE-01</strong><span class="role">C9500 · IOS-XE 17.9</span></div>
+            <span class="edge-line">⟷ Po1</span>
+            <div class="node" data-id="CORE-02"><strong>CORE-02</strong><span class="role">C9500 · IOS-XE 17.9</span></div>
+          </div>
+        </div>
+        <div class="lane dist">
+          <div class="lane-header">Distribution · 4 devices</div>
+          <div class="nodes">
+            <div class="node" data-id="DIST-N1"><strong>DIST-N1</strong><span class="role">C9300</span></div>
+            <div class="node" data-id="DIST-N2"><strong>DIST-N2</strong><span class="role">C9300</span></div>
+            <div class="node" data-id="DIST-S1"><strong>DIST-S1</strong><span class="role">C9300</span></div>
+            <div class="node" data-id="DIST-S2"><strong>DIST-S2</strong><span class="role">C9300</span></div>
+          </div>
+        </div>
+        <div class="lane access">
+          <div class="lane-header">Access · 41 devices (showing 8)</div>
+          <div class="nodes">
+            <div class="node" data-id="SW-ACC-01"><strong>SW-ACC-01</strong><span class="role">C9200 · 24 ports</span></div>
+            <div class="node" data-id="SW-ACC-02"><strong>SW-ACC-02</strong><span class="role">C9200</span></div>
+            <div class="node" data-id="SW-ACC-03"><strong>SW-ACC-03</strong><span class="role">C9200</span></div>
+            <span style="color:var(--muted);font-size:0.75rem">+ 38 more…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Adjacency graph (supports briefing — click row or node)</div>
+      <div class="graph-box">Interactive Vis.js graph · filtered to selected device neighborhood</div>
+
+      <div class="section-title">Connection index — WHAT / HOW / WHO</div>
+      <table id="linkTable">
+        <thead>
+          <tr>
+            <th>Local device</th>
+            <th>Local port</th>
+            <th>Remote device</th>
+            <th>Remote port</th>
+            <th>Proto</th>
+            <th>VLAN</th>
+            <th>Speed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="selected" data-link="1">
+            <td><strong>CORE-01</strong></td>
+            <td>Te1/0/1</td>
+            <td>DIST-N1</td>
+            <td>Te1/1/1</td>
+            <td><span class="proto">CDP</span></td>
+            <td>trunk</td>
+            <td>10G</td>
+          </tr>
+          <tr data-link="2">
+            <td>CORE-01</td>
+            <td>Te1/0/2</td>
+            <td>DIST-N2</td>
+            <td>Te1/1/1</td>
+            <td><span class="proto">CDP</span></td>
+            <td>trunk</td>
+            <td>10G</td>
+          </tr>
+          <tr data-link="3">
+            <td>CORE-01</td>
+            <td>Po1</td>
+            <td>CORE-02</td>
+            <td>Po1</td>
+            <td><span class="proto">LLDP</span></td>
+            <td>—</td>
+            <td>20G</td>
+          </tr>
+          <tr data-link="4">
+            <td>DIST-N1</td>
+            <td>Gi1/0/48</td>
+            <td>SW-ACC-01</td>
+            <td>Gi1/0/1</td>
+            <td><span class="proto">CDP</span></td>
+            <td>110</td>
+            <td>1G</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="legend">↑ Engineer answers handoff questions from this table first; graph confirms topology shape.</p>
+    </div>
+
+    <div class="right">
+      <div class="section-title">Selected: CORE-01</div>
+      <div class="detail-card">
+        <h3>Identity</h3>
+        <div class="detail-row"><span>Platform</span><span>Cisco C9500-48Y4C</span></div>
+        <div class="detail-row"><span>OS</span><span>IOS-XE 17.9.4</span></div>
+        <div class="detail-row"><span>Mgmt IP</span><span>10.1.0.1</span></div>
+        <div class="detail-row"><span>Role</span><span>Core</span></div>
+        <div class="detail-row"><span>Neighbors</span><span>5 CDP · 1 LLDP</span></div>
+      </div>
+      <div class="detail-card">
+        <h3>Selected link</h3>
+        <div class="detail-row"><span>Local</span><span>CORE-01 Te1/0/1</span></div>
+        <div class="detail-row"><span>Remote</span><span>DIST-N1 Te1/1/1</span></div>
+        <div class="detail-row"><span>Description</span><span>UPLINK-DIST-N1</span></div>
+        <div class="detail-row"><span>Allowed VLANs</span><span>1,110,120,130</span></div>
+        <div class="detail-row"><span>MACs on port</span><span>0 (uplink)</span></div>
+      </div>
+      <div class="detail-card">
+        <h3>Quick actions</h3>
+        <div style="font-size:0.75rem;color:var(--muted)">Open SSH · Copy row · Export this device · Trace path to SW-ACC-01</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.node, #linkTable tbody tr').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.node, #linkTable tbody tr').forEach(x => x.classList.remove('selected'));
+        if (el.classList.contains('node')) el.classList.add('selected');
+        if (el.tagName === 'TR') el.classList.add('selected');
+      });
+    });
+  </script>
+</body>
+</html>

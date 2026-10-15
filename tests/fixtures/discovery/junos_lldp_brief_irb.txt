@@ -1,0 +1,5 @@
+Local Interface    Parent Interface    Chassis Id          Port info          System Name
+ge-0/0/0           -                   00:1a:2b:3c:4d:5e   ge-0/0/1           DIST-QFX-01
+irb.100            -                   00:11:22:33:44:55   ge-0/0/24          GW-HOST-01
+vlan.200           -                   00:aa:bb:cc:dd:01   ae0.0              LEGACY-GW
+xe-0/0/0           ae0                 00:aa:bb:cc:dd:ee   xe-0/0/48          SPINE-QFX-02

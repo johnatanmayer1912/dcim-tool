@@ -1,0 +1,1 @@
+# Empty discovery command output (Phase 5 resilience). Intentionally no neighbors.

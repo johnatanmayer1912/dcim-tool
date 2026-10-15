@@ -1,0 +1,32 @@
+{
+  "imdata": [
+    {
+      "fabricNode": {
+        "attributes": {
+          "name": "MOCK-ACI-LEAF-01",
+          "id": "101",
+          "serial": "WZP2345678AB",
+          "model": "N9K-C93180YC-EX",
+          "version": "16.2(2)",
+          "address": "10.99.1.3",
+          "role": "leaf",
+          "podId": "1"
+        }
+      }
+    },
+    {
+      "fabricNode": {
+        "attributes": {
+          "name": "MOCK-ACI-SPINE-01",
+          "id": "201",
+          "serial": "WZP9876543CD",
+          "model": "N9K-C9336C-FX2",
+          "version": "16.2(2)",
+          "address": "10.99.1.31",
+          "role": "spine",
+          "podId": "1"
+        }
+      }
+    }
+  ]
+}

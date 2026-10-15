@@ -1,0 +1,19 @@
+----------------------------------------
+Device ID: LAB-NXOS-LEAF1
+System Name: LAB-NXOS-LEAF1
+
+Interface address(es):
+    IPv4 Address: 127.0.0.1
+Platform: N9K-C93180YC-EX, Capabilities: Switch IGMP Filtering Supports-STP-Dispute
+Interface: Ethernet1/49, Port ID (outgoing port): Ethernet1/49
+Holdtime: 150 sec
+
+Version:
+Cisco Nexus Operating System (NX-OS) Software, Version 9.3(10)
+
+Advertisement Version: 2
+
+Native VLAN: 1
+Duplex: full
+
+MTU: 1500

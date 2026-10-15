@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standard Map — Connection Visualization Options</title>
+  <style>
+    :root { --bg:#0f1419; --surface:#1a2332; --border:#2d3a4f; --text:#e8edf4; --muted:#8b9cb3; --accent:#3b82f6; --green:#22c55e; --amber:#f59e0b; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; padding:2rem; }
+    .wrap { max-width:1000px; margin:0 auto; }
+    h1 { font-size:1.6rem; margin-bottom:0.35rem; }
+    .subtitle { color:var(--muted); margin-bottom:1.5rem; max-width:720px; }
+    .badge { display:inline-block; background:rgba(59,130,246,0.15); color:var(--accent); font-size:0.7rem; font-weight:600; padding:0.2rem 0.5rem; border-radius:4px; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:1rem; }
+    .principle { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem; font-size:0.85rem; color:var(--muted); }
+    .principle strong { color:var(--text); }
+    .grid { display:grid; gap:0.85rem; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.1rem 1.25rem; display:grid; grid-template-columns:auto 1fr auto; gap:1rem; align-items:center; text-decoration:none; color:inherit; transition:border-color 0.15s, transform 0.15s; }
+    .card:hover { border-color:var(--accent); transform:translateY(-1px); }
+    .card-id { width:2.5rem; height:2.5rem; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem; }
+    .card h2 { font-size:1rem; margin-bottom:0.2rem; }
+    .card p { font-size:0.82rem; color:var(--muted); }
+    .tag { font-size:0.72rem; padding:0.35rem 0.6rem; border-radius:6px; white-space:nowrap; text-align:center; max-width:140px; }
+    .tag-noc { background:rgba(34,197,94,0.15); color:var(--green); }
+    .tag-net { background:rgba(59,130,246,0.15); color:var(--accent); }
+    .tag-both { background:rgba(245,158,11,0.15); color:var(--amber); }
+    .v1 .card-id { background:rgba(163,113,247,0.2); color:#a371f7; }
+    .v2 .card-id { background:rgba(59,130,246,0.2); color:#58a6ff; }
+    .v3 .card-id { background:rgba(34,197,94,0.2); color:#3fb950; }
+    .v4 .card-id { background:rgba(245,158,11,0.2); color:#d29922; }
+    .v5 .card-id { background:rgba(248,81,73,0.2); color:#f85149; }
+    .rec-box { margin-top:2rem; padding:1.25rem; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.3); border-radius:8px; font-size:0.85rem; }
+    .rec-box h3 { font-size:0.95rem; margin-bottom:0.5rem; color:var(--green); }
+    .rec-box ul { margin-left:1.25rem; color:var(--muted); }
+    .rec-box li { margin-bottom:0.35rem; }
+    .links { margin-top:1.5rem; font-size:0.8rem; color:var(--muted); }
+    .links a { color:var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <span class="badge">Map visualization · Standard Map redesign</span>
+    <h1>How should connections look on the map?</h1>
+    <p class="subtitle">Five connection-map styles. Each demo shows the <strong>map panel</strong> alongside a connection table / briefing strip — you always get both, not one or the other. Pick a primary map style (and optional secondary).</p>
+
+    <div class="principle">
+      <strong>Product rule:</strong> Map view is a <em>lens</em>, not the only output. Every layout includes: (1) connection map, (2) sortable connection index, (3) selected link detail. Switch map style without losing table context.
+    </div>
+
+    <div class="grid">
+      <a class="card v1" href="standard-map-viz-1-tier-hierarchy.html" target="_blank">
+        <div class="card-id">1</div>
+        <div>
+          <h2>Tier Hierarchy (top-down)</h2>
+          <p>Core → Distribution → Access in fixed horizontal bands. Orthogonal links. Matches mental model of campus design.</p>
+        </div>
+        <span class="tag tag-noc">Best for NOC daily view</span>
+      </a>
+
+      <a class="card v2" href="standard-map-viz-2-radial-core.html" target="_blank">
+        <div class="card-id">2</div>
+        <div>
+          <h2>Radial Hub (core-centric)</h2>
+          <p>Core at center; dist ring; access on outer ring. Good for “what hangs off this core?”</p>
+        </div>
+        <span class="tag tag-net">Best for NetEng design review</span>
+      </a>
+
+      <a class="card v3" href="standard-map-viz-3-schematic-orthogonal.html" target="_blank">
+        <div class="card-id">3</div>
+        <div>
+          <h2>Schematic Orthogonal (Visio-style)</h2>
+          <p>Clean 90° lines, port labels on hover, bundle icons for Po/vPC. Print and change-record friendly.</p>
+        </div>
+        <span class="tag tag-both">NOC handoff + NetEng docs</span>
+      </a>
+
+      <a class="card v4" href="standard-map-viz-4-neighborhood-focus.html" target="_blank">
+        <div class="card-id">4</div>
+        <div>
+          <h2>Neighborhood Focus (1–2 hop)</h2>
+          <p>Only selected device + immediate neighbors. Reduces hairball on large sites. Syncs with table row click.</p>
+        </div>
+        <span class="tag tag-noc">Best for NOC troubleshooting</span>
+      </a>
+
+      <a class="card v5" href="standard-map-viz-5-matrix-adjacency.html" target="_blank">
+        <div class="card-id">5</div>
+        <div>
+          <h2>Matrix / Adjacency Grid</h2>
+          <p>Devices on both axes; cell = link exists. Spot orphans, asymmetry, missing return CDP.</p>
+        </div>
+        <span class="tag tag-net">Best for NetEng audit / validation</span>
+      </a>
+    </div>
+
+    <div class="rec-box">
+      <h3>Network engineering team recommendation</h3>
+      <ul>
+        <li><strong>Default map for most users:</strong> Viz 1 (Tier Hierarchy) — NOC sees structure instantly; table below answers port-level questions.</li>
+        <li><strong>Troubleshooting toggle:</strong> Viz 4 (Neighborhood) — same data, less clutter when chasing one uplink or access switch.</li>
+        <li><strong>Export / change packet:</strong> Viz 3 (Schematic) — matches traditional diagrams in runbooks.</li>
+        <li><strong>Design / audit session:</strong> Viz 2 (Radial) or Viz 5 (Matrix) — core dependency and symmetry checks.</li>
+      </ul>
+      <p style="margin-top:0.75rem;color:var(--muted)">Ship as <strong>map style selector</strong> in Standard Map: Tier | Radial | Schematic | Focus | Matrix — all sharing one connection index.</p>
+    </div>
+
+    <p class="links">Also see overall UI shells: <a href="standard-map-demo-index.html">Briefing / Twin / Index / Infographic demos</a> · Plan: <code>.cursor/audits/STANDARD_MAP_REDESIGN_PLAN.md</code></p>
+  </div>
+</body>
+</html>

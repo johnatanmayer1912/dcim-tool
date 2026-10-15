@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>02 Maps hub — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 02</strong>
+    <span>Static HTML — no Flask. Not the live console.</span>
+    <a href="index.html">All demos</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-on" href="06-settings-vault.html"><span class="ico" aria-hidden="true">●</span> Vault UNLOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select aria-label="Named credential set"><option selected>lab-ops (ssh)</option></select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope"><option selected>Group DIST — 12 devices</option></select>
+        </label>
+      </div>
+      <p class="freshness" id="freshness">Last L2: 14m · Issues: 3 · Overlay: collected empty · Live SSH overlay: not started</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html" aria-current="page">Maps <span class="badge">3</span><span class="kbd">2</span></a>
+      <a href="03-find.html">Find <span class="kbd">3</span></a>
+      <a href="04-change.html">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Maps</h1>
+          <p class="lede">Run topology from inventory SSH or a hop-bounded crawl. Layers hide edges; they do not invent them.</p>
+        </div>
+        <div class="title-actions">
+          <button type="button" class="primary" onclick="nstDemoSetTask('running')">Run inventory L2</button>
+          <button type="button">Open last HTML</button>
+          <button type="button" id="btn-inspector" aria-expanded="true">Hide inspector</button>
+        </div>
+      </div>
+      <p class="muted">Map states:</p>
+      <div class="title-actions" style="margin-bottom:0.6rem">
+        <button type="button" data-map="never">Never run</button>
+        <button type="button" data-map="complete">Complete</button>
+        <button type="button" data-map="stale">Stale &gt; 24h</button>
+        <button type="button" data-map="partial">Cancelled partial</button>
+      </div>
+      <div id="banner" class="banner info">
+        <strong>Inventory L2</strong> — SSH to the scoped inventory. This is not the Discovery crawl.
+      </div>
+      <div class="card">
+        <h2>Source (how we collected)</h2>
+        <div class="tabs" role="tablist" aria-label="Map source">
+          <button type="button" role="tab" aria-selected="true" data-src="inv">Inventory L2</button>
+          <button type="button" role="tab" aria-selected="false" data-src="vpc">vPC</button>
+          <button type="button" role="tab" aria-selected="false" data-src="l3">L3</button>
+          <button type="button" role="tab" aria-selected="false" data-src="crawl">Discovery crawl</button>
+        </div>
+        <h2>Layer (what we hide)</h2>
+        <div class="tabs" role="tablist" aria-label="Map layer">
+          <button type="button" role="tab" aria-selected="false">Physical</button>
+          <button type="button" role="tab" aria-selected="true">L2</button>
+          <button type="button" role="tab" aria-selected="false">L3</button>
+          <button type="button" role="tab" aria-selected="false">Overlay</button>
+        </div>
+        <p class="muted">Physical = bidirectional CDP/LLDP only. Not a verified cable. Overlay peers are <code>not_physical</code>.</p>
+      </div>
+      <div class="map-canvas" id="map" aria-label="Sample L2 topology, 8 nodes">
+        <svg viewBox="0 0 560 280" role="img" aria-labelledby="map-title">
+          <title id="map-title">DIST campus L2: 8 nodes, one one-sided edge</title>
+          <line x1="180" y1="48" x2="360" y2="48" stroke="#64748b" stroke-width="2"/>
+          <line x1="180" y1="48" x2="120" y2="130" stroke="#64748b" stroke-width="2"/>
+          <line x1="180" y1="48" x2="300" y2="130" stroke="#64748b" stroke-width="2"/>
+          <line x1="360" y1="48" x2="300" y2="130" stroke="#64748b" stroke-width="2"/>
+          <line x1="120" y1="130" x2="50" y2="220" stroke="#64748b" stroke-width="2"/>
+          <line x1="120" y1="130" x2="160" y2="220" stroke="#64748b" stroke-width="2"/>
+          <line x1="300" y1="130" x2="280" y2="220" stroke="#64748b" stroke-width="2"/>
+          <line x1="300" y1="130" x2="420" y2="220" stroke="#64748b" stroke-width="2"/>
+          <line x1="280" y1="220" x2="500" y2="220" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4"/>
+          <circle cx="180" cy="48" r="16" fill="#1e3a5f"/><text class="node-label" x="180" y="52" text-anchor="middle">CORE-01</text>
+          <circle cx="360" cy="48" r="16" fill="#1e3a5f"/><text class="node-label" x="360" y="52" text-anchor="middle">CORE-02</text>
+          <circle cx="120" cy="130" r="16" fill="#1e3a5f"/><text class="node-label" x="120" y="134" text-anchor="middle">DIST-01</text>
+          <circle cx="300" cy="130" r="16" fill="#1e3a5f"/><text class="node-label" x="300" y="134" text-anchor="middle">DIST-02</text>
+          <circle cx="50" cy="220" r="14" fill="#334155"/><text class="node-label" x="50" y="224" text-anchor="middle">ACC-01</text>
+          <circle cx="160" cy="220" r="14" fill="#334155"/><text class="node-label" x="160" y="224" text-anchor="middle">ACC-02</text>
+          <circle cx="280" cy="220" r="14" fill="#334155"/><text class="node-label" x="280" y="224" text-anchor="middle">ACC-03</text>
+          <circle cx="420" cy="220" r="14" fill="#334155"/><text class="node-label" x="420" y="224" text-anchor="middle">FW-01</text>
+          <circle cx="500" cy="220" r="12" fill="#78350f"/><text class="node-label" x="500" y="248" text-anchor="middle">AP-ghost</text>
+        </svg>
+      </div>
+      <p class="muted">Amber dashed: one-sided CDP (spoof-risk). Not High “verified”.</p>
+      <div class="card">
+        <h2>Link issues (3)</h2>
+        <table>
+          <thead><tr><th>Sev</th><th>Kind</th><th>Edge</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td class="status warn">medium — one-sided</td><td>one-sided</td><td>ACC-03 → AP-ghost</td><td>Only one CDP witness</td></tr>
+            <tr><td class="status warn">medium — mismatch</td><td>speed</td><td>DIST-01 Eth1/1 — ACC-01 Gi0/1</td><td>1G vs 100M, no winner</td></tr>
+            <tr><td class="status warn">medium — DOM</td><td>optics</td><td>CORE-01 Eth1/49</td><td>Rx −12.1 dBm (threshold warn)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="banner warn" id="overlay-banner">
+        <strong>Overlay collected empty.</strong> NVE/EVPN CLI returned no peers. That is not “no EVPN in the world” — it is empty after collect on this scope.
+      </div>
+      <script type="application/json" id="sample-data">
+{"nodes":8,"edges_bidirectional":8,"one_sided":1,"issues":3,"overlay":"empty_after_collect"}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>Why this link</h2>
+      <dl>
+        <dt>Selected</dt>
+        <dd>ACC-03 Eth1/24 → AP-ghost</dd>
+        <dt>Trust</dt>
+        <dd>One-sided CDP. Spoofable. Not a cable cert.</dd>
+        <dt>Witnesses</dt>
+        <dd>CDP from ACC-03 only. No reverse LLDP.</dd>
+        <dt>Commands</dt>
+        <dd class="mono">show cdp neighbors detail</dd>
+      </dl>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span>
+    <button type="button" id="btn-cancel-strip" disabled>Cancel</button>
+  </footer>
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var banner = document.getElementById("banner");
+      var freshness = document.getElementById("freshness");
+      var map = document.getElementById("map");
+      document.querySelectorAll("[data-src]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll("[data-src]").forEach(function (b) { b.setAttribute("aria-selected", "false"); });
+          btn.setAttribute("aria-selected", "true");
+          var src = btn.getAttribute("data-src");
+          if (src === "crawl") {
+            banner.className = "banner warn";
+            banner.innerHTML = "<strong>Discovery crawl</strong> — hop-bounded from seeds. Not a fabric census.";
+          } else if (src === "l3") {
+            banner.className = "banner info";
+            banner.innerHTML = "<strong>L3</strong> — routing adjacencies. Protocol edges are <code>not_physical</code>.";
+          } else if (src === "vpc") {
+            banner.className = "banner info";
+            banner.innerHTML = "<strong>vPC</strong> — inventory NX-OS pairs. Peer-link is not a user VLAN path.";
+          } else {
+            banner.className = "banner info";
+            banner.innerHTML = "<strong>Inventory L2</strong> — SSH to the scoped inventory. This is not the Discovery crawl.";
+          }
+        });
+      });
+      document.querySelectorAll("[data-map]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var s = btn.getAttribute("data-map");
+          if (s === "never") {
+            map.innerHTML = "<p style='padding:2rem'>Never run. Import inventory, unlock vault, then Run inventory L2. No blank vis pretending to be a network.</p>";
+            freshness.textContent = "Last L2: never · Issues: 0 · Overlay: not run · Live SSH overlay: not started";
+          } else if (s === "stale") {
+            freshness.innerHTML = 'Last L2: <span class="stale">STALE 31h</span> · Issues: 3 · Overlay: empty · Live SSH overlay: not started';
+          } else if (s === "partial") {
+            nstDemoSetTask("cancelled");
+            freshness.textContent = "Last L2: partial (cancelled) · Issues: 1 · Overlay: not run · Live SSH overlay: not started";
+          } else {
+            location.reload();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

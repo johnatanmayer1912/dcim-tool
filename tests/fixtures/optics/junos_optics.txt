@@ -1,0 +1,10 @@
+Physical interface: xe-0/0/0
+    Laser output power                        :  -2.10 dBm
+    Laser receiver power                      :  -3.45 dBm
+    Laser rx power low alarm                  :  Off
+    Laser tx power low alarm                  :  Off
+
+Physical interface: xe-0/0/1
+    Laser output power                        :  -2.00 dBm
+    Laser receiver power                      :  -21.00 dBm
+    Laser rx power low alarm                  :  On

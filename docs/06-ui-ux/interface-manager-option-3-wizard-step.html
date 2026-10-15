@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Manager - Wizard Step Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f0f4f8;
+            color: #2d3748;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .wizard-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .wizard-header {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            padding: 32px;
+            color: white;
+        }
+
+        .wizard-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .wizard-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .wizard-progress {
+            display: flex;
+            padding: 24px 32px;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress-step {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #cbd5e0;
+            color: #718096;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .progress-step.active .step-number {
+            background: #4299e1;
+            color: white;
+        }
+
+        .progress-step.completed .step-number {
+            background: #48bb78;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #718096;
+        }
+
+        .progress-step.active .step-label {
+            color: #4299e1;
+            font-weight: 600;
+        }
+
+        .step-connector {
+            flex: 1;
+            height: 2px;
+            background: #e2e8f0;
+            margin: 0 8px;
+        }
+
+        .progress-step.completed + .step-connector {
+            background: #48bb78;
+        }
+
+        .wizard-content {
+            padding: 32px;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .interface-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .interface-option {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .interface-option:hover {
+            border-color: #4299e1;
+            background: #ebf8ff;
+        }
+
+        .interface-option.selected {
+            border-color: #4299e1;
+            background: #ebf8ff;
+        }
+
+        .interface-option-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .interface-option-status {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .config-preview {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .config-preview h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 12px;
+        }
+
+        .config-preview code {
+            display: block;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            color: #2d3748;
+            white-space: pre-wrap;
+        }
+
+        .validation-summary {
+            background: #c6f6d5;
+            border: 2px solid #48bb78;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .validation-summary.error {
+            background: #fed7d7;
+            border-color: #f56565;
+        }
+
+        .validation-summary h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #276749;
+        }
+
+        .validation-summary.error h3 {
+            color: #c53030;
+        }
+
+        .validation-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #276749;
+        }
+
+        .validation-summary.error .validation-item {
+            color: #c53030;
+        }
+
+        .wizard-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3182ce;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .deployment-status {
+            background: #ebf8ff;
+            border: 2px solid #4299e1;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .deployment-status h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #2b6cb0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4299e1;
+            transition: width 0.3s;
+        }
+
+        .deployment-log {
+            font-size: 13px;
+            color: #4a5568;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .help-tip {
+            background: #fefcbf;
+            border-left: 4px solid #ecc94b;
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .help-tip p {
+            font-size: 13px;
+            color: #744210;
+            margin-bottom: 4px;
+        }
+
+        .help-tip p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="wizard-container">
+            <div class="wizard-header">
+                <h1>🔧 Interface Configuration Wizard</h1>
+                <p>Step-by-step guide to configure and deploy interface settings</p>
+            </div>
+
+            <div class="wizard-progress">
+                <div class="progress-step active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Connect</div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="progress-step">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Select</div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Configure</div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="progress-step">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Validate</div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="progress-step">
+                    <div class="step-number">5</div>
+                    <div class="step-label">Deploy</div>
+                </div>
+            </div>
+
+            <div class="wizard-content">
+                <!-- Step 1: Connect -->
+                <div class="step-content active">
+                    <h2 class="step-title">Step 1: Connect to Device</h2>
+                    <p class="step-description">Enter device connection details to discover available interfaces</p>
+                    
+                    <div class="help-tip">
+                        <p>💡 <strong>Tip:</strong> Make sure the device is reachable and you have the correct credentials.</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Device IP/Hostname</label>
+                            <input type="text" placeholder="192.168.1.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Device Type</label>
+                            <select>
+                                <option>Cisco NX-OS</option>
+                                <option>Cisco IOS</option>
+                                <option>Cisco IOS-XE</option>
+                                <option>Juniper JUNOS</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" placeholder="admin">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" placeholder="••••••••">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Select -->
+                <div class="step-content">
+                    <h2 class="step-title">Step 2: Select Interfaces</h2>
+                    <p class="step-description">Choose the interfaces you want to configure</p>
+                    
+                    <div class="interface-selector">
+                        <div class="interface-option selected">
+                            <div class="interface-option-name">Ethernet1/1</div>
+                            <div class="interface-option-status">Up - 10G</div>
+                        </div>
+                        <div class="interface-option selected">
+                            <div class="interface-option-name">Ethernet1/2</div>
+                            <div class="interface-option-status">Up - 10G</div>
+                        </div>
+                        <div class="interface-option">
+                            <div class="interface-option-name">Ethernet1/3</div>
+                            <div class="interface-option-status">Down - 1G</div>
+                        </div>
+                        <div class="interface-option">
+                            <div class="interface-option-name">Ethernet1/4</div>
+                            <div class="interface-option-status">Up - 1G</div>
+                        </div>
+                        <div class="interface-option">
+                            <div class="interface-option-name">Port-channel1</div>
+                            <div class="interface-option-status">Up - 20G</div>
+                        </div>
+                        <div class="interface-option">
+                            <div class="interface-option-name">Port-channel2</div>
+                            <div class="interface-option-status">Up - 20G</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Filter Interfaces</label>
+                        <input type="text" placeholder="Search by name or status...">
+                    </div>
+                </div>
+
+                <!-- Step 3: Configure -->
+                <div class="step-content">
+                    <h2 class="step-title">Step 3: Configure Interfaces</h2>
+                    <p class="step-description">Enter the configuration for selected interfaces</p>
+                    
+                    <div class="form-group">
+                        <label>Configuration Template</label>
+                        <select>
+                            <option>Custom Configuration</option>
+                            <option>Access Port Template</option>
+                            <option>Trunk Port Template</option>
+                            <option>Uplink Template</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Interface Configuration</label>
+                        <textarea rows="12" placeholder="Enter interface configuration...
+Example:
+interface Ethernet1/1
+  description Server Port
+  switchport mode access
+  switchport access vlan 10
+  spanning-tree portfast
+  spanning-tree bpduguard enable"></textarea>
+                    </div>
+
+                    <div class="config-preview">
+                        <h3>Configuration Preview</h3>
+                        <code>interface Ethernet1/1
+  description Server Port
+  switchport mode access
+  switchport access vlan 10
+  spanning-tree portfast
+  spanning-tree bpduguard enable
+
+interface Ethernet1/2
+  description Server Port
+  switchport mode access
+  switchport access vlan 10
+  spanning-tree portfast
+  spanning-tree bpduguard enable</code>
+                    </div>
+                </div>
+
+                <!-- Step 4: Validate -->
+                <div class="step-content">
+                    <h2 class="step-title">Step 4: Validate Configuration</h2>
+                    <p class="step-description">Review validation results before deployment</p>
+                    
+                    <div class="validation-summary">
+                        <h3>✓ Configuration Valid</h3>
+                        <div class="validation-item">✓ Syntax check passed</div>
+                        <div class="validation-item">✓ Platform compatibility verified (Cisco NX-OS)</div>
+                        <div class="validation-item">✓ VLAN 10 exists in database</div>
+                        <div class="validation-item">✓ No conflicts detected</div>
+                        <div class="validation-item">✓ Risk level: Low</div>
+                    </div>
+
+                    <div class="config-preview">
+                        <h3>Configuration Summary</h3>
+                        <code>Interfaces to configure: 2
+Total commands: 10
+Estimated deployment time: 30 seconds
+Backup will be created automatically</code>
+                    </div>
+                </div>
+
+                <!-- Step 5: Deploy -->
+                <div class="step-content">
+                    <h2 class="step-title">Step 5: Deploy Configuration</h2>
+                    <p class="step-description">Monitor deployment progress</p>
+                    
+                    <div class="deployment-status">
+                        <h3>Deployment Progress</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%;"></div>
+                        </div>
+                        <div class="deployment-log">
+                            [12:34:56] Creating backup... ✓<br>
+                            [12:34:58] Configuring Ethernet1/1... ✓<br>
+                            [12:35:02] Configuring Ethernet1/2... ✓<br>
+                            [12:35:05] Verifying configuration...
+                        </div>
+                    </div>
+
+                    <div class="validation-summary">
+                        <h3>Deployment Summary</h3>
+                        <div class="validation-item">✓ 2/2 interfaces configured successfully</div>
+                        <div class="validation-item">✓ Configuration saved to running-config</div>
+                        <div class="validation-item">✓ Backup created: backup_20240604_123456.cfg</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-footer">
+                <button class="btn btn-secondary" id="prevBtn" disabled>← Previous</button>
+                <button class="btn btn-primary" id="nextBtn">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple demo script - not changing any code
+        const steps = document.querySelectorAll('.step-content');
+        const progressSteps = document.querySelectorAll('.progress-step');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentStep = 0;
+
+        function updateStep(step) {
+            steps.forEach((s, i) => {
+                s.classList.toggle('active', i === step);
+            });
+            
+            progressSteps.forEach((ps, i) => {
+                ps.classList.remove('active', 'completed');
+                if (i < step) ps.classList.add('completed');
+                if (i === step) ps.classList.add('active');
+            });
+
+            prevBtn.disabled = step === 0;
+            nextBtn.textContent = step === steps.length - 1 ? 'Finish' : 'Next →';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateStep(currentStep);
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateStep(currentStep);
+            }
+        });
+    </script>
+</body>
+</html>

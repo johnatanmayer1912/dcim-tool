@@ -1,0 +1,36 @@
+----------------------------------------
+Device ID: LAB-NXOS-LEAF2
+System Name: LAB-NXOS-LEAF2
+
+Interface address(es):
+    IPv4 Address: 127.0.0.1
+Platform: N9K-C93180YC-EX, Capabilities: Switch IGMP Filtering Supports-STP-Dispute
+Interface: Ethernet1/49, Port ID (outgoing port): Ethernet1/49
+Holdtime: 150 sec
+
+Version:
+Cisco Nexus Operating System (NX-OS) Software, Version 9.3(10)
+
+Advertisement Version: 2
+
+Native VLAN: 1
+Duplex: full
+
+MTU: 1500
+
+----------------------------------------
+Device ID: LAB-IOS-ACCESS1
+System Name: LAB-IOS-ACCESS1
+
+Interface address(es):
+    IPv4 Address: 127.0.0.1
+Platform: cisco C9300-24P, Capabilities: Switch IGMP
+Interface: Ethernet1/1, Port ID (outgoing port): GigabitEthernet1/0/24
+Holdtime: 140 sec
+
+Version:
+Cisco IOS Software [Cupertino], Catalyst L3 Switch Software (CAT9K_IOSXE), Version 17.9.4a
+
+Advertisement Version: 2
+Native VLAN: 1
+Duplex: full

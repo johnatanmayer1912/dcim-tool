@@ -1,0 +1,8 @@
+# SIMULATION INVENTORY
+# Use these for internal testing against the mock server
+
+[Cisco-Group]
+127.0.0.1,cisco_ios,Cisco-Group
+
+[Juniper-Group]
+127.0.0.2,juniper_junos,Juniper-Group

@@ -1,0 +1,13 @@
+# Test Inventory for QA Validation
+# Format: IP,device_type,group
+
+[CoreSwitches]
+10.1.1.1,cisco_ios,CoreSwitches
+10.1.1.2,cisco_nxos,CoreSwitches
+
+[AccessLayer]
+10.2.1.1,juniper_junos,AccessLayer
+10.2.1.2,cisco_ios,AccessLayer
+
+[Distribution]
+10.3.1.1,cisco_ios,Distribution

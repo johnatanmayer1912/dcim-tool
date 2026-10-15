@@ -1,0 +1,18 @@
+# NST offline SSH lab — Cisco IOS / NX-OS CLI fixtures over Paramiko.
+# Not a real NX-OS image. For real NX-OSv see lab/containerlab/.
+FROM python:3.12-slim-bookworm
+
+WORKDIR /app
+RUN pip install --no-cache-dir 'paramiko>=3.0,<4'
+
+# Repo paths expected by lab.ssh_sim.handler fixture loader
+COPY lab/ssh_sim /app/lab/ssh_sim
+COPY lab/__init__.py /app/lab/__init__.py
+COPY lab/fixtures /app/lab/fixtures
+COPY tests/fixtures/asset /app/tests/fixtures/asset
+COPY tests/fixtures/discovery /app/tests/fixtures/discovery
+COPY lab/docker/entrypoint-ssh-sim.sh /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
+
+EXPOSE 2201 2202 2203
+ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]

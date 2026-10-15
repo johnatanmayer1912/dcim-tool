@@ -1,0 +1,793 @@
+# ============================================================================
+# Network Swiss Tool Pro — Standards Policy Library
+# ============================================================================
+#
+# FILE: policies/standards.yaml
+# PURPOSE: Define your organization's network configuration standards.
+#          The Standards Validator plugin reads this file and checks every
+#          device against each applicable policy.
+#
+# HOW TO USE:
+#   1. Edit this file to match your organization's standards.
+#   2. Add new policies by copying an existing block and changing the fields.
+#   3. No code changes required — the plugin reloads this file on every run.
+#   4. You can create multiple policy files (e.g. security_baseline.yaml,
+#      datacenter.yaml) and select them via the plugin's "Policy File" param.
+#
+# CHECK TYPES:
+#   contains        — command output MUST contain the pattern (regex or string)
+#   not_contains    — command output must NOT contain the pattern
+#   regex_match     — output must match the regex (re.search, case-insensitive)
+#   regex_extract   — extract a value with a capture group, compare to expected_format
+#   line_format     — every line matching line_filter must also match line_must_match
+#
+# SEVERITY LEVELS:
+#   critical  — security risk, must fix immediately
+#   high      — important standard, fix before next audit
+#   medium    — best practice, fix in next maintenance window
+#   low       — nice to have, fix when convenient
+#
+# PLATFORMS:
+#   cisco_ios, cisco_nxos, cisco_xe, juniper_junos
+#   Leave 'platforms' empty or omit to apply to ALL platforms.
+#
+# REMEDIATION:
+#   Write the exact commands to fix the violation.
+#   Use {PLACEHOLDER} for values that must be filled in per-device
+#   (e.g. {NTP_SERVER}, {SITE}, {RACK}).
+#   The plugin will flag these as "MANUAL ACTION REQUIRED".
+#
+# ============================================================================
+
+metadata:
+  org: "Your Organization"
+  version: "1.0.0"
+  last_updated: "2026-04-28"
+  author: "Network Team"
+  description: "Organization-wide network configuration standards"
+
+policies:
+
+  # ==========================================================================
+  # SECURITY
+  # ==========================================================================
+
+  - id: telnet_disabled
+    category: Security
+    description: "Telnet must be disabled on all VTY lines"
+    severity: critical
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show line vty 0 4"
+    check_type: not_contains
+    pattern: "transport input telnet"
+    remediation: |
+      line vty 0 4
+       transport input ssh
+      line vty 5 15
+       transport input ssh
+
+  - id: ssh_version_2
+    category: Security
+    description: "SSH must be version 2 only (version 1 is insecure)"
+    severity: critical
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show ip ssh"
+    check_type: contains
+    pattern: "SSH Enabled - version 2"
+    remediation: "ip ssh version 2"
+
+  - id: vty_exec_timeout
+    category: Security
+    description: "VTY exec-timeout must be 10 minutes or less (prevent abandoned sessions)"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | section line vty"
+    check_type: regex_match
+    pattern: "exec-timeout ([0-9]|10) [0-9]"
+    remediation: |
+      line vty 0 4
+       exec-timeout 10 0
+      line vty 5 15
+       exec-timeout 10 0
+
+  - id: console_exec_timeout
+    category: Security
+    description: "Console exec-timeout must be configured (prevent unattended console access)"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | section line con"
+    check_type: regex_match
+    pattern: "exec-timeout [0-9]"
+    remediation: |
+      line con 0
+       exec-timeout 15 0
+
+  - id: enable_secret_set
+    category: Security
+    description: "Enable secret must be configured (not enable password)"
+    severity: critical
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include enable secret"
+    check_type: contains
+    pattern: "enable secret"
+    remediation: |
+      enable secret {ENABLE_SECRET}
+      ! Replace {ENABLE_SECRET} with your organization's enable password
+
+  - id: service_password_encryption
+    category: Security
+    description: "Service password-encryption must be enabled"
+    severity: high
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include service password"
+    check_type: contains
+    pattern: "service password-encryption"
+    remediation: "service password-encryption"
+
+  - id: no_http_server
+    category: Security
+    description: "HTTP server must be disabled (use HTTPS only)"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include ip http server"
+    check_type: not_contains
+    pattern: "^ip http server$"
+    remediation: "no ip http server"
+
+  # ==========================================================================
+  # NTP
+  # ==========================================================================
+
+  - id: ntp_synchronized
+    category: NTP
+    description: "NTP must be synchronized to a reliable time source"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe, juniper_junos]
+    check_command: "show ntp status"
+    check_type: contains
+    pattern: "Clock is synchronized"
+    remediation: |
+      ntp server {NTP_SERVER_1} prefer
+      ntp server {NTP_SERVER_2}
+      ! Replace {NTP_SERVER_1} and {NTP_SERVER_2} with your NTP server IPs
+    remediation_juniper: |
+      set system ntp server {NTP_SERVER_1} prefer
+      set system ntp server {NTP_SERVER_2}
+      ! Replace {NTP_SERVER_1} and {NTP_SERVER_2} with your NTP server IPs
+
+  - id: ntp_server_configured
+    category: NTP
+    description: "At least one NTP server must be configured"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include ntp server"
+    check_type: contains
+    pattern: "ntp server"
+    remediation: |
+      ntp server {NTP_SERVER_1} prefer
+      ntp server {NTP_SERVER_2}
+
+  # ==========================================================================
+  # SNMP
+  # ==========================================================================
+
+  - id: snmp_v3_configured
+    category: SNMP
+    description: "SNMPv3 must be configured (SNMPv1/v2c are insecure)"
+    severity: critical
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show snmp"
+    check_type: contains
+    pattern: "snmp-server group.*v3"
+    remediation: |
+      snmp-server group {SNMP_GROUP} v3 auth
+      snmp-server user {SNMP_USER} {SNMP_GROUP} v3 auth sha {SNMP_AUTH_PASS}
+      ! Replace {SNMP_GROUP}, {SNMP_USER}, {SNMP_AUTH_PASS} with your values
+
+  - id: snmp_community_removed
+    category: SNMP
+    description: "Default SNMP community strings (public/private) must be removed"
+    severity: critical
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include snmp-server community"
+    check_type: not_contains
+    pattern: "snmp-server community (public|private)"
+    remediation: |
+      no snmp-server community public
+      no snmp-server community private
+
+  - id: snmp_location_set
+    category: SNMP
+    description: "SNMP location must be configured (format: SITE/FLOOR/RACK)"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show snmp location"
+    check_type: regex_match
+    pattern: "\\S+"
+    remediation: |
+      snmp-server location {SITE}/{FLOOR}/{RACK}
+      ! Example: snmp-server location NYC/2/A03
+
+  - id: snmp_contact_set
+    category: SNMP
+    description: "SNMP contact must be configured"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show snmp contact"
+    check_type: regex_match
+    pattern: "\\S+"
+    remediation: |
+      snmp-server contact {NOC_EMAIL}
+      ! Example: snmp-server contact noc@company.com
+
+  # ==========================================================================
+  # SYSLOG / LOGGING
+  # ==========================================================================
+
+  - id: syslog_server_configured
+    category: Logging
+    description: "Syslog server must be configured"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include logging host"
+    check_type: contains
+    pattern: "logging host"
+    remediation: |
+      logging host {SYSLOG_SERVER}
+      logging trap informational
+      ! Replace {SYSLOG_SERVER} with your syslog server IP
+
+  - id: logging_buffered
+    category: Logging
+    description: "Local logging buffer must be configured"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include logging buffered"
+    check_type: contains
+    pattern: "logging buffered"
+    remediation: "logging buffered 16384 informational"
+
+  - id: logging_timestamps
+    category: Logging
+    description: "Log timestamps must be enabled for accurate event correlation"
+    severity: medium
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include service timestamps"
+    check_type: contains
+    pattern: "service timestamps log datetime"
+    remediation: |
+      service timestamps log datetime msec localtime show-timezone
+
+  # ==========================================================================
+  # BANNER
+  # ==========================================================================
+
+  - id: login_banner_present
+    category: Banner
+    description: "Login banner must be configured (legal requirement)"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include banner"
+    check_type: contains
+    pattern: "banner login"
+    remediation: |
+      banner login ^
+      *** AUTHORIZED ACCESS ONLY ***
+      This system is the property of {ORG_NAME}.
+      Unauthorized access is prohibited and will be prosecuted.
+      All activity is monitored and logged.
+      ^
+      ! Replace {ORG_NAME} with your organization name
+
+  - id: motd_banner_present
+    category: Banner
+    description: "MOTD banner must be configured"
+    severity: low
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include banner motd"
+    check_type: contains
+    pattern: "banner motd"
+    remediation: |
+      banner motd ^
+      {ORG_NAME} Network Infrastructure
+      Authorized personnel only.
+      ^
+
+  # ==========================================================================
+  # NAMING STANDARDS
+  # ==========================================================================
+
+  - id: hostname_not_default
+    category: Naming
+    description: "Hostname must not be the factory default (Router/Switch)"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe, juniper_junos]
+    check_command: "show version"
+    check_type: not_contains
+    pattern: "hostname (Router|Switch|router|switch)$"
+    remediation: |
+      hostname {SITE}-{ROLE}-{NN}
+      ! Example: hostname NYC-SW-01
+      ! Format: SITE(2-6 chars)-ROLE(2-4 chars)-NN(2 digits)
+
+  - id: domain_name_set
+    category: Naming
+    description: "IP domain name must be configured (required for SSH key generation)"
+    severity: medium
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include ip domain"
+    check_type: contains
+    pattern: "ip domain.name"
+    remediation: |
+      ip domain-name {DOMAIN_NAME}
+      ! Example: ip domain-name corp.company.com
+
+  # ==========================================================================
+  # INTERFACE STANDARDS
+  # ==========================================================================
+
+  - id: cdp_disabled_on_edge
+    category: Standards
+    description: "CDP must be disabled on edge/uplink interfaces facing untrusted networks"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show cdp neighbors"
+    check_type: not_contains
+    pattern: "R\\s+\\d+\\.\\d+\\.\\d+\\.\\d+"
+    # This checks that no router neighbors are seen via CDP on untrusted segments
+    # Adjust pattern to match your topology
+    remediation: |
+      ! On interfaces facing untrusted networks:
+      interface {INTERFACE}
+       no cdp enable
+
+  - id: spanning_tree_portfast_bpduguard
+    category: Standards
+    description: "Access ports must have PortFast and BPDU Guard enabled"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show spanning-tree summary"
+    check_type: contains
+    pattern: "Portfast Default.*enabled|BPDU Guard Default.*enabled"
+    remediation: |
+      spanning-tree portfast default
+      spanning-tree portfast bpduguard default
+
+  # ==========================================================================
+  # AAA / AUTHENTICATION
+  # ==========================================================================
+
+  - id: aaa_new_model
+    category: AAA
+    description: "AAA new-model must be enabled"
+    severity: high
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include aaa new-model"
+    check_type: contains
+    pattern: "aaa new-model"
+    remediation: "aaa new-model"
+
+  - id: local_user_configured
+    category: AAA
+    description: "At least one local user account must be configured as fallback"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include username"
+    check_type: contains
+    pattern: "username.*privilege.*secret|username.*secret"
+    remediation: |
+      username {ADMIN_USER} privilege 15 secret {ADMIN_PASS}
+      ! Replace {ADMIN_USER} and {ADMIN_PASS} with your values
+
+  # ==========================================================================
+  # ROUTING & LAYER 3
+  # ==========================================================================
+
+  - id: ip_routing_enabled
+    category: Routing
+    description: "IP routing must be enabled on Layer 3 switches"
+    severity: medium
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include ip routing"
+    check_type: contains
+    pattern: "^ip routing"
+    remediation: "ip routing"
+
+  - id: default_route_configured
+    category: Routing
+    description: "A default route or default-information originate must be configured"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show ip route 0.0.0.0"
+    check_type: contains
+    pattern: "0\\.0\\.0\\.0/0|Gateway of last resort"
+    remediation: |
+      ip route 0.0.0.0 0.0.0.0 {GATEWAY_IP}
+      ! Replace {GATEWAY_IP} with your default gateway
+
+  - id: no_ip_source_route
+    category: Routing
+    description: "IP source routing must be disabled (security hardening)"
+    severity: high
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include ip source-route"
+    check_type: not_contains
+    pattern: "^ip source-route"
+    remediation: "no ip source-route"
+
+  - id: no_ip_proxy_arp
+    category: Routing
+    description: "IP proxy ARP should be disabled on routed interfaces"
+    severity: low
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include proxy-arp"
+    check_type: not_contains
+    pattern: "ip proxy-arp"
+    remediation: |
+      ! Disable on each routed interface:
+      interface {INTERFACE}
+       no ip proxy-arp
+
+  # ==========================================================================
+  # QOS
+  # ==========================================================================
+
+  - id: qos_policy_applied
+    category: QoS
+    description: "QoS service policy must be applied on uplink interfaces"
+    severity: low
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include service-policy"
+    check_type: contains
+    pattern: "service-policy"
+    remediation: |
+      ! Apply QoS policy on uplink interfaces:
+      interface {UPLINK_INTERFACE}
+       service-policy input {QOS_POLICY_NAME}
+      ! Replace {UPLINK_INTERFACE} and {QOS_POLICY_NAME} with your values
+
+  # ==========================================================================
+  # REDUNDANCY / HIGH AVAILABILITY
+  # ==========================================================================
+
+  - id: hsrp_or_vrrp_configured
+    category: Redundancy
+    description: "HSRP or VRRP must be configured on gateway interfaces"
+    severity: medium
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show standby brief"
+    check_type: contains
+    pattern: "Active|Standby|P Active"
+    remediation: |
+      interface {GATEWAY_INTERFACE}
+       standby {GROUP_ID} ip {VIRTUAL_IP}
+       standby {GROUP_ID} priority {PRIORITY}
+       standby {GROUP_ID} preempt
+      ! Replace placeholders with your HSRP group values
+
+  - id: spanning_tree_mode_rapid
+    category: Redundancy
+    description: "Spanning Tree must use Rapid-PVST or MST (not legacy STP)"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show spanning-tree summary"
+    check_type: contains
+    pattern: "Rapid Pvst|rstp|MST|rapid-pvst"
+    remediation: "spanning-tree mode rapid-pvst"
+
+  - id: spanning_tree_root_guard
+    category: Redundancy
+    description: "Root Guard must be configured on access/edge ports"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include root guard"
+    check_type: contains
+    pattern: "spanning-tree guard root"
+    remediation: |
+      ! Apply on all access/edge interfaces:
+      interface {ACCESS_INTERFACE}
+       spanning-tree guard root
+
+  # ==========================================================================
+  # INTERFACE HARDENING
+  # ==========================================================================
+
+  - id: unused_interfaces_shutdown
+    category: Interface
+    description: "Unused interfaces must be administratively shut down"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show interfaces status"
+    check_type: not_contains
+    pattern: "notconnect.*routed"
+    # Checks that no routed interfaces are in notconnect state (should be shutdown)
+    remediation: |
+      ! Shut down all unused interfaces:
+      interface range {UNUSED_RANGE}
+       shutdown
+       description UNUSED-DISABLED
+
+  - id: no_cdp_on_edge_ports
+    category: Interface
+    description: "CDP must be disabled on edge/access ports facing end users"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show cdp interface"
+    check_type: regex_match
+    pattern: "\\S+"
+    # This is a presence check — if CDP is running on any interface, review needed
+    remediation: |
+      ! Disable CDP on access/edge interfaces:
+      interface {ACCESS_INTERFACE}
+       no cdp enable
+
+  - id: storm_control_configured
+    category: Interface
+    description: "Storm control must be configured on access ports"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include storm-control"
+    check_type: contains
+    pattern: "storm-control"
+    remediation: |
+      ! Apply on access interfaces:
+      interface {ACCESS_INTERFACE}
+       storm-control broadcast level 20
+       storm-control multicast level 20
+       storm-control action shutdown
+
+  # ==========================================================================
+  # MANAGEMENT PLANE
+  # ==========================================================================
+
+  - id: management_vlan_configured
+    category: Management
+    description: "A dedicated management VLAN must be configured"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show vlan brief"
+    check_type: contains
+    pattern: "MGMT|Management|management|mgmt"
+    remediation: |
+      vlan {MGMT_VLAN_ID}
+       name MGMT
+      interface vlan {MGMT_VLAN_ID}
+       ip address {MGMT_IP} {MGMT_MASK}
+       no shutdown
+
+  - id: acl_on_vty_lines
+    category: Management
+    description: "ACL must restrict VTY access to management hosts only"
+    severity: high
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | section line vty"
+    check_type: contains
+    pattern: "access-class"
+    remediation: |
+      ip access-list standard MGMT-ACCESS
+       permit {MGMT_SUBNET} {MGMT_WILDCARD}
+       deny any log
+      line vty 0 4
+       access-class MGMT-ACCESS in
+      ! Replace {MGMT_SUBNET} and {MGMT_WILDCARD} with your management subnet
+
+  - id: snmp_acl_configured
+    category: Management
+    description: "SNMP access must be restricted via ACL"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include snmp-server community"
+    check_type: not_contains
+    pattern: "snmp-server community \\S+ (RO|RW)$"
+    # Pattern matches community strings with NO ACL (bare RO/RW at end of line)
+    remediation: |
+      ip access-list standard SNMP-ACCESS
+       permit {NMS_HOST}
+       deny any log
+      snmp-server community {COMMUNITY} RO SNMP-ACCESS
+
+  - id: no_service_finger
+    category: Management
+    description: "Finger service must be disabled"
+    severity: medium
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include service finger"
+    check_type: not_contains
+    pattern: "service finger"
+    remediation: "no service finger"
+
+  - id: no_service_tcp_small_servers
+    category: Management
+    description: "TCP small servers must be disabled"
+    severity: medium
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include tcp-small"
+    check_type: not_contains
+    pattern: "service tcp-small-servers"
+    remediation: "no service tcp-small-servers"
+
+  - id: no_service_udp_small_servers
+    category: Management
+    description: "UDP small servers must be disabled"
+    severity: medium
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include udp-small"
+    check_type: not_contains
+    pattern: "service udp-small-servers"
+    remediation: "no service udp-small-servers"
+
+  # ==========================================================================
+  # DEVICE HEALTH INDICATORS
+  # ==========================================================================
+
+  - id: cpu_utilization_normal
+    category: Health
+    description: "CPU utilization must be below 80% (5-minute average)"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe, juniper_junos]
+    check_command: "show processes cpu | include CPU utilization"
+    check_type: regex_extract
+    extract_pattern: "five minutes: (\\d+)%"
+    expected_format: "^([0-7][0-9]|[0-9])$"
+    # Passes if 5-min CPU is 0-79%
+    remediation: |
+      ! High CPU — investigate with:
+      show processes cpu sorted
+      show processes cpu history
+      ! Common causes: routing protocol flap, spanning-tree TCN, high traffic
+
+  - id: memory_utilization_normal
+    category: Health
+    description: "Memory utilization must be below 85%"
+    severity: high
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show processes memory | include Processor"
+    check_type: regex_match
+    pattern: "Processor"
+    # Presence check — detailed analysis requires regex_extract with math
+    remediation: |
+      ! Check memory with:
+      show processes memory sorted
+      ! If consistently high, consider platform upgrade
+
+  - id: no_interface_errors
+    category: Health
+    description: "No interfaces should have excessive input/output errors"
+    severity: medium
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show interfaces counters errors"
+    check_type: not_contains
+    pattern: "[1-9][0-9]{4,}"
+    # Flags if any counter has 5+ digit error count (10000+)
+    remediation: |
+      ! Investigate interfaces with errors:
+      show interfaces {INTERFACE}
+      ! Common causes: duplex mismatch, bad cable, SFP issue
+
+  # ==========================================================================
+  # CRYPTO / PKI
+  # ==========================================================================
+
+  - id: crypto_key_generated
+    category: Crypto
+    description: "RSA crypto key must be generated (required for SSH)"
+    severity: high
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show crypto key mypubkey rsa"
+    check_type: contains
+    pattern: "Key name|% Key pair"
+    remediation: |
+      crypto key generate rsa modulus 2048
+      ! Minimum 2048-bit key for modern SSH compliance
+
+  - id: ssh_rsa_key_2048
+    category: Crypto
+    description: "SSH RSA key must be at least 2048 bits"
+    severity: high
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show crypto key mypubkey rsa"
+    check_type: regex_match
+    pattern: "(2048|3072|4096) bits"
+    remediation: |
+      crypto key zeroize rsa
+      crypto key generate rsa modulus 2048
+
+  # ==========================================================================
+  # COMPLIANCE / AUDIT TRAIL
+  # ==========================================================================
+
+  - id: archive_logging_enabled
+    category: Compliance
+    description: "Configuration change archive/logging must be enabled"
+    severity: medium
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | section archive"
+    check_type: contains
+    pattern: "log config"
+    remediation: |
+      archive
+       log config
+        logging enable
+        logging size 200
+        notify syslog contenttype plaintext
+        hidekeys
+
+  - id: aaa_accounting_configured
+    category: Compliance
+    description: "AAA accounting must be configured for audit trail"
+    severity: high
+    platforms: [cisco_ios, cisco_xe]
+    check_command: "show running-config | include aaa accounting"
+    check_type: contains
+    pattern: "aaa accounting"
+    remediation: |
+      aaa accounting exec default start-stop group {TACACS_GROUP}
+      aaa accounting commands 15 default start-stop group {TACACS_GROUP}
+      ! Replace {TACACS_GROUP} with your TACACS+ server group name
+
+  - id: tacacs_or_radius_configured
+    category: Compliance
+    description: "TACACS+ or RADIUS must be configured for centralized auth"
+    severity: high
+    platforms: [cisco_ios, cisco_nxos, cisco_xe]
+    check_command: "show running-config | include tacacs-server|radius-server|aaa group"
+    check_type: contains
+    pattern: "tacacs-server|radius-server|aaa group server"
+    remediation: |
+      tacacs-server host {TACACS_SERVER} key {TACACS_KEY}
+      aaa group server tacacs+ TACACS-GROUP
+       server {TACACS_SERVER}
+      aaa authentication login default group TACACS-GROUP local
+      ! Replace {TACACS_SERVER} and {TACACS_KEY} with your values
+
+  # ==========================================================================
+  # JUNIPER-SPECIFIC
+  # ==========================================================================
+
+  - id: juniper_root_auth_configured
+    category: Security
+    description: "Juniper root authentication must be configured"
+    severity: critical
+    platforms: [juniper_junos]
+    check_command: "show configuration system root-authentication"
+    check_type: contains
+    pattern: "encrypted-password|ssh-rsa|ssh-ecdsa"
+    remediation: |
+      set system root-authentication encrypted-password "{ENCRYPTED_PASS}"
+      ! Generate with: openssl passwd -6 yourpassword
+
+  - id: juniper_commit_confirmed_policy
+    category: Compliance
+    description: "Juniper commit confirmed should be used for risky changes"
+    severity: low
+    platforms: [juniper_junos]
+    check_command: "show system commit"
+    check_type: regex_match
+    pattern: "\\S+"
+    remediation: |
+      ! Best practice: always use commit confirmed 5 for risky changes
+      ! This gives a 5-minute rollback window if connectivity is lost
+
+  - id: juniper_ntp_configured
+    category: NTP
+    description: "Juniper NTP server must be configured"
+    severity: high
+    platforms: [juniper_junos]
+    check_command: "show configuration system ntp"
+    check_type: contains
+    pattern: "server"
+    remediation: |
+      set system ntp server {NTP_SERVER_1} prefer
+      set system ntp server {NTP_SERVER_2}
+
+  - id: juniper_syslog_configured
+    category: Logging
+    description: "Juniper syslog must be configured to send to external server"
+    severity: high
+    platforms: [juniper_junos]
+    check_command: "show configuration system syslog"
+    check_type: contains
+    pattern: "host"
+    remediation: |
+      set system syslog host {SYSLOG_SERVER} any info
+      set system syslog host {SYSLOG_SERVER} authorization info

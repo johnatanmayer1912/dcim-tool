@@ -1,0 +1,189 @@
+{
+  "schema": "nst.offline_demo_lab.v1",
+  "id": "unified-e2e-8vendor-2026-08-22",
+  "honesty": "Offline fixture lab. Not live vendor evidence. Not a certified cable plant.",
+  "vendors": {
+    "cisco_nxos": 3,
+    "cisco_ios": 2,
+    "cisco_xe": 1,
+    "juniper_junos": 2
+  },
+  "expected": {
+    "device_count": 8,
+    "l2_cable_count": 7,
+    "evpn_non_cable_count": 1,
+    "stp_blocked_count": 1,
+    "one_sided_l2_count": 1,
+    "incomplete_observation_count": 1,
+    "overlay_paints": 1,
+    "overlay_unmapped": 3
+  },
+  "nodes": [
+    {
+      "id": "NX-CORE-01",
+      "ip": "10.10.0.1",
+      "platform": "N9K-C93180YC-EX",
+      "device_type": "cisco_nxos",
+      "role": "core",
+      "depth": 0,
+      "is_scanned": true,
+      "scan_state": "seed",
+      "trust_tier": "high"
+    },
+    {
+      "id": "NX-CORE-02",
+      "ip": "10.10.0.2",
+      "platform": "N9K-C93180YC-EX",
+      "device_type": "cisco_nxos",
+      "role": "core",
+      "depth": 0,
+      "is_scanned": true,
+      "scan_state": "scanned",
+      "trust_tier": "high"
+    },
+    {
+      "id": "NX-AGG-01",
+      "ip": "10.10.0.3",
+      "platform": "N9K-C9336C-FX2",
+      "device_type": "cisco_nxos",
+      "role": "distribution",
+      "depth": 1,
+      "is_scanned": true,
+      "scan_state": "scanned",
+      "trust_tier": "high"
+    },
+    {
+      "id": "IOS-DIST-01",
+      "ip": "10.10.0.11",
+      "platform": "C9300-48P",
+      "device_type": "cisco_ios",
+      "role": "distribution",
+      "depth": 1,
+      "is_scanned": true,
+      "scan_state": "scanned",
+      "trust_tier": "high"
+    },
+    {
+      "id": "IOS-XE-DIST-02",
+      "ip": "10.10.0.12",
+      "platform": "C9500-24Y4C",
+      "device_type": "cisco_xe",
+      "role": "distribution",
+      "depth": 1,
+      "is_scanned": true,
+      "scan_state": "scanned",
+      "trust_tier": "high"
+    },
+    {
+      "id": "IOS-ACC-01",
+      "ip": "10.10.0.21",
+      "platform": "C9200-24P",
+      "device_type": "cisco_ios",
+      "role": "access",
+      "depth": 2,
+      "is_scanned": false,
+      "scan_state": "neighbor_only",
+      "trust_tier": "medium",
+      "incomplete_observations": [
+        {
+          "incomplete": true,
+          "edge_eligible": false,
+          "hostname": "",
+          "protocol": "CDP",
+          "local_port": "Gi1/0/24",
+          "remote_port": "",
+          "parse_warning": "peer identity missing — not a cable"
+        }
+      ]
+    },
+    {
+      "id": "JN-ACC-01",
+      "ip": "10.10.0.31",
+      "platform": "QFX5120-48Y",
+      "device_type": "juniper_junos",
+      "role": "access",
+      "depth": 2,
+      "is_scanned": true,
+      "scan_state": "scanned",
+      "trust_tier": "high"
+    },
+    {
+      "id": "JN-ACC-02",
+      "ip": "10.10.0.32",
+      "platform": "EX4300-48T",
+      "device_type": "juniper_junos",
+      "role": "access",
+      "depth": 2,
+      "is_scanned": true,
+      "scan_state": "scanned",
+      "trust_tier": "high"
+    }
+  ],
+  "l2_edges": [
+    {
+      "from": "NX-CORE-01", "to": "NX-CORE-02",
+      "f_port": "Eth1/1", "t_port": "Eth1/1",
+      "protocol": "CDP", "type": "standard", "trust_tier": "high",
+      "confidence": "High", "layer": "l2"
+    },
+    {
+      "from": "NX-CORE-01", "to": "IOS-DIST-01",
+      "f_port": "Eth1/49", "t_port": "Te1/1/1",
+      "protocol": "CDP", "type": "standard", "trust_tier": "high",
+      "confidence": "High", "layer": "l2"
+    },
+    {
+      "from": "NX-CORE-02", "to": "IOS-XE-DIST-02",
+      "f_port": "Eth1/49", "t_port": "Te1/1/1",
+      "protocol": "LLDP", "type": "standard", "trust_tier": "high",
+      "confidence": "High", "layer": "l2"
+    },
+    {
+      "from": "NX-AGG-01", "to": "NX-CORE-01",
+      "f_port": "Eth1/1", "t_port": "Eth1/2",
+      "protocol": "CDP", "type": "standard", "trust_tier": "high",
+      "confidence": "High", "layer": "l2"
+    },
+    {
+      "from": "IOS-DIST-01", "to": "IOS-ACC-01",
+      "f_port": "Gi1/0/48", "t_port": "Gi1/0/1",
+      "protocol": "LLDP", "type": "standard", "trust_tier": "medium",
+      "confidence": "Medium", "layer": "l2", "one_sided": true, "spoof_risk": true
+    },
+    {
+      "from": "IOS-DIST-01", "to": "JN-ACC-01",
+      "f_port": "Gi1/0/47", "t_port": "ge-0/0/0",
+      "protocol": "LLDP", "type": "standard", "trust_tier": "high",
+      "confidence": "High", "layer": "l2"
+    },
+    {
+      "from": "IOS-XE-DIST-02", "to": "JN-ACC-02",
+      "f_port": "Gi1/0/24", "t_port": "ge-0/0/1",
+      "protocol": "LLDP", "type": "standard", "trust_tier": "high",
+      "confidence": "High", "layer": "l2"
+    }
+  ],
+  "non_cable_edges": [
+    {
+      "from": "NX-CORE-01", "to": "NX-CORE-02",
+      "f_port": "nve1", "t_port": "nve1",
+      "protocol": "EVPN", "layer": "overlay", "not_physical": true,
+      "edge_kind": "evpn-peer", "trust_tier": "inferred",
+      "type": "overlay"
+    },
+    {
+      "from": "IOS-DIST-01", "to": "IOS-ACC-01",
+      "f_port": "Gi1/0/2", "t_port": "Gi1/0/2",
+      "protocol": "STP", "link_type": "stp-blocked",
+      "layer": "l2", "type": "stp-blocked",
+      "trust_tier": "medium", "confidence": "Medium"
+    }
+  ],
+  "notes": [
+    "EVPN nve1 is overlay CLI peer, not a cable.",
+    "Incomplete CDP on IOS-ACC-01 is diagnostics only.",
+    "IOS-ACC-01 Gi1/0/1 is one-sided LLDP — spoofable, not verified.",
+    "STP-blocked edge is not a forwarding utilization path.",
+    "mgmt0 / IRB / bundle-member counters must stay unmapped."
+  ]
+}

@@ -1,0 +1,10 @@
+# NST Docker lab inventory — 1 IOS + 2× NX-OS 93180YC-EX
+# Format: IP,device_type,port,group
+# Vault: any username/password (sim accepts all) — must select vault profile in sidebar
+
+[Access]
+127.0.0.1,cisco_ios,2201,Access
+
+[NXOS]
+127.0.0.1,cisco_nxos,2202,NXOS
+127.0.0.1,cisco_nxos,2203,NXOS

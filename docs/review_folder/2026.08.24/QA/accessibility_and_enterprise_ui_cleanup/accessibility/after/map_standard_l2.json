@@ -1,0 +1,82 @@
+{
+  "url": "file:///Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/maps/standard_l2_overlay_replay.html",
+  "violationCount": 4,
+  "incompleteCount": 2,
+  "violations": [
+    {
+      "id": "html-has-lang",
+      "impact": "serious",
+      "description": "Ensure every HTML document has a lang attribute",
+      "help": "<html> element must have a lang attribute",
+      "nodes": 1,
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "landmark-one-main",
+      "impact": "moderate",
+      "description": "Ensure the document has a main landmark",
+      "help": "Document should have one main landmark",
+      "nodes": 1,
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "description": "Ensure all page content is contained by landmarks",
+      "help": "All page content should be contained by landmarks",
+      "nodes": 13,
+      "targets": [
+        [
+          ".nst-top-row"
+        ],
+        [
+          "label[for=\"searchInput\"]"
+        ],
+        [
+          "#searchInput"
+        ],
+        [
+          "#nst-util-toggle-wrap"
+        ],
+        [
+          "#nst-util-mode-chip"
+        ]
+      ]
+    },
+    {
+      "id": "scrollable-region-focusable",
+      "impact": "serious",
+      "description": "Ensure elements that have scrollable content are accessible by keyboard",
+      "help": "Scrollable region must have keyboard access",
+      "nodes": 1,
+      "targets": [
+        [
+          ".nst-conn-table-wrap"
+        ]
+      ]
+    }
+  ],
+  "incomplete": [
+    {
+      "id": "aria-prohibited-attr",
+      "impact": "serious",
+      "description": "Ensure ARIA attributes are not prohibited for an element's role",
+      "nodes": 1
+    },
+    {
+      "id": "color-contrast",
+      "impact": null,
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "nodes": 0
+    }
+  ],
+  "label": "map_standard_l2"
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "platform": "cisco_xe",
+    "hostname": "edge-xe-dup",
+    "sensor_path": "interfaces/interface/statistics/in-octets",
+    "interface": "GigabitEthernet1/0/1",
+    "value": 10,
+    "unit": "octets",
+    "timestamp": "2026-08-20T18:06:00Z",
+    "sequence": 1
+  },
+  {
+    "platform": "cisco_xe",
+    "hostname": "edge-xe-dup",
+    "sensor_path": "interfaces/interface/statistics/in-octets",
+    "interface": "GigabitEthernet1/0/1",
+    "value": 11,
+    "unit": "octets",
+    "timestamp": "2026-08-20T18:06:00Z",
+    "sequence": 1
+  }
+]

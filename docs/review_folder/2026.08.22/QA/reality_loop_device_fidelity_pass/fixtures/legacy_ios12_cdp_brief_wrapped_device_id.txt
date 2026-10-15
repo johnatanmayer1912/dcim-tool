@@ -1,0 +1,8 @@
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+
+Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+core-dist-sw01.corp.example.invalid
+                 Gig 1/0/1         157              S I    WS-C3750G Gig 1/0/48
+access-2960-floor2.lab.invalid
+                 Fas 0/1           148              S I    WS-C2960  Fas 0/24

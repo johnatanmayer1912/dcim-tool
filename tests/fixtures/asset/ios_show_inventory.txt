@@ -1,0 +1,8 @@
+NAME: "Chassis", DESCR: "Cisco Catalyst 9200L Series Switch 48-port PoE"
+PID: C9200L-48P-4G        , VID: V02  , SN: FCW2345A1B2
+
+NAME: "Switch 1 - Power Supply A", DESCR: "350W AC Config 1 Power Supply"
+PID: PWR-C1-350WAC        , VID: V02  , SN: LIT23456789
+
+NAME: "Switch 1 - FRU Uplink Module 1", DESCR: "4x1G Uplink Module"
+PID: C9200-NM-4G          , VID: V01  , SN: FOC23456789

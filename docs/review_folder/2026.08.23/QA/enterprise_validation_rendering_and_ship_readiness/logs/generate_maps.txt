@@ -1,0 +1,38 @@
+[INFO] telnetlib compatibility shim installed (Python 3.13+ support)
+{
+  "standard_l2": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/maps/standard_l2_overlay_replay.html",
+  "discovery": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/maps/discovery_command_center.html",
+  "overlay": "/Users/a.m./Desktop/net-mng-tool/net-mng-tool/docs/review_folder/2026.08.23/QA/enterprise_validation_rendering_and_ship_readiness/generated_outputs/overlays/utilization_overlay_replay.json",
+  "bound_ok": true,
+  "disc_ok": true,
+  "actual": {
+    "device_count": 8,
+    "l2_edge_count": 7,
+    "non_cable_count": 2,
+    "standard_l2_vis_edges": 7,
+    "discovery_vis_edges": 9,
+    "paint_eligible_mixed": 7,
+    "overlay_ok": true,
+    "overlay_painted": 1,
+    "overlay_bindings": [
+      "e0"
+    ],
+    "discovery_host": true,
+    "discovery_bindings": [
+      "e0"
+    ],
+    "discovery_evpn_unpainted": true,
+    "fingerprint_unchanged": true,
+    "trust_tiers": [
+      "high",
+      "high",
+      "high",
+      "high",
+      "medium",
+      "high",
+      "high"
+    ],
+    "link_issue_count": 1,
+    "honesty": "Offline fixture lab. Not live vendor evidence. Not a certified cable plant."
+  }
+}

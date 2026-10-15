@@ -1,0 +1,23 @@
+Cisco IOS Software, C9200L Software (C9200L-UNIVERSALK9-M), Version 17.9.4a, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2024 by Cisco Systems, Inc.
+Compiled Thu 08-Aug-24 12:00 by mcpre
+
+ROM: Bootstrap program is C9200L boot loader
+BOOTLDR: C9200L Boot Loader (C9200L-HBOOT) Version 17.9.4r, RELEASE SOFTWARE (fc1)
+
+MOCK-IOS-01 uptime is 45 days, 3 hours, 12 minutes
+System returned to ROM by power-on
+System image file is "flash:packages.conf"
+Last reload reason: power-on
+
+cisco C9200L-48P-4G (ARM64) processor with 1398104K/6147K bytes of memory.
+Processor board ID FCW2345A1B2
+Model Number                       : C9200L-48P-4G
+System Serial Number                 : FCW2345A1B2
+
+License UDI:
+Device#   PID                  SN
+*         C9200L-48P-4G        FCW2345A1B2
+
+Configuration register is 0x102

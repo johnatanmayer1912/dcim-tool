@@ -1,0 +1,13 @@
+Ethernet1/49
+    transceiver is present
+    type is 10Gbase-SR
+    name is CISCO-FINISAR
+    Rx Power:  -3.45 dBm
+    Tx Power:  -2.10 dBm
+
+Ethernet1/50
+    transceiver is present
+    type is 10Gbase-SR
+    Rx Power:  -20.10 dBm
+    Tx Power:  -2.00 dBm
+    Rx Power Low Alarm

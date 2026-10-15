@@ -1,0 +1,11 @@
+# Offline demo inventory — not a live lab
+# Format: IP,device_type,group
+
+10.10.0.1,cisco_nxos,core
+10.10.0.2,cisco_nxos,core
+10.10.0.3,cisco_nxos,distribution
+10.10.0.11,cisco_ios,distribution
+10.10.0.12,cisco_xe,distribution
+10.10.0.21,cisco_ios,access
+10.10.0.31,juniper_junos,access
+10.10.0.32,juniper_junos,access

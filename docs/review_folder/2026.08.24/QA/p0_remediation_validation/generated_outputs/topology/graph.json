@@ -1,0 +1,151 @@
+{
+  "nodes": [
+    {
+      "id": "NX-CORE-01",
+      "device_type": "cisco_nxos",
+      "ip": "10.10.0.1"
+    },
+    {
+      "id": "NX-CORE-02",
+      "device_type": "cisco_nxos",
+      "ip": "10.10.0.2"
+    },
+    {
+      "id": "NX-AGG-01",
+      "device_type": "cisco_nxos",
+      "ip": "10.10.0.3"
+    },
+    {
+      "id": "IOS-DIST-01",
+      "device_type": "cisco_ios",
+      "ip": "10.10.0.11"
+    },
+    {
+      "id": "IOS-XE-DIST-02",
+      "device_type": "cisco_xe",
+      "ip": "10.10.0.12"
+    },
+    {
+      "id": "IOS-ACC-01",
+      "device_type": "cisco_ios",
+      "ip": "10.10.0.21"
+    },
+    {
+      "id": "JN-ACC-01",
+      "device_type": "juniper_junos",
+      "ip": "10.10.0.31"
+    },
+    {
+      "id": "JN-ACC-02",
+      "device_type": "juniper_junos",
+      "ip": "10.10.0.32"
+    }
+  ],
+  "l2_edges": [
+    {
+      "from": "NX-CORE-01",
+      "to": "NX-CORE-02",
+      "f_port": "Eth1/1",
+      "t_port": "Eth1/1",
+      "protocol": "CDP",
+      "type": "standard",
+      "trust_tier": "high",
+      "confidence": "High",
+      "layer": "l2"
+    },
+    {
+      "from": "NX-CORE-01",
+      "to": "IOS-DIST-01",
+      "f_port": "Eth1/49",
+      "t_port": "Te1/1/1",
+      "protocol": "CDP",
+      "type": "standard",
+      "trust_tier": "high",
+      "confidence": "High",
+      "layer": "l2"
+    },
+    {
+      "from": "NX-CORE-02",
+      "to": "IOS-XE-DIST-02",
+      "f_port": "Eth1/49",
+      "t_port": "Te1/1/1",
+      "protocol": "LLDP",
+      "type": "standard",
+      "trust_tier": "high",
+      "confidence": "High",
+      "layer": "l2"
+    },
+    {
+      "from": "NX-AGG-01",
+      "to": "NX-CORE-01",
+      "f_port": "Eth1/1",
+      "t_port": "Eth1/2",
+      "protocol": "CDP",
+      "type": "standard",
+      "trust_tier": "high",
+      "confidence": "High",
+      "layer": "l2"
+    },
+    {
+      "from": "IOS-DIST-01",
+      "to": "IOS-ACC-01",
+      "f_port": "Gi1/0/48",
+      "t_port": "Gi1/0/1",
+      "protocol": "LLDP",
+      "type": "standard",
+      "trust_tier": "medium",
+      "confidence": "Medium",
+      "layer": "l2",
+      "one_sided": true,
+      "spoof_risk": true
+    },
+    {
+      "from": "IOS-DIST-01",
+      "to": "JN-ACC-01",
+      "f_port": "Gi1/0/47",
+      "t_port": "ge-0/0/0",
+      "protocol": "LLDP",
+      "type": "standard",
+      "trust_tier": "high",
+      "confidence": "High",
+      "layer": "l2"
+    },
+    {
+      "from": "IOS-XE-DIST-02",
+      "to": "JN-ACC-02",
+      "f_port": "Gi1/0/24",
+      "t_port": "ge-0/0/1",
+      "protocol": "LLDP",
+      "type": "standard",
+      "trust_tier": "high",
+      "confidence": "High",
+      "layer": "l2"
+    }
+  ],
+  "non_cable_edges": [
+    {
+      "from": "NX-CORE-01",
+      "to": "NX-CORE-02",
+      "f_port": "nve1",
+      "t_port": "nve1",
+      "protocol": "EVPN",
+      "layer": "overlay",
+      "not_physical": true,
+      "edge_kind": "evpn-peer",
+      "trust_tier": "inferred",
+      "type": "overlay"
+    },
+    {
+      "from": "IOS-DIST-01",
+      "to": "IOS-ACC-01",
+      "f_port": "Gi1/0/2",
+      "t_port": "Gi1/0/2",
+      "protocol": "STP",
+      "link_type": "stp-blocked",
+      "layer": "l2",
+      "type": "stp-blocked",
+      "trust_tier": "medium",
+      "confidence": "Medium"
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>08 Incident click-through — NST demo</title>
+  <link rel="stylesheet" href="nst-demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="demo-ribbon">
+    <strong>UX demo 08</strong>
+    <span>Six scripted steps. Each step succeeds in this story.</span>
+    <a href="index.html">All demos</a>
+  </div>
+  <header class="chrome">
+    <div>
+      <div class="chrome-row">
+        <a class="brand" href="06-settings-vault.html">Network Swiss Tool Pro <span>7.0.87 · demo</span></a>
+        <a class="pill is-locked" id="vault-pill"><span class="ico" aria-hidden="true">●</span> Vault LOCKED</a>
+        <label class="field inline"><span>Credential</span>
+          <select aria-label="Named credential set" id="cred" disabled><option>Unlock first</option></select>
+        </label>
+        <label class="field inline"><span>Scope</span>
+          <select aria-label="Target scope" id="scope"><option>No committed inventory</option></select>
+        </label>
+      </div>
+      <p class="freshness" id="freshness">Last L2: never · Issues: 0 · Overlay: not run · Live SSH overlay: not started</p>
+    </div>
+    <div class="chrome-actions">
+      <button type="button" id="btn-cancel" disabled>Cancel job</button>
+    </div>
+  </header>
+  <div class="app">
+    <nav class="nav" aria-label="Operator jobs">
+      <a href="01-inventory.html" id="nav-inv">Inventory <span class="kbd">1</span></a>
+      <a href="02-maps-hub.html" id="nav-maps">Maps <span class="kbd">2</span></a>
+      <a href="03-find.html" id="nav-find">Find <span class="kbd">3</span></a>
+      <a href="04-change.html" id="nav-chg">Change <span class="kbd">4</span></a>
+      <a href="05-evidence.html">Evidence <span class="kbd">5</span></a>
+      <a href="06-settings-vault.html" id="nav-set">Settings <span class="kbd">6</span></a>
+    </nav>
+    <main id="main" class="workspace">
+      <div class="title-row">
+        <div>
+          <h1>Incident story</h1>
+          <p class="lede">Import → unlock → map → MAC → issue → VLAN validate. Same chrome the whole way.</p>
+        </div>
+      </div>
+      <div class="e2e-steps" role="navigation" aria-label="Story steps">
+        <button type="button" data-step="1" aria-current="step">1 Import</button>
+        <button type="button" data-step="2">2 Unlock</button>
+        <button type="button" data-step="3">3 Map</button>
+        <button type="button" data-step="4">4 MAC</button>
+        <button type="button" data-step="5">5 Issue</button>
+        <button type="button" data-step="6">6 VLAN validate</button>
+      </div>
+      <div id="panel" class="card"></div>
+      <div class="title-actions">
+        <button type="button" id="btn-back">Back</button>
+        <button type="button" class="primary" id="btn-next">Next</button>
+      </div>
+      <script type="application/json" id="sample-data">
+{"steps":["import","unlock","map","mac","issue","vlan_validate"],"hosts":["DIST-01","ACC-01"]}
+      </script>
+    </main>
+    <aside class="inspector" aria-label="Inspector">
+      <h2>This step</h2>
+      <p id="insp">Commit inventory before SSH. Rejects are counted, not silent.</p>
+    </aside>
+  </div>
+  <footer class="task-strip"><span id="task-strip-body"><span class="idle">No running job</span></span></footer>
+  <script src="nst-demo.js"></script>
+  <script>
+    (function () {
+      var step = 1;
+      var panel = document.getElementById("panel");
+      var insp = document.getElementById("insp");
+      var pill = document.getElementById("vault-pill");
+      var cred = document.getElementById("cred");
+      var scope = document.getElementById("scope");
+      var freshness = document.getElementById("freshness");
+      var navs = {
+        1: "nav-inv", 2: "nav-set", 3: "nav-maps", 4: "nav-find", 5: "nav-maps", 6: "nav-chg"
+      };
+      var html = {
+        1: "<h2>1 · Import inventory</h2><p class='banner ok'><strong>Committed.</strong> 12 DIST hosts accepted. 0 rejected. bak written.</p><table><thead><tr><th>Host</th><th>Type</th><th>Group</th></tr></thead><tbody><tr><td>10.10.1.1</td><td>cisco_nxos</td><td>DIST</td></tr><tr><td>10.10.2.1</td><td>cisco_ios</td><td>DIST</td></tr></tbody></table>",
+        2: "<h2>2 · Unlock vault</h2><p class='banner ok'><strong>UNLOCKED.</strong> Credential set <code>lab-ops</code> (ssh) is in chrome. Password not shown.</p>",
+        3: "<h2>3 · Inventory L2 map</h2><p class='banner info'>SSH to scope DIST. Not the Discovery crawl.</p><p>8 nodes, 1 one-sided edge (ACC-03 → AP-ghost). Issues: 3.</p>",
+        4: "<h2>4 · Trace MAC aabb.ccdd.ee01</h2><p>Hits on DIST-01 and ACC-01. ACC-03 is an unlinked hit. Reconstruct stops on gap — <code>path_note</code> present.</p>",
+        5: "<h2>5 · Inspect issue</h2><p class='status warn'>medium — mismatch</p><p>DIST-01 Eth1/1 speed 1G vs ACC-01 Gi0/1 100M. No winner declared. Witness, not a cable cert.</p>",
+        6: "<h2>6 · VLAN 20 validate</h2><div class='stepper'><span class='step pass'>Dry-run</span><span class='step pass'>Syntax</span><span class='step pass'>Platform</span><span class='step pass'>Conflicts</span><span class='step pass'>Golden-config</span><span class='step pass'>Approval required</span></div><p class='banner ok'>Ready to confirm on 5 hosts. Apply is a separate action.</p>"
+      };
+      var notes = {
+        1: "Commit inventory before SSH. Rejects are counted, not silent.",
+        2: "Locked vault would 403 credential APIs. Chrome pill is the signal.",
+        3: "Partial cancel would say not complete truth. This run finished.",
+        4: "Find does not invent hops past a gap.",
+        5: "Contradiction = mismatch. Utilization paint is Phase 2 and off here.",
+        6: "Golden passed. Confirm modal must list device names."
+      };
+      function paint() {
+        panel.innerHTML = html[step];
+        insp.textContent = notes[step];
+        document.querySelectorAll(".e2e-steps button").forEach(function (b) {
+          b.setAttribute("aria-current", b.getAttribute("data-step") === String(step) ? "step" : "false");
+        });
+        document.querySelectorAll(".nav a").forEach(function (a) { a.removeAttribute("aria-current"); });
+        var nid = navs[step];
+        if (nid) document.getElementById(nid).setAttribute("aria-current", "page");
+        if (step >= 1) {
+          scope.innerHTML = '<option selected>Group DIST — 12 devices</option>';
+        }
+        if (step >= 2) {
+          pill.className = "pill is-on";
+          pill.innerHTML = '<span class="ico" aria-hidden="true">●</span> Vault UNLOCKED';
+          cred.disabled = false;
+          cred.innerHTML = '<option selected>lab-ops (ssh)</option>';
+        } else {
+          pill.className = "pill is-locked";
+          pill.innerHTML = '<span class="ico" aria-hidden="true">●</span> Vault LOCKED';
+          cred.disabled = true;
+        }
+        if (step >= 3) {
+          freshness.textContent = "Last L2: 14m · Issues: 3 · Overlay: none · Live SSH overlay: not started";
+        }
+        document.getElementById("btn-back").disabled = step === 1;
+        document.getElementById("btn-next").textContent = step === 6 ? "Done" : "Next";
+      }
+      document.getElementById("btn-next").onclick = function () {
+        if (step < 6) { step += 1; paint(); }
+      };
+      document.getElementById("btn-back").onclick = function () {
+        if (step > 1) { step -= 1; paint(); }
+      };
+      document.querySelectorAll("[data-step]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          step = parseInt(b.getAttribute("data-step"), 10);
+          paint();
+        });
+      });
+      paint();
+    })();
+  </script>
+</body>
+</html>

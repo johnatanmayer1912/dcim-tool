@@ -1,0 +1,7 @@
+Chassis id: 5254.00a1.b2c3.d4e5
+Local Port id: Eth1/3
+Port id: 006b.f1be.deb0
+Port Description: Ethernet2/11
+System Name: SPINE-NXOS-02
+System Description: Cisco Nexus Operating System (NX-OS) Software
+Management Address: 10.0.0.12

@@ -1,0 +1,25 @@
+# Golden-config gate — local change policy (offline EXE).
+# Fail-closed on VLAN / Interface Manager mutations when a rule matches.
+# Edit to match the site. Empty lists disable that rule.
+
+enabled: true
+version: "1.0"
+
+# Cisco reserved token VLANs (not VLAN 1 — labs often use it).
+forbidden_vlan_ids:
+  - 1002
+  - 1003
+  - 1004
+  - 1005
+
+vlan_name_pattern: "^[A-Za-z0-9][A-Za-z0-9_-]{0,31}$"
+
+# Interface Manager proposed_config (line-oriented).
+interface_forbidden_substrings:
+  - "default interface"
+
+# If proposed config sets an access VLAN, require a description line in the same blob.
+require_description_with_access_vlan: true
+
+# Deploy is refused when this gate failed on the last validate (re-checked at apply).
+block_apply_on_fail: true

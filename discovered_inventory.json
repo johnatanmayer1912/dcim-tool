@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    {
+      "id": "n9k-core-01",
+      "label": "n9k-core-01",
+      "ip": "10.0.0.1",
+      "platform": "Cisco",
+      "device_type": "cisco_nxos",
+      "discovered_via": "Seed",
+      "depth": 0,
+      "is_scanned": true,
+      "serial": "FOC12345678",
+      "scan_state": "scanned",
+      "os_source": "scanned"
+    }
+  ],
+  "edges": [],
+  "timestamp": "2026-06-11T09:44:54.764354",
+  "max_depth": 1,
+  "protocol": "BOTH"
+}
